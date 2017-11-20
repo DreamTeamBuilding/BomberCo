@@ -45,7 +45,6 @@ initPlayers(NbPlayers, TaillePlateau):-
     assert(players(Players,PlayersState)),
 	assert(nbJoueurs(NbPlayers)).
 
-
 %%%%% Fin de jeu :
 gameover:- 
 	players(_,States),survivors(X,States),X<2.
