@@ -24,6 +24,7 @@ initPlayers(NbPlayers, TaillePlateau):-
     assert(players(Players)).
 
 
-
+	
+	
 print([]).
 print([X|T]):- write(X),write(','),print(T).
