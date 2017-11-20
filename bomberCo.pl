@@ -1,6 +1,7 @@
 :- dynamic board/1.
 :- dynamic nbJoueurs/1.
 :- dynamic players/2. %players(Positions, States)
+[ia].
 
 play(_):- gameover, !, write('Game is Over.').
 play(IndexPlayer) :- 
@@ -20,7 +21,6 @@ play(IndexPlayer) :-
 	
 	% Delay pour les fps, wow, such graphismsz
 	.
-
 
 %%%%% Start !
 init(NbPlayers, TaillePlateau) :-
