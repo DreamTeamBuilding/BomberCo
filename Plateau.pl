@@ -1,38 +1,40 @@
-%:- dynamic plateau/1.
-
 initPlateau(TailleCote):-
-	% Nettoyer le plateau s'il existe d'une execution precedente
-	(not(plateau(_)) ; retract(plateau(_))),
+
+	(not(plateauSav(_));retract(plateauSav(_))),
 	% Instancie le nouveau plateau
 	TaillePlateau is TailleCote * TailleCote,
 	length(Plateau, TaillePlateau),
 	% On le remplit et le sav
-	fill(Plateau, TailleCote, 0),
-	displayBoard(TailleCote).	
+	fill(Plateau, TailleCote, 0).	
 	
 	
 displayBoard(TailleCote):-
-	plateau(B),
-	writeln('-----------'),
-	printElementBoard(B,TailleCote,0),
-	writeln('-----------'), nl.
+	plateauSav(B),
+	printElementBoard(B,TailleCote,0),nl.
 	
 	
 printElementBoard([],_,_).
 printElementBoard([X|Plateau],TailleCote,Index) :-
-	writeVal(X),
+	joueursSav(PosJoueur,EtatJoueur),
+	%bombes(PosBombes,_),
+	(
+	(nth0(IndexJoueur,PosJoueur, Index), nth0(IndexJoueur,EtatJoueur,Etat), var(Etat)) -> write('P'); 
+	nth0(_,PosJoueur, Index) -> write('..'); 
+	writeVal(X)
+	),
 	IndexSuivant is Index + 1,
 	Mod is mod(IndexSuivant, TailleCote),
 	(Mod\==0 ; writeln(' ')),
 	printElementBoard(Plateau,TailleCote,IndexSuivant).
 
-% TODO : changer pour lire les numeros et afficher les valeurs.
 writeVal(Val) :- 
 	(var(Val), write(' ')) ; 
-	write(Val).
+	(Val==0, write('_')) ;
+	(Val==1, write('X')).
 
-% TODO : changer pour mettre des numeros comme definis precedemment.
-fill(Plateau,TailleCote,Fin):- Fin is TailleCote * TailleCote, assert(plateau(Plateau)).
+fill(Plateau,TailleCote,Fin):- 
+	Fin is TailleCote * TailleCote,  
+	assert(plateauSav(Plateau)).
 fill(Plateau, TailleCote, IndexActuel):- 
 	IndexSuivant is IndexActuel + 1,
 	(
@@ -46,9 +48,9 @@ fill(Plateau, TailleCote, IndexActuel):-
 		% Si on est sur la derniere case
 		Mod==0)
 	-> 
-		Value = 'X' 
+		Value = 1 
 	; 
-		Value = '_'
+		Value = 0
 	),
 	nth0(IndexActuel,Plateau,Value),
 	fill(Plateau,TailleCote,IndexSuivant).
