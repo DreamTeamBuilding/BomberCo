@@ -1,13 +1,15 @@
 :- dynamic board/1.
 :- dynamic nbJoueurs/1.
 :- dynamic players/2. %players(Positions, States)
+:- dynamic bombs/2. %bombs(Positions, TimeLeft)
+[ia].
 
 play(_):- gameover, !, write('Game is Over.').
-play(IndexPlayer) :- 
+play(IndexPlayer) :-
 	%Display le board
 	players(Positions, States),
 	(
-		not((nth0(IndexPlayer,States,X), var(X))) 
+		not((nth0(IndexPlayer,States,X), var(X)))
 	;
 		% ia next move
 		% play next move (deplacer, poser, rien)
@@ -17,10 +19,9 @@ play(IndexPlayer) :-
 	% Tuer des gens,
 	% Actualiser NextPlayer
 	% Play next player
-	
+
 	% Delay pour les fps, wow, such graphismsz
 	.
-
 
 %%%%% Start !
 init(NbPlayers, TaillePlateau) :-
@@ -34,7 +35,7 @@ init(NbPlayers, TaillePlateau) :-
 
 %%%%% Positionne les joueurs dans les coins du plateau
 initPlayers(NbPlayers, TaillePlateau):-
-	length(Players,NbPlayers),      
+	length(Players,NbPlayers),
     length(PlayersState,NbPlayers),
 	(NbPlayers < 5,NbPlayers >1),
 	nth0(0, Players, Position), Position is TaillePlateau +1,
@@ -46,7 +47,7 @@ initPlayers(NbPlayers, TaillePlateau):-
 	assert(nbJoueurs(NbPlayers)).
 
 %%%%% Fin de jeu :
-gameover:- 
+gameover:-
 	players(_,States),survivors(X,States),X<2.
 
 survivors(0,[]).
