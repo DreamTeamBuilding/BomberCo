@@ -16,9 +16,8 @@ jouer(_):- gameover, !, write('Game is Over.').
 jouer(IndexJoueur) :-
 	taillePlateau(TaillePlateau),
 	displayBoard(TaillePlateau),
-	joueursSav(Positions, Etats),
 	(
-		not((nth0(IndexJoueur,Etats,X), var(X)))
+		not(joueursSav(IndexJoueur,-1))
 	;
 		% ia next move
 		% jouer next move (deplacer, poser, rien)
@@ -46,5 +45,4 @@ init(NbJoueurs, TaillePlateau) :-
 	jouer(0).
 
 %%%%% Fin de jeu :
-gameover:-false.
-	/*joueursSav(_,Etats),compteSurvivants(X,Etats),X<2.*/
+gameover:-joueursSav(_,Etats),compteSurvivants(X,Etats),X<2.

@@ -4,8 +4,6 @@ initJoueurs(NbJoueurs, TaillePlateau):-
 	nbJoueurs(NbJoueurs),
 	(not(joueursSav(_,_)) ; retractall(joueursSav(_,_))),
 	
-	length(Joueurs,NbJoueurs),
-    length(EtatsJoueurs,NbJoueurs),
 	(NbJoueurs < 5,NbJoueurs >1),
 	Position is TaillePlateau +1, assert(joueursSav(Position,-1)), 
 	Position2 is TaillePlateau*TaillePlateau-TaillePlateau-2, assert(joueursSav(Position2,-1)), 
