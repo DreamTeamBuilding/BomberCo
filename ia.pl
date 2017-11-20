@@ -1,24 +1,29 @@
 %%%% Artificial intelligence: choose in a Board the Move to play for Player (_)
 %%%% This AI plays more or less randomly according to the version and does not care who is playing:
-index(1,-11).	% haut
-index(2,11).	% bas
-index(3,1).	% droite
-index(4,-1).	% gauche
-index(5,0).	% immobile
-index(6,0).	% bombe
+:- dynamic index/2.
 
-posSafe(Index, Board) :-
+initIndex(TaillePlateau) :-
+    index(1,-TaillePlateau), %Haut
+    index(2, TaillePlateau), %Bas
+    index(3,1),              %Droite
+    index(4,-1),             %Gauche
+    index(5,0),              %PasBouger
+    index(6,0).              %Bombe
+
+posSafe(Pos, Board, TaillePlateau) :-
+    (nth0(Pos+1, Board, Case), not(Case==2)),
+    (nth0(Pos-1, Board, Case), not(Case==2)),
+    (nth0(Pos+TaillePlateau, Board, Case), not(Case==2)),
+    (nth0(Pos-TaillePlateau, Board, Case), not(Case==2)),
+    ((nth0(Pos+1, Board, Case), Case==1); (nth0(Pos+2, Board, Case), not(Case==2))),
+    ((nth0(Pos-1, Board, Case), Case==1); (nth0(Pos-2, Board, Case), not(Case==2))),
+    ((nth0(Pos+TaillePlateau, Board, Case), Case==1); (nth0(Pos+TaillePlateau, Board, Case), not(Case==2))),
+    ((nth0(Pos-TaillePlateau, Board, Case), Case==1); (nth0(Pos-TaillePlateau, Board, Case), not(Case==2))).
 
 
 % iav1 : fait tout de maniere random
-ia(Board, PosIndex, Move, iav1) :- repeat, Move is random(7), index(Move, I), NewPosIndex is PosIndex+I, nth0(NewPosIndex, Board, Occupe), not(var(Occupe)), !.
+ia(Board, PosIndex, NewPosIndex, iav1) :- repeat, Move is random(7), index(Move, I), NewPosIndex is PosIndex+I, nth0(NewPosIndex, Board, Elem), Elem==0, !.
 
 % iav2 : detecte les zones de danger des bombes et bouge de maniere random tant qu'elle n'est pas sortie
-ia(Board, PosIndex, Move, iav2) :- repeat, (posSafe(PosIndex, Board) -> repeat, Move is random(7),index(Move, I), NewPosIndex is PosIndex+I, posSafe(NewPosIndex, Board); Move is random(5),index(Move, I), NewPosIndex is PosIndex+I), nth0(NewPosIndex, Board, Occupe), not(var(Occupe)), !.
+ia(Board, PosIndex, NewPosIndex, TaillePlateau, iav2) :- repeat, (posSafe(PosIndex, Board, TaillePlateau) -> repeat, Move is random(7),index(Move, I), NewPosIndex is PosIndex+I, posSafe(NewPosIndex, Board, TaillePlateau); Move is random(5),index(Move, I), NewPosIndex is PosIndex+I), nth0(NewPosIndex, Board, Elem), Elem==0, !.
 
-% iav3 : detecte les zones de danger et cherche a s'en eloigner
-ia(Board, PosIndex, Move, iav3):-
-    repeat, (posSafe(PosIndex, Board) ->
-            repeat, Move is random(7),index(Move, I), NewPosIndex is PosIndex+I, posSafe(NewPosIndex, Board);
-            Move is random(5),index(Move, I), NewPosIndex is PosIndex+I),
-    nth0(NewPosIndex, Board, Occupe), not(var(Occupe)), !.
