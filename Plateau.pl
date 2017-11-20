@@ -6,7 +6,8 @@ creerPlateau(TailleCote):-
 	assert(board(Board)),
 	fill(Board, NewBoard, TailleCote),
 	applyIt(Board, NewBoard),
-	displayBoard(TailleCote).	
+	displayBoard(TailleCote),
+	retract(board(Board)).	
 	
 	
 displayBoard(TailleCote):-
@@ -38,7 +39,6 @@ fillLine(Board, NewBoard, TailleCote, Line, Index):-
 	Board = NewBoard,
 	Current is TailleCote*Line+Index, 
 	nth0(Current, NewBoard, 'X'),
-	printVal(Current),
 	IndexSuiv is Index+1,
 	fillLine(Board, NewBoard, TailleCote, Line, IndexSuiv).
 	
