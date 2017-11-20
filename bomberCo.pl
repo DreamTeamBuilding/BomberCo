@@ -1,12 +1,13 @@
-:- dynamic board/1.
+:- dynamic plateau/1.
 :- dynamic nbJoueurs/1.
-:- dynamic players/2. %players(Positions, States)
-:- dynamic bombs/2. %bombs(Positions, TimeLeft)
-[ia].
+:- dynamic players/2. %players(Positions, Etats)
+:- dynamic bombes/2. %bombes(Positions, TimeLeft)
+:-[ia].
+:-[plateau].
 
 play(_):- gameover, !, write('Game is Over.').
 play(IndexPlayer) :-
-	%Display le board
+	%Display le plateau
 	players(Positions, States),
 	(
 		not((nth0(IndexPlayer,States,X), var(X)))
@@ -26,9 +27,10 @@ play(IndexPlayer) :-
 %%%%% Start !
 init(NbPlayers, TaillePlateau) :-
     %Initialisation du plateau
-    length(Board,Taille),
+    /*length(Plateau,Taille),
     Taille is TaillePlateau * TaillePlateau,
-    assert(board(Board)),
+    assert(plateau(Plateau)),*/
+	creerPlateau(TaillePlateau),
     %Initialisation Player
     (initPlayers(NbPlayers, TaillePlateau) ; writeln("Erreur lors de l'initialisation des joueurs")),
 	play(0).
