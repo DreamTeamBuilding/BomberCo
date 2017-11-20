@@ -15,11 +15,10 @@ displayBoard(TailleCote):-
 	
 printElementBoard([],_,_).
 printElementBoard([X|Plateau],TailleCote,Index) :-
-	joueursSav(PosJoueur,EtatJoueur),
 	%bombes(PosBombes,_),
 	(
-	(nth0(IndexJoueur,PosJoueur, Index), nth0(IndexJoueur,EtatJoueur,Etat), var(Etat)) -> write('P'); 
-	nth0(_,PosJoueur, Index) -> write('..'); 
+	(joueursSav(Index,Etat), Etat is -1) -> write('P'); 
+	joueursSav(Index,_) -> write('..'); 
 	writeVal(X)
 	),
 	IndexSuivant is Index + 1,

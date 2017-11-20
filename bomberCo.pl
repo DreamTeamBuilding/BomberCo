@@ -34,8 +34,8 @@ jouer(IndexJoueur) :-
 
 %%%%% Start !
 init(NbJoueurs, TaillePlateau) :-
-	(not(taillePlateau(_));retract(taillePlateau(_))),
-	(not(nbJoueurs(_));retract(nbJoueurs(_))),
+	(not(taillePlateau(_));retractall(taillePlateau(_))),
+	(not(nbJoueurs(_));retractall(nbJoueurs(_))),
 	assert(taillePlateau(TaillePlateau)),assert(nbJoueurs(NbJoueurs)) ,
     % Initialisation du plateau
 	initPlateau(TaillePlateau),
@@ -46,5 +46,5 @@ init(NbJoueurs, TaillePlateau) :-
 	jouer(0).
 
 %%%%% Fin de jeu :
-gameover:-
-	joueursSav(_,Etats),compteSurvivants(X,Etats),X<2.
+gameover:-false.
+	/*joueursSav(_,Etats),compteSurvivants(X,Etats),X<2.*/

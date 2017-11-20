@@ -7,12 +7,10 @@ initJoueurs(NbJoueurs, TaillePlateau):-
 	length(Joueurs,NbJoueurs),
     length(EtatsJoueurs,NbJoueurs),
 	(NbJoueurs < 5,NbJoueurs >1),
-	nth0(0, Joueurs, Position), Position is TaillePlateau +1,
-	nth0(1, Joueurs, Position2), Position2 is TaillePlateau*TaillePlateau-TaillePlateau-2,
-	(NbJoueurs < 3 ; (nth0(2, Joueurs, Position3), Position3 is TaillePlateau*2-2)),
-	(NbJoueurs < 4 ; (nth0(3, Joueurs, Position4), Position4 is TaillePlateau*TaillePlateau-TaillePlateau*2+1)),
-    assert(joueursSav(Joueurs,EtatsJoueurs)),
-	assert(nbJoueurs(NbJoueurs)).
+	Position is TaillePlateau +1, assert(joueursSav(Position,-1)), 
+	Position2 is TaillePlateau*TaillePlateau-TaillePlateau-2, assert(joueursSav(Position2,-1)), 
+	(NbJoueurs < 3 ; (Position3 is TaillePlateau*2-2), assert(joueursSav(Position3,-1))),
+	(NbJoueurs < 4 ; (Position4 is TaillePlateau*TaillePlateau-TaillePlateau*2+1, assert(joueursSav(Position4,-1)))).
 	
 	
 compteSurvivants(0,[]).
