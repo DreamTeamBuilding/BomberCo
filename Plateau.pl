@@ -1,6 +1,6 @@
 %:- dynamic plateau/1.
 
-creerPlateau(TailleCote):-
+initPlateau(TailleCote):-
 	% Nettoyer le plateau s'il existe d'une execution precedente
 	(not(plateau(_)) ; retract(plateau(_))),
 	% Instancie le nouveau plateau
