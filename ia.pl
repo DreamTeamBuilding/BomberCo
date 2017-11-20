@@ -3,12 +3,12 @@
 
 initIndex(TaillePlateau) :-
 	(not(indexAction(_,_));retractall(indexAction)),
-    indexAction(1,-TaillePlateau), %Haut
-    indexAction(2, TaillePlateau), %Bas
-    indexAction(3,1),              %Droite
-    indexAction(4,-1),             %Gauche
-    indexAction(5,0),              %PasBouger
-    indexAction(6,0).              %Bombe
+    assert(indexAction(1,-TaillePlateau)), %Haut
+    assert(indexAction(2, TaillePlateau)), %Bas
+    assert(indexAction(3,1)),              %Droite
+    assert(indexAction(4,-1)),             %Gauche
+    assert(indexAction(5,0)),              %PasBouger
+    assert(indexAction(6,0)).              %Bombe 
 
 posSafe(Pos, Plateau, TaillePlateau) :-
     (nth0(Pos+1, Plateau, Case), not(Case==2)),
@@ -25,5 +25,5 @@ posSafe(Pos, Plateau, TaillePlateau) :-
 ia(Plateau, PosIndex, NewPosIndex, iav1) :- repeat, Move is random(7), indexAction(Move, I), NewPosIndex is PosIndex+I, nth0(NewPosIndex, Plateau, Elem), Elem==0, !.
 
 % iav2 : detecte les zones de danger des bombes et bouge de maniere random tant qu'elle n'est pas sortie
-ia(Plateau, PosIndex, NewPosIndex, TaillePlateau, iav2) :- repeat, (posSafe(PosIndex, Plateau, TaillePlateau) -> repeat, Move is random(7),index(Move, I), NewPosIndex is PosIndex+I, posSafe(NewPosIndex, Plateau, TaillePlateau); Move is random(5),indexAction(Move, I), NewPosIndex is PosIndex+I), nth0(NewPosIndex, Plateau, Elem), Elem==0, !.
+ia(Plateau, PosIndex, NewPosIndex, TaillePlateau, iav2) :- repeat, (posSafe(PosIndex, Plateau, TaillePlateau) -> repeat, Move is random(7),indexAction(Move, I), NewPosIndex is PosIndex+I, posSafe(NewPosIndex, Plateau, TaillePlateau); Move is random(5),indexAction(Move, I), NewPosIndex is PosIndex+I), nth0(NewPosIndex, Plateau, Elem), Elem==0, !.
 

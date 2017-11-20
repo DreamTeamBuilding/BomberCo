@@ -11,7 +11,6 @@ initJoueurs(NbJoueurs, TaillePlateau):-
 	nth0(1, Joueurs, Position2), Position2 is TaillePlateau*TaillePlateau-TaillePlateau-2,
 	(NbJoueurs < 3 ; (nth0(2, Joueurs, Position3), Position3 is TaillePlateau*2-2)),
 	(NbJoueurs < 4 ; (nth0(3, Joueurs, Position4), Position4 is TaillePlateau*TaillePlateau-TaillePlateau*2+1)),
-	EtatsJoueurs=[0|_],
     assert(joueursSav(Joueurs,EtatsJoueurs)),
 	assert(nbJoueurs(NbJoueurs)).
 	

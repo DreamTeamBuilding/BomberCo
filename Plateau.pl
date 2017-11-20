@@ -1,5 +1,5 @@
 initPlateau(TailleCote):-
-
+	% Nettoyer le plateau s'il existe d'une execution precedente
 	(not(plateauSav(_));retract(plateauSav(_))),
 	% Instancie le nouveau plateau
 	TaillePlateau is TailleCote * TailleCote,

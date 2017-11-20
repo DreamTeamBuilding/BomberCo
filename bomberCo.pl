@@ -37,10 +37,12 @@ init(NbJoueurs, TaillePlateau) :-
 	(not(taillePlateau(_));retract(taillePlateau(_))),
 	(not(nbJoueurs(_));retract(nbJoueurs(_))),
 	assert(taillePlateau(TaillePlateau)),assert(nbJoueurs(NbJoueurs)) ,
-    %Initialisation du plateau
+    % Initialisation du plateau
 	initPlateau(TaillePlateau),
-    %Initialisation Player
+    % Initialisation Player
     initJoueurs(NbJoueurs, TaillePlateau),
+	% Initialisation des relges de deplacement
+	initIndex(TaillePlateau),
 	jouer(0).
 
 %%%%% Fin de jeu :
