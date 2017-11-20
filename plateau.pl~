@@ -1,0 +1,24 @@
+:- dynamic board/1.
+size(11).
+
+creerPlateau:-length(Board, size*size).
+
+displayBoard:-
+    writeln('-----------'),
+    printLine(0),
+    writeln('-----------').
+
+printLine(N):-
+    printVal(N*size+0),
+    printVal(N*size+1),
+    printVal(N*size+2),
+    printVal(N*size+3),
+    printVal(N*size+4),
+    printVal(N*size+5),
+    printVal(N*size+6),
+    printVal(N*size+7),
+    printVal(N*size+8),
+    printVal(N*size+9),
+    printVal(N*size+10).
+
+printVal(N):- board(B), nth0(N,B,Val), var(Val) -> write(Val) ; write(' ').
