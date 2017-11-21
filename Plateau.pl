@@ -42,7 +42,7 @@ printElementBoard([X|Plateau],TailleCote,Index) :-
 
 writeVal(Val) :- 
 	(var(Val), write(' ')) ; 
-	(Val==0, write('_')) ;
+	(Val==0, write('  ')) ;
 	(Val==1, write('X')).
 
 fill(Plateau,TailleCote,Fin):- 

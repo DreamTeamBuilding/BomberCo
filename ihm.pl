@@ -30,10 +30,16 @@ accueil(_) :-
 getInfoGame(_):-
 	taillePlateau(TP),
 	nbJoueurs(NBJ),
+	/*findall(X,joueursSav(X,-1),JoueursVivants),
+	findall(X,joueursSav(X,0),JoueursMorts),
+	findall(X,bombes(X,0),Bombes),*/
 	StringTab = ['{[taillePlateau:',TP,',nbJoueurs:',NBJ,']}'],
-	getString(StringTab, S),
+	getStringFromConcat(StringTab, S),
 	reply_json_dict(S).
 
 	
-getString([],''):-!.
-getString([X|Liste], String):-getString(Liste,StringPrec),atom_concat(X,StringPrec,String).
+getStringFromConcat([],''):-!.
+getStringFromConcat([X|Liste], String):-getStringFromConcat(Liste,StringPrec),atom_concat(X,StringPrec,String).
+
+getStringFromList([],''):-!.
+%%TODO
