@@ -1,9 +1,9 @@
-:- dynamic 
-	plateauSav/1, 
+:- dynamic
+	plateauSav/1,
 %TODO mettre un ID au joueur
 	joueursSav/2,%joueurs(Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
-	indexAction/2,
+	indexAction/3,
 	taillePlateau/1,
 	nbJoueurs/1.
 :-[ia].
