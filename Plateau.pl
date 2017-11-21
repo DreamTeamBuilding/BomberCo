@@ -19,7 +19,20 @@ printElementBoard([X|Plateau],TailleCote,Index) :-
 	(
 	(joueursSav(Index,Etat), Etat is -1) -> write('P'); 
 	joueursSav(Index,_) -> write('..'); 
-	bombes(Index,_) -> write('o'); 
+	bombes(Index,_) -> write('o');
+	
+	(bombes(Index, TempsRestant), TempsRestant==0) -> write('O');
+	
+	(bombes(Index-2, TempsRestant), TempsRestant==0) -> write('+');
+	(bombes(Index-1, TempsRestant), TempsRestant==0) -> write('+');
+	(bombes(Index+1, TempsRestant), TempsRestant==0) -> write('+');
+	(bombes(Index+2, TempsRestant), TempsRestant==0) -> write('+');
+
+	(bombes(Index-22, TempsRestant), TempsRestant==0) -> write('+');
+	(bombes(Index-11, TempsRestant), TempsRestant==0) -> write('+');
+	(bombes(Index+11, TempsRestant), TempsRestant==0) -> write('+');
+	(bombes(Index+22, TempsRestant), TempsRestant==0) -> write('+');
+
 	writeVal(X)
 	),
 	IndexSuivant is Index + 1,
@@ -35,11 +48,13 @@ writeVal(Val) :-
 fill(Plateau,TailleCote,Fin):- 
 	Fin is TailleCote * TailleCote,  
 	assert(plateauSav(Plateau)).
-% TODO rajouter blocs sur cases dont colonnes paire + ligne paire
+
 fill(Plateau, TailleCote, IndexActuel):- 
 	IndexSuivant is IndexActuel + 1,
 	(
 		Mod is mod(IndexSuivant, TailleCote),
+		ColImpair is mod(IndexSuivant, 2),
+		LigImpair is mod(IndexSuivant, TailleCote+TailleCote),
 		% Si on est sur la premiere ligne
 		(IndexActuel<TailleCote ; 
 		% Si on est sur la derniere ligne
@@ -47,7 +62,10 @@ fill(Plateau, TailleCote, IndexActuel):-
 		% Si on est sur la premiere case
 		Mod==1 ;
 		% Si on est sur la derniere case
-		Mod==0)
+		Mod==0 ;
+		% Si on est sur cases dont colonnes impaire + ligne impaire
+		(ColImpair==1, LigImpair>=1, LigImpair=<TailleCote)
+		)
 	-> 
 		Value = 1 
 	; 
@@ -55,36 +73,3 @@ fill(Plateau, TailleCote, IndexActuel):-
 	),
 	nth0(IndexActuel,Plateau,Value),
 	fill(Plateau,TailleCote,IndexSuivant).
-
-
-
-/*printBoard(TailleCote, TailleCote).
-printBoard(TailleCote, Index):-
-	printLine(Index, TailleCote, 0),
-	IndexSuiv is Index+1,
-	printBoard(TailleCote, IndexSuiv).
-	
-printLine(Line, TailleCote, TailleCote):-nl.
-printLine(Line, TailleCote, IndexInLine):-
-	Index is Line*TailleCote + IndexInLine,
-	printVal(Index),
-	NextIndex is IndexInLine+1,
-	printLine(Line, TailleCote, NextIndex).
-
-printVal(N) :- plateau(B), nth0(N,B,Val), var(Val), write(' '), !.
-printVal(N) :- plateau(B), nth0(N,B,Val), write(Val).*/
-
-/*
-fill(Plateau, NewBoard, TailleCote):-
-	fillLine(Plateau, NewBoard, TailleCote, 0, 0).
-
-fillLine(Plateau, NewBoard, TailleCote, Line, TailleCote).
-fillLine(Plateau, NewBoard, TailleCote, Line, Index):- 
-	Plateau = NewBoard,
-	Current is TailleCote*Line+Index, 
-	nth0(Current, NewBoard, 'X'),
-	IndexSuiv is Index+1,
-	fillLine(Plateau, NewBoard, TailleCote, Line, IndexSuiv).
-	*/
-	
-% applyNewBoard(Plateau,NewBoard) :- retract(plateau(Plateau)), assert(plateau(NewBoard)).
