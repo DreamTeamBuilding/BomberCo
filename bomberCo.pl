@@ -1,16 +1,15 @@
 :- dynamic 
 	plateauSav/1, 
+%TODO mettre un ID au joueur
 	joueursSav/2,%joueurs(Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
 	indexAction/2,
 	taillePlateau/1,
 	nbJoueurs/1.
-% Globales var : taillePlateau et nbJoueurs
-
-
 :-[ia].
 :-[plateau].
 :-[joueurs].
+
 
 jouer(_):- gameover, !, write('Game is Over.').
 jouer(IndexJoueur) :-
@@ -45,4 +44,4 @@ init(NbJoueurs, TaillePlateau) :-
 	jouer(0).
 
 %%%%% Fin de jeu :
-gameover:-joueursSav(_,Etats),compteSurvivants(X,Etats),X<2.
+gameover:-not(plusieursEnVie).

@@ -19,6 +19,7 @@ printElementBoard([X|Plateau],TailleCote,Index) :-
 	(
 	(joueursSav(Index,Etat), Etat is -1) -> write('P'); 
 	joueursSav(Index,_) -> write('..'); 
+	bombes(Index,_) -> write('o'); 
 	writeVal(X)
 	),
 	IndexSuivant is Index + 1,
@@ -34,6 +35,7 @@ writeVal(Val) :-
 fill(Plateau,TailleCote,Fin):- 
 	Fin is TailleCote * TailleCote,  
 	assert(plateauSav(Plateau)).
+% TODO rajouter blocs sur cases dont colonnes paire + ligne paire
 fill(Plateau, TailleCote, IndexActuel):- 
 	IndexSuivant is IndexActuel + 1,
 	(
