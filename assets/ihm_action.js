@@ -1,8 +1,24 @@
-$( document ).ready(boucle());
+var interval ;
  
  function boucle(){
 	 alert('Début de partie !');
-	 setInterval(function(){ requestData(); }, 100);
+	 interval = setInterval(function(){ requestData(); }, 100);
+ }
+ 
+ function start(){
+	$.ajax({
+				dataType: 'json', 
+				url:'http://localhost:8000/starting',
+				contentType: 'application/json; charset=utf-8',
+				success: function (result) {
+					console.log(result);    
+				}
+	 });
+	 boucle()
+ }
+ 
+ function fin(){
+	 clearInterval(interval);
  }
  
  function requestData(){
@@ -24,6 +40,10 @@ $( document ).ready(boucle());
  
  function buildString(infoGame){
 	 var jsonVar = JSON.parse(infoGame);
+	 if(jsonVar.fin==10){
+		 fin();
+		 return;
+	 }
 	 var taille = jsonVar.taillePlateau;
 	 
 	 var individualSize = 500/taille;

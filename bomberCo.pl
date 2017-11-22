@@ -4,7 +4,8 @@
 	bombes/2,%bombes(Positions, TempsRestant)
 	indexAction/3,
 	taillePlateau/1,
-	nbJoueurs/1.
+	nbJoueurs/1,
+	fin/1.
 :-[ia].
 :-[plateau].
 :-[joueurs].
@@ -14,25 +15,30 @@
 
 % Condition d'arrêt : 10 itérations
 %jouer(_):- gameover, !, write('Game is Over.').
-jouer(_,I):- I==10, !, write('Game is Over.').
-jouer(IdJoueur,I) :-
-	J is I+1,
+jouer:- nb_getval(tourActuel, TourActuel),TourActuel==1000, !,/* write('Game is Over.'),*/retract(fin(0)),assert(fin(1)).
+jouer :-
+	nb_getval(joueurActuel, JoueurActuel),
+	nb_getval(tourActuel, TourActuel),
+	
+	TourSuiant is TourActuel + 1,
 	taillePlateau(TaillePlateau),
-	displayBoard(TaillePlateau),
-	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
+	%displayBoard(TaillePlateau),
+	joueursSav(JoueurActuel,PosJoueur,StatusJoueur),
 	(
-		not(joueursSav(IdJoueur,_,-1))
+		not(joueursSav(JoueurActuel,_,-1))
 	;
 		plateauSav(Plateau),
-		ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
-		actualiserJoueur(IdJoueur,NewPosJoueur),
-		(BombePosee==1 -> ajouterBombe(NewPosJoueur)),
+		ia(Plateau, PosJoueur, NewPosJoueur, _BombePosee, iav1),
+		actualiserJoueur(JoueurActuel,NewPosJoueur)%,
+		%(BombePosee==1 -> ajouterBombe(NewPosJoueur))
 		% TODO : pourquoi les joueurs se téléportent?
-		joueurSuivant(IdJoueur,IdJoueurSuivant),
-		jouer(IdJoueurSuivant,J)
 		% ia next move
 		% jouer next move (deplacer, poser, rien)
-	)
+	),
+	
+	joueurSuivant(JoueurActuel,IdJoueurSuivant),
+	b_setval(joueurActuel, IdJoueurSuivant),
+	b_setval(tourActuel, TourSuivant),
 	%decrementerBombes
 	% Decrementer bombes,
 	% Tuer des gens,
@@ -44,17 +50,24 @@ jouer(IdJoueur,I) :-
 
 %%%%% Start !
 init(NbJoueurs, TaillePlateau) :-
+	assert(fin(0)),
     % Initialisation du plateau
 	initPlateau(TaillePlateau),
-  % Initialisation Player
-  initJoueurs(NbJoueurs, TaillePlateau),
+    % Initialisation Player
+    initJoueurs(NbJoueurs, TaillePlateau),
 	% Initialisation des bombes
 	initBombes,
 	% Initialisation des regles de deplacement
 	initIndex(TaillePlateau),
-	%server(8000),
-	jouer(0,0);write('erreur').
-
+	server(8000),!
+	/*;write('erreur')*/.
+lancerPartie:-
+	(not(fin(_));retractall(fin(_))),
+	assert(fin(0)),
+	nb_setval(joueurActuel,0),
+	nb_setval(tourActuel,0),
+	jouer/*;write('erreur')*/.
+	
 stop:-
 	stopServer(8000).
 

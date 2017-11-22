@@ -8,6 +8,7 @@ initPlateau(TailleCote):-
 	length(Plateau, TaillePlateau),
 	% On le remplit et le sav
 	fill(Plateau, TailleCote, 0).
+	
 
 % Affichage du plateau
 displayBoard(TailleCote):-
