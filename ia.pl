@@ -44,7 +44,7 @@ ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :- repeat, Move is random(7
 ia(Board, PosIndex, NewPosIndex, TaillePlateau, BombePosee, iav2) :-
     repeat, (isSafe(PosIndex, Board, TaillePlateau) ->
             repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board, TaillePlateau);
-            Move is random(5),indexAction(Move, MvmtRelatif), NewPosIndex is PosIndex+MvmtRelatif),
+            Move is random(5),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif),
     nth0(NewPosIndex, Board, Elem), Elem==0, !.
 
 % iav3 : detecte et evite les zones de danger
@@ -56,7 +56,7 @@ ia(Board, PosIndex, NewPosIndex, TaillePlateau,BombePosee, iav3) :-
 	    posAdjacentesSafe(PosAdjacentesPossibles, Board, TaillePlateau, PosAdjacentesSafes),
 	     % si PosAdjacentesSafes est vide : piocher dans PosAdjacentesPossibles
 	     ((length(PosAdjacentesPossibles,0)) ->
-	     random_member(NewPosIndex, posAdjacentes);
+	     random_member(NewPosIndex, PosAdjacentes);
 	     random_member(NewPosIndex, PosAdjacentesSafes))),
     !.
 
@@ -74,7 +74,7 @@ ia(Board, PosIndex, NewPosIndex, TaillePlateau,BombePosee, iav4) :-
 	    posAdjacentesSafe(PosAdjacentesPossibles, Board, TaillePlateau, PosAdjacentesSafes),
 	     % si aucune position adjacente n'est safe, on en choisit une au hasard
 	     ((length(PosAdjacentesPossibles,0)) ->
-	     random_member(NewPosIndex, posAdjacentes);
+	     random_member(NewPosIndex, PosAdjacentes);
 	     random_member(NewPosIndex, PosAdjacentesSafes))),
     !.
 
