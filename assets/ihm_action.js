@@ -1,4 +1,9 @@
-$( document ).ready(requestData());
+$( document ).ready(boucle());
+ 
+ function boucle(){
+	 alert('Début de partie !');
+	 setInterval(function(){ requestData(); }, 100);
+ }
  
  function requestData(){
 	$.ajax({
