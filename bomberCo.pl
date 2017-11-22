@@ -2,7 +2,7 @@
 	plateauSav/1,
 	joueursSav/3,%joueursSav(Id, Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
-	indexAction/3,
+	indexAction/3,%indexAction(CodeMouvement, Deplacement, PoserBombe)
 	taillePlateau/1,
 	nbJoueurs/1.
 :-[ia].
@@ -46,8 +46,8 @@ jouer(IdJoueur,I) :-
 init(NbJoueurs, TaillePlateau) :-
     % Initialisation du plateau
 	initPlateau(TaillePlateau),
-  % Initialisation Player
-  initJoueurs(NbJoueurs, TaillePlateau),
+	% Initialisation Player
+	initJoueurs(NbJoueurs, TaillePlateau),
 	% Initialisation des bombes
 	initBombes,
 	% Initialisation des regles de deplacement

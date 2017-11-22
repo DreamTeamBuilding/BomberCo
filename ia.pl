@@ -10,7 +10,8 @@ initIndex(TaillePlateau) :-
     assert(indexAction(5,0,0)),              %PasBouger
     assert(indexAction(6,0,1)).              %Bombe
 
-distance(Pos1, Pos2, Distance) :-  Distance is (DiffX+DiffY), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)).
+
+distance(Pos1, Pos2, Distance) :-  taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), Distance is (DiffX+DiffY).
 
 adversairePlusProche(_, [], _).
 adversairePlusProche(Pos, [PosJoueur|L], DistancePP) :- distance(Pos,PosJoueur,Distance), (Distance=<DistancePP) ,adversairePlusProche(Pos,L,Distance).
@@ -28,8 +29,8 @@ isSafe(Pos, Plateau) :-  % la case a l'index Pos est safe ?
     (not(bombes(Pos+(2*TaillePlateau), Temps)); Temps < 3; ((nth0(Pos+TaillePlateau, Plateau, Case), Case==1))),
     (not(bombes(Pos-(2*TaillePlateau), Temps)); Temps < 3; ((nth0(Pos-TaillePlateau, Plateau, Case), Case==1))).
 
-isPossible(NewPos, Board) :- not(bombes(NewPos,_)), not(joueursSav(_,NewPos,-1)), nth0(NewPos, Board, Case), Case==0.
-isPossible(FormerPos,NewPos, Board) :- not(bombes(NewPos,_)), (not(joueursSav(_,NewPos,-1));FormerPos==NewPos), nth0(NewPos, Board, Case), Case==0.
+isPossible(NewPos, Board) :- not(bombes(NewPos,_)), not(joueursSav(_,NewPos,-1)), nth0(NewPos, Board, 0).
+isPossible(FormerPos,NewPos, Board) :- not(bombes(NewPos,_)), (not(joueursSav(_,NewPos,-1));FormerPos==NewPos), nth0(NewPos, Board, 0).
 
 posAdjacentes(Pos, [Haut, Gauche, Droite, Bas]) :- taillePlateau(TaillePlateau), Haut is Pos-TaillePlateau, Gauche is Pos-1, Droite is Pos+1, Bas is Pos + TaillePlateau.
 
