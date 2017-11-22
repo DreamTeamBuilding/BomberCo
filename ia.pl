@@ -44,7 +44,7 @@ ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :- repeat, Move is random(7
 ia(Board, PosIndex, NewPosIndex, TaillePlateau, BombePosee, iav2) :-
     repeat, (isSafe(PosIndex, Board, TaillePlateau) ->
             repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board, TaillePlateau);
-            Move is random(5),indexAction(Move, MvmtRelatif), NewPosIndex is PosIndex+MvmtRelatif),
+            Move is random(5),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif),
     nth0(NewPosIndex, Board, Elem), Elem==0, !.
 
 % iav3 : detecte et evite les zones de danger

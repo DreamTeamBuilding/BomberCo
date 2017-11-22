@@ -34,12 +34,15 @@ getInfoGame(_):-
 	findall(X,joueursSav(X,-1),JoueursVivants),
 	findall(X,joueursSav(X,0),JoueursMorts),
 	findall(X,bombes(X,0),Bombes),
+	plateauSav(Plateau),
 	getStringFromList(JoueursVivants,StrVivants),
 	getStringFromList(JoueursMorts,StrMorts),
 	getStringFromList(Bombes,StrBombes),
+	getStringFromList(Plateau,StrPlateau),
 	StringTab = ['{[',
 	'taillePlateau:',TP,
 	',nbJoueurs:',NBJ,
+	',plateau : [',StrPlateau,']',
 	',joueursVivants : [',StrVivants,']',
 	',joueursMorts : [',StrMorts,']',
 	',bombes : [',StrBombes,']',
@@ -52,5 +55,5 @@ getStringFromConcat([],''):-!.
 getStringFromConcat([X|Liste], String):-getStringFromConcat(Liste,StringPrec),atom_concat(X,StringPrec,String).
 
 getStringFromList([],'').
-getStringFromList([X],S):-atom_concat(X,'',S),!.
+getStringFromList([X],S):-atom_concat(X,'',S).
 getStringFromList([X|Liste],String):-getStringFromList(Liste,StringPrec),atom_concat(X,',',Virgule),atom_concat(Virgule,StringPrec,String).
