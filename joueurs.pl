@@ -20,3 +20,19 @@ joueurSuivant(IdJoueur,IdJoueurSuivant):-
 	IdJoueurSuivant is mod(Id,NbJoueurs).
 
 plusieursEnVie:-joueursSav(X,_,-1),joueursSav(Y,_,-1),Y\==X.
+
+exploserBombes:-
+	taillePlateau(TaillePlateau),
+	% TODO : Oh c'est moche!!
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-1), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+1), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2*TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true).
+
+tuer(IdJoueur):-
+	retract(joueursSav(IdJoueur, Position, _)),
+	assert(joueursSav(IdJoueur, Position, 0)).

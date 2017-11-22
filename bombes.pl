@@ -15,5 +15,5 @@ decrementerListe([],[],[]).
 decrementerListe([X|Liste], [Y|ListeDec], [Pos|ListePos]):-
   Y is X-1,
   retract(bombes(Pos, _)),
-  assert(bombes(Pos, Y)),
-  decrementerListe(Liste, ListeDec, ListePos).
+  (Y>=0 -> assert(bombes(Pos, Y)) ; true),
+decrementerListe(Liste, ListeDec, ListePos).

@@ -14,7 +14,7 @@
 
 % Condition d'arret : 10 itérations
 %jouer(_):- gameover, !, write('Game is Over.').
-jouer(_,I):- I==20, !, write('Game is Over.').
+jouer(_,I):- (I==50 ; gameover), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.').
 jouer(IdJoueur,I) :-
 	J is I+1,
 	taillePlateau(TaillePlateau),
@@ -29,14 +29,10 @@ jouer(IdJoueur,I) :-
 		% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 		actualiserJoueur(IdJoueur,NewPosJoueur),
 		(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
-		% ia next move
-		% jouer next move (deplacer, poser, rien)
 	),
 	decrementerBombes,
-	% Decrementer bombes,
+	exploserBombes,
 	% Tuer des gens,
-	% Actualiser NextPlayer
-	% Play next player
 	joueurSuivant(IdJoueur,IdJoueurSuivant),
 	jouer(IdJoueurSuivant,J)
 	% Delay pour les fps, wow, such graphismsz
