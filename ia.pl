@@ -10,7 +10,7 @@ initIndex(TaillePlateau) :-
     assert(indexAction(5,0,0)),              %PasBouger
     assert(indexAction(6,0,1)).              %Bombe
 
-distance(Pos1, Pos2) :- mod().
+%distance(Pos1, Pos2) :- mod().
 
 isSafe(Pos, Plateau, TaillePlateau) :-  % la case a l'index Pos est safe ?
     (not(bombes(Pos, Temps)); Temps >= 5), % bombe sur le joueur

@@ -14,6 +14,7 @@ actualiserJoueur(IdJoueur,NewPosJoueur):-
 
 joueurSuivant(IdJoueur,IdJoueurSuivant):-
 	nbJoueurs(NbJoueurs),
-	IdJoueurSuivant is mod(IdJoueur + 1,NbJoueurs).
+	Id is IdJoueur + 1,
+	IdJoueurSuivant is mod(Id,NbJoueurs).
 
 plusieursEnVie:-joueursSav(X,_,-1),joueursSav(Y,_,-1),Y\==X.
