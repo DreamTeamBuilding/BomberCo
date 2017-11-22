@@ -26,19 +26,18 @@ jouer(IdJoueur,I) :-
 		plateauSav(Plateau),
 		ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
 		actualiserJoueur(IdJoueur,NewPosJoueur),
-		(BombePosee==1 -> ajouterBombe(NewPosJoueur)),
+		(BombePosee==1 -> ajouterBombe(NewPosJoueur))
 		% TODO : pourquoi les joueurs se téléportent?
-		joueurSuivant(IdJoueur,IdJoueurSuivant),
-		jouer(IdJoueurSuivant,J)
 		% ia next move
 		% jouer next move (deplacer, poser, rien)
-	)
-	%decrementerBombes
+	),
+	decrementerBombes,
 	% Decrementer bombes,
 	% Tuer des gens,
 	% Actualiser NextPlayer
 	% Play next player
-
+	joueurSuivant(IdJoueur,IdJoueurSuivant),
+	jouer(IdJoueurSuivant,J)
 	% Delay pour les fps, wow, such graphismsz
 	.
 
