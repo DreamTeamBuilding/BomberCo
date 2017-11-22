@@ -16,4 +16,4 @@ joueurSuivant(IdJoueur,IdJoueurSuivant):-
 	nbJoueurs(NbJoueurs),
 	IdJoueurSuivant is mod(IdJoueur + 1,NbJoueurs).
 
-plusieursEnVie:-joueursSav(_,X,-1),joueursSav(_,Y,-1),Y\==X.
+plusieursEnVie:-joueursSav(X,_,-1),joueursSav(Y,_,-1),Y\==X.

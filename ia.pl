@@ -37,7 +37,7 @@ posAdjacentesSafe([_|ListeIndex],Plateau, TaillePlateau, PosSafes) :- posAdjacen
 
 
 % iav1 : fait tout de maniere random
-ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :- repeat, Move is random(7), indexAction(Move, I, BombePosee), NewPosIndex is PosIndex+I, isPossible(NewPosIndex, PosIndex, Plateau), !.
+ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :- repeat, Move is random(7), indexAction(Move, I, BombePosee), NewPosIndex is PosIndex+I, isPossible(PosIndex, NewPosIndex, Plateau), !.
 
 % iav2 : Detecte et evite les zones de danger des bombes et bouge de
 % maniere random tant qu'elle n'est pas sortie

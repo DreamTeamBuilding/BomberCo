@@ -11,9 +11,11 @@
 :-[joueurs].
 :-[ihm].
 
-
-jouer(_):- gameover, !, write('Game is Over.').
-jouer(IdJoueur) :-
+% Condition d'arrêt : 10 itérations
+%jouer(_):- gameover, !, write('Game is Over.').
+jouer(_,I):- I==50, !, write('Game is Over.').
+jouer(IdJoueur,I) :-
+	J is I+1,
 	taillePlateau(TaillePlateau),
 	displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
@@ -22,15 +24,11 @@ jouer(IdJoueur) :-
 	;
 		plateauSav(Plateau),
 		ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
-		writeln(BombePosee),
-		writeln(NewPosJoueur),
-		%actualiserJoueur(IdJoueur,NewPosJoueur),
-		%write("Next !"),
-		%joueurSuivant(IdJoueur,IdJoueurSuivant),
-		%jouer(IdJoueurSuivant)
+		actualiserJoueur(IdJoueur,NewPosJoueur),
+		joueurSuivant(IdJoueur,IdJoueurSuivant),
+		jouer(IdJoueurSuivant,J)
 		% ia next move
 		% jouer next move (deplacer, poser, rien)
-		 write("On jouera dans le futur")
 	)
 	% Decrementer bombes,
 	% Tuer des gens,
@@ -52,7 +50,7 @@ init(NbJoueurs, TaillePlateau) :-
 	% Initialisation des relges de deplacement
 	initIndex(TaillePlateau),
 	% server(8000),
-	jouer(0).
+	jouer(0,0);write('erreur').
 
 stop:-
 	stopServer(8000).
