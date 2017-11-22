@@ -3,7 +3,7 @@
 %TODO mettre un ID au joueur
 	joueursSav/3,%joueursSav(Id, Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
-	indexAction/3,
+	indexAction/3,%indexAction(CodeMouvement, Deplacement, PoserBombe)
 	taillePlateau/1,
 	nbJoueurs/1.
 :-[ia].
@@ -44,7 +44,7 @@ init(NbJoueurs, TaillePlateau) :-
     % Initialisation du plateau
 	initPlateau(TaillePlateau),
     % Initialisation Player
-  initJoueurs(NbJoueurs, TaillePlateau),
+	initJoueurs(NbJoueurs, TaillePlateau),
 	% Initialisation des relges de deplacement
 	initIndex(TaillePlateau),
 	% server(8000),
