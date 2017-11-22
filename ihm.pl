@@ -32,8 +32,8 @@ accueil(_) :-
 getInfoGame(_):-
 	taillePlateau(TP),
 	nbJoueurs(NBJ),
-	findall(X,joueursSav(X,-1),JoueursVivants),
-	findall(X,joueursSav(X,0),JoueursMorts),
+	findall(X,joueursSav(_,X,-1),JoueursVivants),
+	findall(X,joueursSav(_,X,0),JoueursMorts),
 	findall(X,bombes(X,0),Bombes),
 	plateauSav(Plateau),
 	getStringFromList(JoueursVivants,StrVivants),

@@ -8,12 +8,13 @@
 :-[ia].
 :-[plateau].
 :-[joueurs].
+:-[bombes].
 :-[ihm].
 :-[tests].
 
 % Condition d'arrêt : 10 itérations
 %jouer(_):- gameover, !, write('Game is Over.').
-jouer(_,I):- I==50, !, write('Game is Over.').
+jouer(_,I):- I==10, !, write('Game is Over.').
 jouer(IdJoueur,I) :-
 	J is I+1,
 	taillePlateau(TaillePlateau),
@@ -25,11 +26,14 @@ jouer(IdJoueur,I) :-
 		plateauSav(Plateau),
 		ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
 		actualiserJoueur(IdJoueur,NewPosJoueur),
+		(BombePosee==1 -> ajouterBombe(NewPosJoueur)),
+		% TODO : pourquoi les joueurs se téléportent?
 		joueurSuivant(IdJoueur,IdJoueurSuivant),
 		jouer(IdJoueurSuivant,J)
 		% ia next move
 		% jouer next move (deplacer, poser, rien)
 	)
+	%decrementerBombes
 	% Decrementer bombes,
 	% Tuer des gens,
 	% Actualiser NextPlayer
@@ -42,11 +46,13 @@ jouer(IdJoueur,I) :-
 init(NbJoueurs, TaillePlateau) :-
     % Initialisation du plateau
 	initPlateau(TaillePlateau),
-    % Initialisation Player
+	% Initialisation Player
 	initJoueurs(NbJoueurs, TaillePlateau),
-	% Initialisation des relges de deplacement
+	% Initialisation des bombes
+	initBombes,
+	% Initialisation des regles de deplacement
 	initIndex(TaillePlateau),
-	server(8000),
+	%server(8000),
 	jouer(0,0);write('erreur').
 
 stop:-
@@ -60,4 +66,4 @@ showCoverage:-show_coverage(run_tests).
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
 
-moveJ1:-retract(joueursSav(12,X)),assert(joueursSav(13,X)).
+moveJ1:-retract(joueursSav(0,Y,X)),YNext is Y+1,assert(joueursSav(0,YNext,X)).
