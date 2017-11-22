@@ -56,7 +56,7 @@ ia(Board, PosIndex, NewPosIndex, TaillePlateau,BombePosee, iav3) :-
 	    posAdjacentesSafe(PosAdjacentesPossibles, Board, TaillePlateau, PosAdjacentesSafes),
 	     % si PosAdjacentesSafes est vide : piocher dans PosAdjacentesPossibles
 	     ((length(PosAdjacentesPossibles,0)) ->
-	     random_member(NewPosIndex, posAdjacentes);
+	     random_member(NewPosIndex, PosAdjacentes);
 	     random_member(NewPosIndex, PosAdjacentesSafes))),
     !.
 
@@ -74,7 +74,7 @@ ia(Board, PosIndex, NewPosIndex, TaillePlateau,BombePosee, iav4) :-
 	    posAdjacentesSafe(PosAdjacentesPossibles, Board, TaillePlateau, PosAdjacentesSafes),
 	     % si aucune position adjacente n'est safe, on en choisit une au hasard
 	     ((length(PosAdjacentesPossibles,0)) ->
-	     random_member(NewPosIndex, posAdjacentes);
+	     random_member(NewPosIndex, PosAdjacentes);
 	     random_member(NewPosIndex, PosAdjacentesSafes))),
     !.
 

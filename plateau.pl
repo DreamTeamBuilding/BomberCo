@@ -7,7 +7,7 @@ initPlateau(TailleCote):-
 	% On le remplit et le sav
 	fill(Plateau, TailleCote, 0).	
 	
-	
+% Affichage du plateau
 displayBoard(TailleCote):-
 	plateauSav(B),
 	printElementBoard(B,TailleCote,0),nl.
