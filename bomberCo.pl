@@ -1,6 +1,5 @@
 :- dynamic
 	plateauSav/1,
-%TODO mettre un ID au joueur
 	joueursSav/3,%joueursSav(Id, Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
 	indexAction/3,
@@ -11,6 +10,7 @@
 :-[joueurs].
 :-[bombes].
 :-[ihm].
+:-[tests].
 
 % Condition d'arrêt : 10 itérations
 %jouer(_):- gameover, !, write('Game is Over.').
@@ -33,7 +33,7 @@ jouer(IdJoueur,I) :-
 		% ia next move
 		% jouer next move (deplacer, poser, rien)
 	)
-	decrementerBombes
+	%decrementerBombes
 	% Decrementer bombes,
 	% Tuer des gens,
 	% Actualiser NextPlayer
@@ -44,10 +44,7 @@ jouer(IdJoueur,I) :-
 
 %%%%% Start !
 init(NbJoueurs, TaillePlateau) :-
-	(not(taillePlateau(_));retractall(taillePlateau(_))),
-	(not(nbJoueurs(_));retractall(nbJoueurs(_))),
-	assert(taillePlateau(TaillePlateau)),assert(nbJoueurs(NbJoueurs)) ,
-  % Initialisation du plateau
+    % Initialisation du plateau
 	initPlateau(TaillePlateau),
   % Initialisation Player
   initJoueurs(NbJoueurs, TaillePlateau),
@@ -55,12 +52,18 @@ init(NbJoueurs, TaillePlateau) :-
 	initBombes,
 	% Initialisation des regles de deplacement
 	initIndex(TaillePlateau),
-	% server(8000),
-	jouer(0,0).
+	%server(8000),
+	jouer(0,0);write('erreur').
 
 stop:-
 	stopServer(8000).
 
+%Appel des tests unitaires
+tests:- run_tests.
+
+showCoverage:-show_coverage(run_tests).
 
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
+
+moveJ1:-retract(joueursSav(0,Y,X)),YNext is Y+1,assert(joueursSav(0,YNext,X)).
