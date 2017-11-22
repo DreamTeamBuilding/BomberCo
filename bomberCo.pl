@@ -42,7 +42,7 @@ init(NbJoueurs, TaillePlateau) :-
     initJoueurs(NbJoueurs, TaillePlateau),
 	% Initialisation des relges de deplacement
 	initIndex(TaillePlateau),
-	% server(8000),
+	server(8000),
 	jouer(0).
 
 stop:-
@@ -51,3 +51,5 @@ stop:-
 	
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
+
+moveJ1:-retract(joueursSav(12,X)),assert(joueursSav(13,X)).
