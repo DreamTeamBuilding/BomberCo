@@ -16,8 +16,8 @@ isSafe(Pos, Plateau, TaillePlateau) :-  % la case a l'index Pos est safe ?
     (not(bombes(Pos, Temps)); Temps >= 5), % bombe sur le joueur
     (not(bombes(Pos+1, Temps)); Temps >= 4), % bombe a droite
     (not(bombes(Pos-1, Temps)); Temps >= 4), % bombe a gauche
-    (not(bombes(Pos+TaillePlateau, Temps)), Temps < 4), % bombe en dessous
-    (not(bombes(Pos-TaillePlateau, Temps)), Temps < 4), % bombe  dessus
+    (not(bombes(Pos+TaillePlateau, Temps)); Temps >= 4), % bombe en dessous
+    (not(bombes(Pos-TaillePlateau, Temps)); Temps >= 4), % bombe  dessus
     (not(bombes(Pos+2, Temps)); Temps >= 3; ((nth0(Pos+1, Plateau, Case), Case=1))), % bombe 2 case a droite sans mur entre
     (not(bombes(Pos-2, Temps)); Temps >= 3; ((nth0(Pos-1, Plateau, Case), Case=1))),
     (not(bombes(Pos+(2*TaillePlateau), Temps)); Temps < 3; ((nth0(Pos+TaillePlateau, Plateau, Case), Case==1))),

@@ -18,7 +18,7 @@ printElementBoard([X|Plateau],TailleCote,Index) :-
 	%bombes(PosBombes,_),
 	(
 	(joueursSav(_,Index,Etat), Etat is -1) -> write('P');
-	joueursSav(_,Index,_) -> write('..'); 
+	joueursSav(_,Index,_) -> write('..');
 	bombes(Index,_) -> write('o');
 
 	(bombes(Index, TempsRestant), TempsRestant==0) -> write('O');
@@ -42,7 +42,7 @@ printElementBoard([X|Plateau],TailleCote,Index) :-
 
 writeVal(Val) :-
 	(var(Val), write(' ')) ;
-	(Val==0, write('  ')) ;
+	(Val==0, write(' ')) ;
 	(Val==1, write('X')).
 
 fill(Plateau,TailleCote,Fin):-
