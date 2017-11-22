@@ -1,5 +1,7 @@
 %%%%% Positionne les joueurs dans les coins du plateau
 initJoueurs(NbJoueurs, TaillePlateau):-
+	(not(nbJoueurs(_));retractall(nbJoueurs(_))),
+	assert(nbJoueurs(NbJoueurs)),
 	nbJoueurs(NbJoueurs),
 	(not(joueursSav(_,_,_)) ; retractall(joueursSav(_,_,_))),
 	(NbJoueurs < 5,NbJoueurs >1),
@@ -14,6 +16,7 @@ actualiserJoueur(IdJoueur,NewPosJoueur):-
 
 joueurSuivant(IdJoueur,IdJoueurSuivant):-
 	nbJoueurs(NbJoueurs),
-	IdJoueurSuivant is mod(IdJoueur + 1,NbJoueurs).
+	Id is IdJoueur + 1,
+	IdJoueurSuivant is mod(Id,NbJoueurs).
 
-plusieursEnVie:-joueursSav(_,X,-1),joueursSav(_,Y,-1),Y\==X.
+plusieursEnVie:-joueursSav(X,_,-1),joueursSav(Y,_,-1),Y\==X.

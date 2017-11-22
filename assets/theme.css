@@ -1,0 +1,23 @@
+#conteneur{
+	width : 500px;
+	height : 500px;
+	background-color : red;
+	position : relative;
+}
+
+.mur{
+	background-color : black;
+	position : absolute;
+}
+.bombe{
+	background-color : yellow;
+	position : absolute;
+}
+.joueurEnVie{
+	background-color : blue;
+	position : absolute;
+}
+.joueurMort{
+	background-color : #0c244c;
+	position : absolute;
+}

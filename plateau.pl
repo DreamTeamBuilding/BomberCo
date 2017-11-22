@@ -1,5 +1,7 @@
 initPlateau(TailleCote):-
 	% Nettoyer le plateau s'il existe d'une execution precedente
+	(not(taillePlateau(_));retractall(taillePlateau(_))),
+	assert(taillePlateau(TailleCote)),
 	(not(plateauSav(_));retract(plateauSav(_))),
 	% Instancie le nouveau plateau
 	TaillePlateau is TailleCote * TailleCote,
@@ -19,19 +21,18 @@ printElementBoard([X|Plateau],TailleCote,Index) :-
 	(
 	(joueursSav(_,Index,Etat), Etat is -1) -> write('P');
 	joueursSav(_,Index,_) -> write('..'); 
-	bombes(Index,_) -> write('o');
+	bombes(Index,_) -> write('o');	
+	bombes(Index, 0) -> write('O');
+	
+	bombes(Index-2, 0) -> write('+');
+	bombes(Index-1, 0) -> write('+');
+	bombes(Index+1, 0) -> write('+');
+	bombes(Index+2, 0) -> write('+');
 
-	(bombes(Index, TempsRestant), TempsRestant==0) -> write('O');
-
-	(bombes(Index-2, TempsRestant), TempsRestant==0) -> write('+');
-	(bombes(Index-1, TempsRestant), TempsRestant==0) -> write('+');
-	(bombes(Index+1, TempsRestant), TempsRestant==0) -> write('+');
-	(bombes(Index+2, TempsRestant), TempsRestant==0) -> write('+');
-
-	(bombes(Index-22, TempsRestant), TempsRestant==0) -> write('+');
-	(bombes(Index-11, TempsRestant), TempsRestant==0) -> write('+');
-	(bombes(Index+11, TempsRestant), TempsRestant==0) -> write('+');
-	(bombes(Index+22, TempsRestant), TempsRestant==0) -> write('+');
+	bombes(Index-22, 0) -> write('+');
+	bombes(Index-11, 0) -> write('+');
+	bombes(Index+11, 0) -> write('+');
+	bombes(Index+22, 0) -> write('+');
 
 	writeVal(X)
 	),
@@ -40,9 +41,9 @@ printElementBoard([X|Plateau],TailleCote,Index) :-
 	(Mod\==0 ; writeln(' ')),
 	printElementBoard(Plateau,TailleCote,IndexSuivant).
 
-writeVal(Val) :-
-	(var(Val), write(' ')) ;
-	(Val==0, write('  ')) ;
+writeVal(Val) :- 
+	(var(Val), write(' ')) ; 
+	(Val==0, write(' ')) ;
 	(Val==1, write('X')).
 
 fill(Plateau,TailleCote,Fin):-
