@@ -10,6 +10,8 @@ initIndex(TaillePlateau) :-
     assert(indexAction(5,0,0)),              %PasBouger
     assert(indexAction(6,0,1)).              %Bombe
 
+distance(Pos1, Pos2) :- mod().
+
 isSafe(Pos, Plateau, TaillePlateau) :-  % la case a l'index Pos est safe ?
     (not(bombes(Pos, Temps)); Temps >= 5), % bombe sur le joueur
     (not(bombes(Pos+1, Temps)); Temps >= 4), % bombe a droite
@@ -39,19 +41,19 @@ posAdjacentesSafe([_|ListeIndex],Plateau, TaillePlateau, PosSafes) :- posAdjacen
 % iav1 : fait tout de maniere random
 ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :- repeat, Move is random(7), indexAction(Move, I, BombePosee), NewPosIndex is PosIndex+I, isPossible(PosIndex, NewPosIndex, Plateau), !.
 
-% iav2 : Detecte et evite les zones de danger des bombes et bouge de
+% Iav2 : Detecte et evite les zones de danger des bombes et bouge de
 % maniere random tant qu'elle n'est pas sortie
 ia(Board, PosIndex, NewPosIndex, TaillePlateau, BombePosee, iav2) :-
     repeat, (isSafe(PosIndex, Board, TaillePlateau) ->
             repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board, TaillePlateau);
             Move is random(5),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif),
-    nth0(NewPosIndex, Board, Elem), Elem==0, !.
+    isPossible(PosIndex,NewPosIndex, Board), !.
 
 % iav3 : detecte et evite les zones de danger
 % et cherche si un deplacement peut la mettre en securite si pas safe
 ia(Board, PosIndex, NewPosIndex, TaillePlateau,BombePosee, iav3) :-
     repeat, (isSafe(PosIndex, Board, TaillePlateau) ->
-            repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board, TaillePlateau), isPossible(NewPosIndex, PosIndex, Board),!; % Si en dehors de zone de danger : random
+            repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board, TaillePlateau), isPossible(PosIndex, NewPosIndex, Board),!; % Si en dehors de zone de danger : random
             posAdjacentes(PosIndex, TaillePlateau, PosAdjacentes), posAdjacentesPossibles(Board, PosAdjacentes, PosAdjacentesPossibles),
 	    posAdjacentesSafe(PosAdjacentesPossibles, Board, TaillePlateau, PosAdjacentesSafes),
 	     % si PosAdjacentesSafes est vide : piocher dans PosAdjacentesPossibles
@@ -66,7 +68,7 @@ ia(Board, PosIndex, NewPosIndex, TaillePlateau,BombePosee, iav3) :-
 ia(Board, PosIndex, NewPosIndex, TaillePlateau,BombePosee, iav4) :-
     repeat, (isSafe(PosIndex, Board, TaillePlateau) ->
 	    % si Safe :
-            repeat, Move is random(7),indexAction(Move, MvmtRelatif,BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board, TaillePlateau), isPossible(NewPosIndex, PosIndex, Board),!;
+            repeat, Move is random(7),indexAction(Move, MvmtRelatif,BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board, TaillePlateau), isPossible(PosIndex, NewPosIndex, Board),!;
 	         % si loin de l'adversaire le + proche : random mais essaye de s'approcher
 		 % si proche de l'adversaire : random mais a + de chances de poser des bombes
 	    % Si dans zone de danger : on regarde quelles positions adjacentes sont safe
