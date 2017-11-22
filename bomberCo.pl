@@ -1,6 +1,5 @@
 :- dynamic
 	plateauSav/1,
-%TODO mettre un ID au joueur
 	joueursSav/3,%joueursSav(Id, Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
 	indexAction/3,%indexAction(CodeMouvement, Deplacement, PoserBombe)
@@ -47,7 +46,7 @@ init(NbJoueurs, TaillePlateau) :-
 	initJoueurs(NbJoueurs, TaillePlateau),
 	% Initialisation des relges de deplacement
 	initIndex(TaillePlateau),
-	% server(8000),
+	server(8000),
 	jouer(0,0);write('erreur').
 
 stop:-
@@ -60,3 +59,5 @@ showCoverage:-show_coverage(run_tests).
 
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
+
+moveJ1:-retract(joueursSav(12,X)),assert(joueursSav(13,X)).
