@@ -21,8 +21,8 @@ isSafe(Pos, Plateau, TaillePlateau) :-  % la case a l'index Pos est safe ?
     (not(bombes(Pos+(2*TaillePlateau), Temps)); Temps < 3; ((nth0(Pos+TaillePlateau, Plateau, Case), Case==1))),
     (not(bombes(Pos-(2*TaillePlateau), Temps)); Temps < 3; ((nth0(Pos-TaillePlateau, Plateau, Case), Case==1))).
 
-isPossible(NewPos, Board) :- not(bombes(NewPos,_)), not(joueursSav(NewPos,-1)), nth0(NewPos, Board, Case), Case==0.
-isPossible(FormerPos,NewPos, Board) :- not(bombes(NewPos,_)), (not(joueursSav(NewPos,-1));FormerPos==NewPos), nth0(NewPos, Board, Case), Case==0.
+isPossible(NewPos, Board) :- not(bombes(NewPos,_)), not(joueursSav(_,NewPos,-1)), nth0(NewPos, Board, Case), Case==0.
+isPossible(FormerPos,NewPos, Board) :- not(bombes(NewPos,_)), (not(joueursSav(_,NewPos,-1));FormerPos==NewPos), nth0(NewPos, Board, Case), Case==0.
 
 posAdjacentes(Pos, TaillePlateau, [Haut, Gauche, Droite, Bas]) :- Haut is Pos-TaillePlateau, Gauche is Pos-1, Droite is Pos+1, Bas is Pos + TaillePlateau.
 
@@ -77,4 +77,3 @@ ia(Board, PosIndex, NewPosIndex, TaillePlateau,BombePosee, iav4) :-
 	     random_member(NewPosIndex, posAdjacentes);
 	     random_member(NewPosIndex, PosAdjacentesSafes))),
     !.
-
