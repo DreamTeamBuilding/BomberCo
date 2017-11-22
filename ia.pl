@@ -10,11 +10,7 @@ initIndex(TaillePlateau) :-
     assert(indexAction(5,0,0)),              %PasBouger
     assert(indexAction(6,0,1)).              %Bombe
 
-<<<<<<< HEAD
 distance(Pos1, Pos2, Diff) :-  Diff is (DiffX+DiffY), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)).
-=======
-%distance(Pos1, Pos2) :- mod().
->>>>>>> 84b1030fd9a7342301eaed35fe527fb4ad51765a
 
 isSafe(Pos, Plateau) :-  % la case a l'index Pos est safe ?
 	taillePlateau(TaillePlateau),
