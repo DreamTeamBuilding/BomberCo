@@ -1,57 +1,53 @@
-:- dynamic board/1.
-:- dynamic nbJoueurs/1.
-:- dynamic players/2. %players(Positions, States)
-[ia].
+:- dynamic
+	plateauSav/1,
+%TODO mettre un ID au joueur
+	joueursSav/2,%joueurs(Positions, Etats)
+	bombes/2,%bombes(Positions, TempsRestant)
+	indexAction/3,
+	taillePlateau/1,
+	nbJoueurs/1.
+:-[ia].
+:-[plateau].
+:-[joueurs].
+:-[ihm].
 
-play(_):- gameover, !, write('Game is Over.').
-play(IndexPlayer) :- 
-	%Display le board
-	players(Positions, States),
+
+jouer(_):- gameover, !, write('Game is Over.').
+jouer(IndexJoueur) :-
+	taillePlateau(TaillePlateau),
+	displayBoard(TaillePlateau),
 	(
-		not((nth0(IndexPlayer,States,X), var(X))) 
+		not(joueursSav(IndexJoueur,-1))
 	;
 		% ia next move
-		% play next move (deplacer, poser, rien)
+		% jouer next move (deplacer, poser, rien)
 		write("On jouera dans le futur")
 	)
 	% Decrementer bombes,
 	% Tuer des gens,
 	% Actualiser NextPlayer
 	% Play next player
-	
+
 	% Delay pour les fps, wow, such graphismsz
 	.
 
 %%%%% Start !
-init(NbPlayers, TaillePlateau) :-
-    %Initialisation du plateau
-    length(Board,Taille),
-    Taille is TaillePlateau * TaillePlateau,
-    assert(board(Board)),
-    %Initialisation Player
-    (initPlayers(NbPlayers, TaillePlateau) ; writeln("Erreur lors de l'initialisation des joueurs")),
-	play(0).
+init(NbJoueurs, TaillePlateau) :-
+	(not(taillePlateau(_));retractall(taillePlateau(_))),
+	(not(nbJoueurs(_));retractall(nbJoueurs(_))),
+	assert(taillePlateau(TaillePlateau)),assert(nbJoueurs(NbJoueurs)) ,
+    % Initialisation du plateau
+	initPlateau(TaillePlateau),
+    % Initialisation Player
+    initJoueurs(NbJoueurs, TaillePlateau),
+	% Initialisation des relges de deplacement
+	initIndex(TaillePlateau),
+	% server(8000),
+	jouer(0).
 
-%%%%% Positionne les joueurs dans les coins du plateau
-initPlayers(NbPlayers, TaillePlateau):-
-	length(Players,NbPlayers),      
-    length(PlayersState,NbPlayers),
-	(NbPlayers < 5,NbPlayers >1),
-	nth0(0, Players, Position), Position is TaillePlateau +1,
-	nth0(1, Players, Position2), Position2 is TaillePlateau*TaillePlateau-TaillePlateau-2,
-	(NbPlayers < 3 ; (nth0(2, Players, Position3), Position3 is TaillePlateau*2-2)),
-	(NbPlayers < 4 ; (nth0(3, Players, Position4), Position4 is TaillePlateau*TaillePlateau-TaillePlateau*2+1)),
-    print(Players),
-    assert(players(Players,PlayersState)),
-	assert(nbJoueurs(NbPlayers)).
-
+stop:-
+	stopServer(8000).
+	
+	
 %%%%% Fin de jeu :
-gameover:- 
-	players(_,States),survivors(X,States),X<2.
-
-survivors(0,[]).
-survivors(NbVivants,[X|Joueurs]):- survivors(NbVivantsPrec,Joueurs),
-	(var(X) -> NbVivants is NbVivantsPrec +1; NbVivants is NbVivantsPrec).
-
-print([]).
-print([X|T]):- write(X),write(','),print(T).
+gameover:-not(plusieursEnVie).
