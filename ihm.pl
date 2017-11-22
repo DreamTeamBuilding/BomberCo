@@ -46,8 +46,8 @@ getInfoGame(_):-
 	",\"nbJoueurs\":",NBJ,
 	",\"plateau\" : [",StrPlateau,"]",
 	",\"joueursVivants\" : [",StrVivants,"]",
-	",\"joueursMorts\" : [",/*StrMorts*/18,"]",
-	",\"bombes\" : [",/*StrBombes*/15,"]",
+	",\"joueursMorts\" : [",StrMorts,"]",
+	",\"bombes\" : [",StrBombes,"]",
 	"}"],
 	getStringFromConcat(StringTab, S),
 	reply_json_dict(S).
