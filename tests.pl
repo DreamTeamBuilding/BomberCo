@@ -27,33 +27,33 @@ comp(L1, L1).
 test(initJoueurs):-
 	initJoueurs(2, 11),
 	nbJoueurs(2),
-	joueursSav(12, -1), 
-	joueursSav(108, -1),
+	joueursSav(_, 12, -1), 
+	joueursSav(_, 108, -1),
 	!.
  
 test(initJoueurs):-
 	initJoueurs(4, 11),
 	nbJoueurs(4),
-	joueursSav(12, -1),  
-	joueursSav(20, -1),
-	joueursSav(100, -1),  
-	joueursSav(108, -1),
+	joueursSav(_, 12, -1),  
+	joueursSav(_, 20, -1),
+	joueursSav(_, 100, -1),  
+	joueursSav(_, 108, -1),
 	!.
 	
 test(initJoueurs):-
 	initJoueurs(3, 11),
 	nbJoueurs(3),
-	joueursSav(12, -1),  
-	joueursSav(20, -1),  
-	joueursSav(108, -1),
+	joueursSav(_, 12, -1),  
+	joueursSav(_, 20, -1),  
+	joueursSav(_, 108, -1),
 	!.
 
 test(plusieursEnVie):-
 	initJoueurs(2, 11),
 	plusieursEnVie,
-	retract(joueursSav(108, _)),
-	assert(joueursSav(108, 0)),
-	not(joueursSav(108, -1)),
+	retract(joueursSav(_, 108, _)),
+	assert(joueursSav(_, 108, 0)),
+	not(joueursSav(_, 108, -1)),
 	not(plusieursEnVie),
 	!.
 
