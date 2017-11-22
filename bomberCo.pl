@@ -60,4 +60,4 @@ showCoverage:-show_coverage(run_tests).
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
 
-moveJ1:-retract(joueursSav(12,X)),assert(joueursSav(13,X)).
+moveJ1:-retract(joueursSav(0,Y,X)),YNext is Y+1,assert(joueursSav(0,YNext,X)).
