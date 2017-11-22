@@ -10,6 +10,7 @@
 :-[plateau].
 :-[joueurs].
 :-[ihm].
+:-[tests].
 
 
 jouer(_):- gameover, !, write('Game is Over.').
@@ -33,9 +34,6 @@ jouer(IndexJoueur) :-
 
 %%%%% Start !
 init(NbJoueurs, TaillePlateau) :-
-	(not(taillePlateau(_));retractall(taillePlateau(_))),
-	(not(nbJoueurs(_));retractall(nbJoueurs(_))),
-	assert(taillePlateau(TaillePlateau)),assert(nbJoueurs(NbJoueurs)) ,
     % Initialisation du plateau
 	initPlateau(TaillePlateau),
     % Initialisation Player
@@ -48,6 +46,9 @@ init(NbJoueurs, TaillePlateau) :-
 stop:-
 	stopServer(8000).
 	
+tests:- run_tests.
+
+showCoverage:-show_coverage(run_tests).
 	
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
