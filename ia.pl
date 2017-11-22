@@ -10,7 +10,12 @@ initIndex(TaillePlateau) :-
     assert(indexAction(5,0,0)),              %PasBouger
     assert(indexAction(6,0,1)).              %Bombe
 
-distance(Pos1, Pos2, Diff) :-  taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), Diff is (DiffX+DiffY).
+
+distance(Pos1, Pos2, Distance) :-  taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), Distance is (DiffX+DiffY).
+
+adversairePlusProche(_, [], _).
+adversairePlusProche(Pos, [PosJoueur|L], DistancePP) :- distance(Pos,PosJoueur,Distance), (Distance=<DistancePP) ,adversairePlusProche(Pos,L,Distance).
+adversairePlusProche(Pos, [_|L],DistancePP) :- adversairePlusProche(Pos,L,DistancePP).
 
 isSafe(Pos, Plateau) :-  % la case a l'index Pos est safe ?
 	taillePlateau(TaillePlateau),
@@ -69,9 +74,13 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav3) :-
 ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
     repeat, (isSafe(PosIndex, Board) ->
 	    % si Safe :
-            repeat, Move is random(7),indexAction(Move, MvmtRelatif,BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board), isPossible(PosIndex, NewPosIndex, Board),!;
-	         % si loin de l'adversaire le + proche : random mais essaye de s'approcher
-		 % si proche de l'adversaire : random mais a + de chances de poser des bombes
+	    (joueursSav(_,PosJoueurs,-1), adversairePlusProche(PosIndex, PosJoueurs, DistanceVolOiseau), DistanceVolOiseau =< 3 ->
+		% si loin de l'adversaire le + proche : random mais essaye de s'approcher
+	    repeat, Move is random(10*(4-DistanceVolOiseau)), (Move > 6 -> Move = 6), indexAction(Move,MvmtRelatif,BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex, NewPosIndex,Board), isSafe(NewPosIndex,Board),!;
+	    % si proche de l'adversaire : random mais a + de chances de poser des bombes
+
+	    a),
+
 	    % Si dans zone de danger : on regarde quelles positions adjacentes sont safe
             posAdjacentes(PosIndex, PosAdjacentes), posAdjacentesPossibles(Board, PosAdjacentes, PosAdjacentesPossibles),
 	    posAdjacentesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
