@@ -48,8 +48,8 @@ init(NbJoueurs, TaillePlateau) :-
 	initBombes,
 	% Initialisation des regles de deplacement
 	initIndex(TaillePlateau),
-	%server(8000),
-	jouer(0,0).
+	server(8000),
+        jouer(0,0).
 
 stop:-
 	stopServer(8000).

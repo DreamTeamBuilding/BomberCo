@@ -47,12 +47,12 @@ posSuivantesSafe([],_,_).
 posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- posSuivantesSafe(ListeIndex,Plateau,NewPosSafes),isSafe(X,Plateau), append(PosSafes, [X], NewPosSafes). % la position est safe
 posSuivantesSafe([_|ListeIndex],Plateau, PosSafes) :- posSuivantesSafe(ListeIndex,Plateau, PosSafes). % la position n'est pas safe
 
-posAdjacentesPlusProches(Pos, PositionsAdjacentes, MeilleurMouvement).
+% posAdjacentesPlusProches(Pos, PositionsAdjacentes, MeilleurMouvement).
 
 % iav1 : fait tout de maniere random
-ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :- posSuivantes(PosIndex, PositionsSuivantes), posSuivantesPossibles(Plateau, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
-	 (length(PosSuivantesPossibles,0) -> NewPosIndex is PosIndex, BombePosee is 0;
-	 repeat, Move is random(7), indexAction(Move,I,BombePosee), NewPosIndex is PosIndex+I),isPossible(PosIndex, NewPosIndex, Plateau), !.
+ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :- %posSuivantes(PosIndex, PositionsSuivantes), posSuivantesPossibles(Plateau, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
+	  %(length(PosSuivantesPossibles,0) -> NewPosIndex is PosIndex, BombePosee is 0;
+	 repeat, Move is random(7), indexAction(Move,I,BombePosee), NewPosIndex is PosIndex+I,isPossible(PosIndex, NewPosIndex, Plateau), !.
 
 % iav2 : Detecte et evite les zones de danger des bombes et bouge de
 % maniere random tant qu'elle n'est pas sortie
@@ -92,7 +92,7 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 	    posAdjacentesPlusProches(PosIndex, PosSuivantesSafes, MeilleurMouvement)),
 
 	    % Si dans zone de danger : on regarde quelles positions adjacentes sont safe
-            posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board, PosAdjacentes, PosAdjacentesPossibles),
+            posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles),
 	    posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
 	     % si aucune position adjacente n'est safe, on en choisit une au hasard
 	     ((length(PosAdjacentesPossibles,0)) ->

@@ -3,7 +3,7 @@ initBombes:-
 
 ajouterBombe(Position):-
   nbJoueurs(NbJoueurs),
-  Duree is NbJoueurs*3,
+  Duree is NbJoueurs*5,
   assert(bombes(Position, Duree)).
 
 decrementerBombes:-
