@@ -17,14 +17,18 @@
 
 % Condition d'arret : 10 itérations
 
-jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
-%jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+%jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
 	joueurActuel(IdJoueur),
-	/*
+	
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	taillePlateau(TaillePlateau),
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	displayBoard(TaillePlateau),
-	*/
+	
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
@@ -51,7 +55,8 @@ jouer :-
 	TourSuivant is TA + 1,
 	assert(tourActuel(TourSuivant)),
 	
-	%jouer,
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	jouer,
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
@@ -64,7 +69,8 @@ init(NbJoueurs, TaillePlateau) :-
 	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 	assert(taillePlateau(TaillePlateau)),
 	
-	server(8000),
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	% server(8000),
     lancerPartie
 	.
 
