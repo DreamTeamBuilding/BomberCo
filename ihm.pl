@@ -37,8 +37,14 @@ starting(_) :-
 	reply_json_dict("{\"result\":1}").
 
 playMove(_) :-
-	jouer,
-	reply_json_dict("{\"result\":1}").
+	(
+		fin(0)
+	->
+		(jouer,reply_json_dict("{\"result\":1}"))
+	;
+		reply_json_dict("{\"result\":0}")
+	)
+	.
 
 getInfoGame(_):-
 	taillePlateau(TP),

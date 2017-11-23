@@ -17,12 +17,16 @@
 
 % Condition d'arret : 10 itérations
 
-jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
-%jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+%jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
 	joueurActuel(IdJoueur),
 	
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	taillePlateau(TaillePlateau),
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	displayBoard(TaillePlateau),
 	
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
@@ -51,34 +55,45 @@ jouer :-
 	TourSuivant is TA + 1,
 	assert(tourActuel(TourSuivant)),
 	
-	jouer
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	jouer,
+	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
 %%%%% Start !
 init(NbJoueurs, TaillePlateau) :-
-	initGame(NbJoueurs, TaillePlateau),
-	%server(8000),
+
+	(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+	assert(nbJoueurs(NbJoueurs)),
+	
+	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+	assert(taillePlateau(TaillePlateau)),
+	
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	% server(8000),
     lancerPartie
 	.
 
-initGame(NbJoueurs, TaillePlateau) :-
+initGame :-
+	(fin(_) -> retractall(fin(_)); true),
 	assert(fin(0)),
+	
+	(joueurActuel(_) -> retractall(joueurActuel(_)); true),
+	assert(joueurActuel(0)),
+	
+	(tourActuel(_) -> retractall(tourActuel(_)); true),
+	assert(tourActuel(0)),
     % Initialisation du plateau
-	initPlateau(TaillePlateau),
+	initPlateau,
 	% Initialisation Player
-	initJoueurs(NbJoueurs, TaillePlateau),
+	initJoueurs,
 	% Initialisation des bombes
 	initBombes,
 	% Initialisation des regles de deplacement
-	initIndex(TaillePlateau).
-	
+	initIndex.
+
 lancerPartie:-
-	(fin(_) -> retractall(fin(_)); true),
-	(joueurActuel(_) -> retractall(joueurActuel(_)); true),
-	(tourActuel(_) -> retractall(tourActuel(_)); true),
-	assert(fin(0)),
-	assert(joueurActuel(0)),
-	assert(tourActuel(0)),
+	initGame,
 	jouer.
 
 

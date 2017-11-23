@@ -1,8 +1,9 @@
 %%%% Artificial intelligence: choose in a Plateau the Move to play for Player (_)
 %%%% This AI plays more or less randomly according to the version and does not care who is playing:
 
-initIndex(TaillePlateau) :-
-	(not(indexAction(_,_,_));retractall(indexAction(_,_,_))),
+initIndex :-
+	taillePlateau(TaillePlateau),
+	(indexAction(_,_,_) -> retractall(indexAction(_,_,_)); true),
     assert(indexAction(1,-TaillePlateau,0)), %Haut
     assert(indexAction(2, TaillePlateau,0)), %Bas
     assert(indexAction(3,1,0)),              %Droite

@@ -1,7 +1,5 @@
-initPlateau(TailleCote):-
-	% Nettoyer le plateau s'il existe d'une execution precedente
-	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-	assert(taillePlateau(TailleCote)),
+initPlateau:-
+	taillePlateau(TailleCote),
 	(plateauSav(_) -> retractall(plateauSav(_)); true),
 	% Instancie le nouveau plateau
 	TaillePlateau is TailleCote * TailleCote,
