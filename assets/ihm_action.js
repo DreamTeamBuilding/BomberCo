@@ -1,4 +1,5 @@
 var interval ;
+var fini = false;
  
  $(document).ready(function(){
 	 $('#conteneur2').html("<br/><input type='button' onclick='start()' value='Start the game'/>");
@@ -6,7 +7,7 @@ var interval ;
  
  function boucle(){
 	 alert('Début de partie !');
-	 interval = setInterval(function(){ requestData(); computeData() ; }, 1000);
+	 interval = setInterval(function(){ requestData(); computeData() ;}, 100);
  }
  
  function start(){
@@ -23,17 +24,20 @@ var interval ;
  
  function fin(){
 	 clearInterval(interval);
+	 fini = true;
  }
  
  function computeData() {
-	$.ajax({
-				dataType: 'json', 
-				url:'http://localhost:8000/playMove',
-				contentType: 'application/json; charset=utf-8',
-				success: function (result) {
-					console.log(result);    
-				}
-	 });
+	 if(!fini){
+		$.ajax({
+					dataType: 'json', 
+					url:'http://localhost:8000/playMove',
+					contentType: 'application/json; charset=utf-8',
+					success: function (result) {
+						console.log(result);    
+					}
+		 });
+	 }
  }
  
  function requestData(){

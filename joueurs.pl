@@ -1,7 +1,6 @@
 %%%%% Positionne les joueurs dans les coins du plateau
-initJoueurs(NbJoueurs, TaillePlateau):-
-	(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
-	assert(nbJoueurs(NbJoueurs)),
+initJoueurs:-
+	taillePlateau(TaillePlateau),
 	nbJoueurs(NbJoueurs),
 	(joueursSav(_,_,_) -> retractall(joueursSav(_,_,_)); true),
 	(NbJoueurs < 5,NbJoueurs >1),
