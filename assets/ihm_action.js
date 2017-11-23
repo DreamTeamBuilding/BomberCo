@@ -1,5 +1,4 @@
 var interval ;
-var fini = false;
  
  $(document).ready(function(){
 	 $('#conteneur2').html("<br/><input type='button' onclick='start()' value='Start the game'/>");
@@ -21,24 +20,21 @@ var fini = false;
 	 });
 	 boucle()
  }
- 
+
  function fin(){
 	 clearInterval(interval);
-	 fini = true;
  }
  
  function computeData() {
-	 if(!fini){
-		$.ajax({
-					dataType: 'json', 
-					url:'http://localhost:8000/playMove',
-					contentType: 'application/json; charset=utf-8',
-					success: function (result) {
-						console.log(result);    
-					}
-		 });
-	 }
- }
+	$.ajax({
+				dataType: 'json', 
+				url:'http://localhost:8000/playMove',
+				contentType: 'application/json; charset=utf-8',
+				success: function (result) {
+					console.log(result);    
+				}
+	 });
+}
  
  function requestData(){
 	$.ajax({
