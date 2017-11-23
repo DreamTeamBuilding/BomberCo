@@ -1,8 +1,8 @@
 initPlateau(TailleCote):-
 	% Nettoyer le plateau s'il existe d'une execution precedente
-	(not(taillePlateau(_));retractall(taillePlateau(_))),
+	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 	assert(taillePlateau(TailleCote)),
-	(not(plateauSav(_));retract(plateauSav(_))),
+	(plateauSav(_) -> retractall(plateauSav(_)); true),
 	% Instancie le nouveau plateau
 	TaillePlateau is TailleCote * TailleCote,
 	length(Plateau, TaillePlateau),
@@ -47,7 +47,7 @@ writeVal(Val) :-
 	*/
 
 fill(Plateau,TailleCote,Fin):-
-	Fin is TailleCote * TailleCote,
+	Fin is TailleCote * TailleCote,!,
 	assert(plateauSav(Plateau)).
 
 fill(Plateau, TailleCote, IndexActuel):-
@@ -66,8 +66,7 @@ fill(Plateau, TailleCote, IndexActuel):-
 		Mod==0 ;
 		% Si on est sur cases dont colonnes impaire + ligne impaire
 		(ColImpair==1, LigImpair>=1, LigImpair=<TailleCote)
-		)
-	->
+		)->
 		Value = 1
 	;
 		Value = 0

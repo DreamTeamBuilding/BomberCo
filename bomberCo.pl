@@ -4,7 +4,10 @@
 	bombes/2,%bombes(Positions, TempsRestant)
 	indexAction/3,%indexAction(CodeMouvement, Deplacement, PoserBombe)
 	taillePlateau/1,
-	nbJoueurs/1.
+	nbJoueurs/1,
+	joueurActuel/1,
+	tourActuel/1, %A supprimer
+	fin/1.
 :-[ia].
 :-[plateau].
 :-[joueurs].
@@ -13,33 +16,53 @@
 :-[tests].
 
 % Condition d'arret : 10 itérations
-%jouer(_):- gameover, !, write('Game is Over.').
-jouer(_,I):- (I==50 ; gameover), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.').
-jouer(IdJoueur,I) :-
-	J is I+1,
+
+%jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
+jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
+jouer :-
+	joueurActuel(IdJoueur),
+	
 	taillePlateau(TaillePlateau),
 	displayBoard(TaillePlateau),
+	
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
-	(
-		not(joueursSav(IdJoueur,_,-1))
-	;
-		plateauSav(Plateau),
-		ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
-		% Debug
-		% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
-		actualiserJoueur(IdJoueur,NewPosJoueur),
-		(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
+	(StatusJoueur==0 -> true ;
+		(
+			plateauSav(Plateau),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
+			% Debug
+			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
+			actualiserJoueur(IdJoueur,NewPosJoueur),
+			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
+		)
 	),
 	decrementerBombes,
 	exploserBombes,
 	% Tuer des gens,
+	
 	joueurSuivant(IdJoueur,IdJoueurSuivant),
-	jouer(IdJoueurSuivant,J)
+	
+	retract(joueurActuel(_)),
+	assert(joueurActuel(IdJoueurSuivant)),
+	
+	tourActuel(TA),
+	retract(tourActuel(_)),
+	TourSuivant is TA + 1,
+	assert(tourActuel(TourSuivant)),
+	
+	jouer
 	% Delay pour les fps, wow, such graphismsz
 	.
 
 %%%%% Start !
 init(NbJoueurs, TaillePlateau) :-
+	initGame(NbJoueurs, TaillePlateau),
+	%server(8000),
+    lancerPartie
+	.
+
+initGame(NbJoueurs, TaillePlateau) :-
+	assert(fin(0)),
     % Initialisation du plateau
 	initPlateau(TaillePlateau),
 	% Initialisation Player
@@ -47,9 +70,18 @@ init(NbJoueurs, TaillePlateau) :-
 	% Initialisation des bombes
 	initBombes,
 	% Initialisation des regles de deplacement
-	initIndex(TaillePlateau),
-	server(8000),
-        jouer(0,0).
+	initIndex(TaillePlateau).
+	
+lancerPartie:-
+	(fin(_) -> retractall(fin(_)); true),
+	(joueurActuel(_) -> retractall(joueurActuel(_)); true),
+	(tourActuel(_) -> retractall(tourActuel(_)); true),
+	assert(fin(0)),
+	assert(joueurActuel(0)),
+	assert(tourActuel(0)),
+	jouer.
+
+
 
 stop:-
 	stopServer(8000).
@@ -61,11 +93,7 @@ showCoverage:-show_coverage(run_tests).
 
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
-
-moveJ1:-retract(joueursSav(0,Y,X)),YNext is Y+1,assert(joueursSav(0,YNext,X)).
-
-
-
+/*
 afficherLesDetails(Id, NP ,BombePosee):-
 	% On récupère toutes les positions des joueurs
 	findall(Positions,joueursSav(_,Positions,_),ListePositions),
@@ -83,3 +111,4 @@ afficherLesDetails(Id, NP ,BombePosee):-
 	write('Status : '), writeln(Stat),
 	write('Position suivante : '), writeln(NP),
 	write('A pose une bombe? : '), writeln(BombePosee).
+*/
