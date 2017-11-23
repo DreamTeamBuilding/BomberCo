@@ -15,7 +15,7 @@ displayBoard(TailleCote):-
 	printElementBoard(B,TailleCote,0),nl.
 
 
-printElementBoard([],_,_).
+printElementBoard([],_,_):-!.
 printElementBoard([X|Plateau],TailleCote,Index) :-
 	%bombes(PosBombes,_),
 	(
@@ -33,10 +33,10 @@ printElementBoard([X|Plateau],TailleCote,Index) :-
 	((bombes(Pos, 0), Pos is Index-2) -> write('+');false);
 	(X==0, write(' '));
 	(X==1, write('X'))
-	),
+	),!,
 	IndexSuivant is Index + 1,
 	Mod is mod(IndexSuivant, TailleCote),
-	(Mod\==0 ; writeln(' ')),
+	(Mod==0 -> writeln(' ') ; true),
 	printElementBoard(Plateau,TailleCote,IndexSuivant).
 
 /*

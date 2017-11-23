@@ -17,8 +17,8 @@
 
 % Condition d'arret : 10 itérations
 
-%jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
-jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
+jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
+%jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
 	joueurActuel(IdJoueur),
 	
@@ -34,6 +34,7 @@ jouer :-
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
 			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
+			
 		)
 	),
 	decrementerBombes,
