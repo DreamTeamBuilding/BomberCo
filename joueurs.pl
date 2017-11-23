@@ -31,7 +31,7 @@ exploserBombes:-
 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2*TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true).
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),!.
 
 tuer(IdJoueur):-
 	retract(joueursSav(IdJoueur, Position, _)),
