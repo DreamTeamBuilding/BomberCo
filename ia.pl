@@ -39,7 +39,7 @@ posSuivantes(Pos, PositionsSuivantes) :- append(posAdjacentes(Pos,_),Pos,Positio
 
 % Liste des positions realisables depuis FormerPos (pas d'obstacle)
 posSuivantesPossibles(_,_,[],_).
-posSuivantesPossibles(Board, FormerPos,[X|ListePos], PosSuivantesPossibles) :- PosSuivantesPossibles(Board, FormerPos, ListePos, NewPAP), append(PosSuivantesPossibles,[X],NewPAP), isPossible(FormerPos, X, Board).
+posSuivantesPossibles(Board, FormerPos,[X|ListePos], PosSuivantesPossibles) :- posSuivantesPossibles(Board, FormerPos, ListePos, NewPAP), append(PosSuivantesPossibles,[X],NewPAP), isPossible(FormerPos, X, Board).
 posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :- posSuivantesPossibles(Board, FormerPos, L, PAP).
 
 % Liste des positions safe
@@ -54,13 +54,14 @@ ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :- posSuivantes(PosIndex, P
 	 (length(PosSuivantesPossibles,0) -> NewPosIndex is PosIndex, BombePosee is 0;
 	 repeat, Move is random(7), indexAction(Move,I,BombePosee), NewPosIndex is PosIndex+I),isPossible(PosIndex, NewPosIndex, Plateau), !.
 
-% Iav2 : Detecte et evite les zones de danger des bombes et bouge de
+% iav2 : Detecte et evite les zones de danger des bombes et bouge de
 % maniere random tant qu'elle n'est pas sortie
 ia(Board, PosIndex, NewPosIndex, BombePosee, iav2) :-
-    repeat, (isSafe(PosIndex, Board) ->
-            repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board);
-            Move is random(5),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif),
-    isPossible(PosIndex,NewPosIndex, Board), !.
+	posSuivantes(PosIndex, PositionsSuivantes), posSuivantesPossibles(Board, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
+	 (length(PosSuivantesPossibles,0) -> NewPosIndex is PosIndex, BombePosee is 0;
+	 repeat, (isSafe(PosIndex, Board) ->
+            repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex,NewPosIndex,Board), isSafe(NewPosIndex, Board);
+            Move is random(5),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex,NewPosIndex, Board), !)).
 
 % iav3 : detecte et evite les zones de danger
 % et cherche si un deplacement peut la mettre en securite si pas safe
@@ -91,8 +92,8 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 	    posAdjacentesPlusProches(PosIndex, PosSuivantesSafes, MeilleurMouvement)),
 
 	    % Si dans zone de danger : on regarde quelles positions adjacentes sont safe
-            posAdjacentes(PosIndex, PosAdjacentes), posAdjacentesPossibles(Board, PosAdjacentes, PosAdjacentesPossibles),
-	    posAdjacentesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
+            posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board, PosAdjacentes, PosAdjacentesPossibles),
+	    posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
 	     % si aucune position adjacente n'est safe, on en choisit une au hasard
 	     ((length(PosAdjacentesPossibles,0)) ->
 	     random_member(NewPosIndex, PosAdjacentes);
