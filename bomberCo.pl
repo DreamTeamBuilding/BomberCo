@@ -52,7 +52,6 @@ jouer :-
 	assert(tourActuel(TourSuivant)),
 	
 	jouer
-	% Delay pour les fps, wow, such graphismsz
 	.
 
 %%%%% Start !

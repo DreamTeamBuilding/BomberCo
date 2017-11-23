@@ -72,10 +72,10 @@ getInfoGame(_):-
 getStringFromConcat([],""):-!.
 getStringFromConcat([X|Liste], String):-getStringFromConcat(Liste,StringPrec),atom_concat(X,StringPrec,String).
 
-getStringFromList([],"").
+getStringFromList([],""):-!.
 getStringFromList([X],S):-atom_concat(X,"",S).
 getStringFromList([X|Liste],String):-getStringFromList(Liste,StringPrec),atom_concat(X,",",Virgule),atom_concat(Virgule,StringPrec,String).
 
-getStringFromDoubleList([],"").
+getStringFromDoubleList([],""):-!.
 getStringFromDoubleList([X],S):-getStringFromList(X,StringX),getStringFromConcat(["[",StringX,"]"],S).
 getStringFromDoubleList([X|Liste],String):-getStringFromList(X,StringX),getStringFromDoubleList(Liste,StringPrec),getStringFromConcat(["[",StringX,"]",",",StringPrec], String).
