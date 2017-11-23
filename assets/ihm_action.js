@@ -1,8 +1,39 @@
-$( document ).ready(boucle());
+var interval ;
+ 
+ $(document).ready(function(){
+	 $('#conteneur2').html("<br/><input type='button' onclick='start()' value='Start the game'/>");
+ });
  
  function boucle(){
 	 alert('Début de partie !');
-	 setInterval(function(){ requestData(); }, 100);
+	 interval = setInterval(function(){ requestData(); computeData() ; }, 1000);
+ }
+ 
+ function start(){
+	$.ajax({
+				dataType: 'json', 
+				url:'http://localhost:8000/starting',
+				contentType: 'application/json; charset=utf-8',
+				success: function (result) {
+					console.log(result);    
+				}
+	 });
+	 boucle()
+ }
+ 
+ function fin(){
+	 clearInterval(interval);
+ }
+ 
+ function computeData() {
+	$.ajax({
+				dataType: 'json', 
+				url:'http://localhost:8000/playMove',
+				contentType: 'application/json; charset=utf-8',
+				success: function (result) {
+					console.log(result);    
+				}
+	 });
  }
  
  function requestData(){
@@ -24,6 +55,10 @@ $( document ).ready(boucle());
  
  function buildString(infoGame){
 	 var jsonVar = JSON.parse(infoGame);
+	 if(jsonVar.fin==1){
+		 fin();
+		 return;
+	 }
 	 var taille = jsonVar.taillePlateau;
 	 
 	 var individualSize = 500/taille;
@@ -45,30 +80,32 @@ $( document ).ready(boucle());
 		index = jsonVar.bombes[pos];
 		x = getX(index, taille);
 		y = getY(index, taille);
-		string += "<div class='bombe'"+
+		string += "<img src='files/bomb.png' class='bombe'"+
 			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
-			"'></div>";
+			"'/>";
 	 }
 	 // Joueurs vivants
 	 for(pos in jsonVar.joueursVivants){
-		index = jsonVar.joueursVivants[pos];
+		id = jsonVar.joueursVivants[pos][0];
+		index = jsonVar.joueursVivants[pos][1];
 		x = getX(index, taille);
 		y = getY(index, taille);
-		string += "<div class='joueurEnVie'"+
+		string += "<img src='files/perso"+id+".png' class='joueurEnVie'"+
 			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
-			"'></div>";
+			"'/>";
 	 }
 	 // Joueurs morts
 	 for(pos in jsonVar.joueursMorts){
-		index = jsonVar.joueursMorts[pos];
+		id = jsonVar.joueursMorts[pos][0];
+		index = jsonVar.joueursMorts[pos][1];
 		x = getX(index, taille);
 		y = getY(index, taille);
-		string += "<div class='joueurMort'"+
+		string += "<img src='files/dead.png' class='joueurMort'"+
 			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
-			"'></div>";
+			"'/>";
 	 }
 	 
 	 return string;

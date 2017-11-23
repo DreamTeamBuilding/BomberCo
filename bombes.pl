@@ -1,5 +1,5 @@
 initBombes:-
-	not(bombes(_,_)) ; retractall(bombes(_,_)).
+	bombes(_,_) -> retractall(bombes(_,_)); true.
 
 ajouterBombe(Position):-
   nbJoueurs(NbJoueurs),
