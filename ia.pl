@@ -40,8 +40,11 @@ posSuivantes(Pos, PositionsSuivantes) :- posAdjacentes(Pos,PosAdjacentes), appen
 
 % Liste des positions realisables depuis FormerPos (pas d'obstacle)
 posSuivantesPossibles(_,_,[],_).
-posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], PosSuivantesPossibles) :- isPossible(FormerPos, X, Board),append(PosSuivantesPossibles,[X],NewPAP), write("j'ajoute "),write(X), write("   liste actuelle : "), writeln(PosSuivantesPossibles), posSuivantesPossibles(Board, FormerPos, PosSuivantes, NewPAP).
-posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :- writeln("j'ajoute pas, liste actuelle : "), writeln(PAP),posSuivantesPossibles(Board, FormerPos, L, PAP).
+posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], PosSuivantesPossibles) :- isPossible(FormerPos, X, Board),append(PosSuivantesPossibles,[X],NewPAP),
+	write("j'ajoute "),write(X), write("   liste actuelle : "), writeln(PosSuivantesPossibles),
+	posSuivantesPossibles(Board, FormerPos, PosSuivantes, NewPAP).
+posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :- writeln("j'ajoute pas, liste actuelle : "), writeln(PAP),
+	posSuivantesPossibles(Board, FormerPos, L, PAP).
 
 % Liste des positions safe
 posSuivantesSafe([],_,_).
@@ -71,8 +74,10 @@ ia(Board, PosIndex, NewPosIndex, BombePosee, iav2) :-
 % iav3 : detecte et evite les zones de danger
 % et cherche si un deplacement peut la mettre en securite si pas safe
 ia(Board, PosIndex, NewPosIndex,BombePosee, iav3) :-
-    (isSafe(PosIndex, Board) ->
-            repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board), isPossible(PosIndex, NewPosIndex, Board),!; % Si en dehors de zone de danger : random
+    (isSafe(PosIndex, Board) -> writeln("Securite"),
+     repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isSafe(NewPosIndex, Board),
+     isPossible(PosIndex, NewPosIndex, Board),!; % Si en dehors de zone de danger : random
+    writeln("Danger"),
             posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board,PosIndex, PosAdjacentes, PosSuivantesPossibles), print(PosSuivantesPossibles),
 	    posSuivantesSafe(PosSuivantesPossibles, Board, PosSuivantesSafes),
 	     % si PosSuivantesSafes est vide : piocher dans PosSuivantesPossibles
