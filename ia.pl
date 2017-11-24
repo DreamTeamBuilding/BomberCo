@@ -48,9 +48,9 @@ posSuivantesSafe([],_,_).
 posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- posSuivantesSafe(ListeIndex,Plateau,NewPosSafes),isSafe(X,Plateau), append(PosSafes, [X], NewPosSafes). % la position est safe
 posSuivantesSafe([_|ListeIndex],Plateau, PosSafes) :- posSuivantesSafe(ListeIndex,Plateau, PosSafes). % la position n'est pas safe
 
-posSuivantesPlusProches(_,[],_).
-posSuivantesPlusProches(Pos, [X|PosPlusProches], MeilleurMouvement) :- distance(Pos,X,Distance), Distance.
-posSuivantesPlusProches(Pos, PositionsAdjacentes, MeilleurMouvement).
+posSuivantesPlusProches(_,[],_,_).
+posSuivantesPlusProches(Pos, [X|PosPlusProches], MeilleursMouvements, MeilleureDistance) :- distance(Pos,X,Distance), Distance =< MeilleureDistance, append(MeilleursMouvements,[X],NewMM), posSuivantesPlusProches(Pos,PosPlusProches,NewMM, Distance).
+posSuivantesPlusProches(Pos, [_|PPP], MM, MD) :- posSuivantesPlusProches(Pos,PPP,MM,MD).
 
 
 % iav1 : fait tout de maniere random
@@ -97,7 +97,7 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 		% si loin de l'adversaire le + proche : random mais essaye de s'approcher
 		posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles),
 		posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
-		posSuivantesPlusProches(PosIndex, PosAdjacentesSafes, MeilleursMouvements),
+		posSuivantesPlusProches(PosIndex, PosAdjacentesSafes, MeilleursMouvements, _),
 		% Si aucun meilleur mouvement = aucun deplacement Safe : on reste au meme endroit
 		(length(MeilleursMouvements,0)) -> NewPosIndex is PosIndex;random_member(NewPosIndex, MeilleursMouvements)
 		);
