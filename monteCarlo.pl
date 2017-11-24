@@ -1,4 +1,4 @@
-:- Dynamic
+:- dynamic
 	plateauSavMC/1,
 	joueursSavMC/3,%joueursSav(Id, Positions, Etats)
 	bombesMC/2,%bombes(Positions, TempsRestant)
