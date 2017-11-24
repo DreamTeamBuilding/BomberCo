@@ -30,8 +30,8 @@ isSafe(Pos, Plateau) :-  % la case a l'index Pos est safe ?
     (not(bombes(Pos+(2*TaillePlateau), Temps));(bombes(Pos,Temps), Temps < 3); ((nth0(Pos+TaillePlateau, Plateau, Case), Case==1))),
     (not(bombes(Pos-(2*TaillePlateau), Temps));(bombes(Pos,Temps), Temps < 3); ((nth0(Pos-TaillePlateau, Plateau, Case), Case==1))).
 
-isPossible(FormerPos,NewPos, Board) :- 
-	not(bombes(NewPos,_)), 
+isPossible(FormerPos,NewPos, Board) :-
+	not(bombes(NewPos,_)),
 	not((joueursSav(_,NewPos,-1),NewPos\==FormerPos)),
 	nth0(NewPos, Board, 0).
 
@@ -43,22 +43,16 @@ posSuivantes(Pos, PositionsSuivantes) :- posAdjacentes(Pos,PosAdjacentes), appen
 
 % Liste des positions realisables depuis FormerPos (pas d'obstacle)
 posSuivantesPossibles(_,_,[],[]):-!.
-posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], NewPAP) :- 
+posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], NewPAP) :-
 	isPossible(FormerPos, X, Board),
 	posSuivantesPossibles(Board, FormerPos, PosSuivantes, PosSuivantesPossibles),
-	append(PosSuivantesPossibles,[X],NewPAP),
-	write("j'ajoute "),
-	write(X), 
-	write("   liste actuelle : "), 
-	writeln(NewPAP).
-posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :- 
-	writeln("j'ajoute pas, liste actuelle : "), 
-	writeln(PAP),
+	append(PosSuivantesPossibles,[X],NewPAP).
+posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :-
 	posSuivantesPossibles(Board, FormerPos, L, PAP).
 
 % Liste des positions safe
-posSuivantesSafe([],_,_).
-posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- posSuivantesSafe(ListeIndex,Plateau,NewPosSafes),isSafe(X,Plateau), append(PosSafes, [X], NewPosSafes). % la position est safe
+posSuivantesSafe([],_,[]).
+posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- isSafe(X,Plateau),posSuivantesSafe(ListeIndex,Plateau,NewPosSafes), append(PosSafes, [X], NewPosSafes). % la position est safe
 posSuivantesSafe([_|ListeIndex],Plateau, PosSafes) :- posSuivantesSafe(ListeIndex,Plateau, PosSafes). % la position n'est pas safe
 
 posSuivantesPlusProches(_,[],_,_).
@@ -67,14 +61,11 @@ posSuivantesPlusProches(Pos, [_|PPP], MM, MD) :- posSuivantesPlusProches(Pos,PPP
 
 
 % iav1 : fait tout de maniere random
-ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :- writeln(PosIndex),
+ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :-
 	 posSuivantes(PosIndex, PositionsSuivantes),
-	 writeln(PositionsSuivantes), 
-	 writeln(PosSuivantesPossibles), 
-	 posSuivantesPossibles(Plateau, PosIndex, PositionsSuivantes, PosSuivantesPossibles), 
-	 writeln(PosSuivantesPossibles),
-	 (length(PosSuivantesPossibles,0) -> print(" dans le if "), NewPosIndex is PosIndex, BombePosee is 0;
-	  print("   dans le else "),repeat, Move is random(7), indexAction(Move,I,BombePosee), NewPosIndex is PosIndex+I,isPossible(PosIndex, NewPosIndex, Plateau), !), writeln(NewPosIndex).
+	 posSuivantesPossibles(Plateau, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
+	 (length(PosSuivantesPossibles,0) -> NewPosIndex is PosIndex, BombePosee is 0;
+	 repeat, Move is random(7), indexAction(Move,I,BombePosee), NewPosIndex is PosIndex+I,isPossible(PosIndex, NewPosIndex, Plateau), !).
 
 % iav2 : Detecte et evite les zones de danger des bombes et bouge de
 % maniere random tant qu'elle n'est pas sortie
