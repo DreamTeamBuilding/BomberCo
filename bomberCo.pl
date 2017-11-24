@@ -14,6 +14,7 @@
 :-[bombes].
 :-[ihm].
 :-[tests].
+:-[monteCarlo].
 
 % Condition d'arret : 10 itérations
 

@@ -106,3 +106,6 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 	    posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
 	     % Si aucune position adjacente n'est safe, on en choisit une au hasard
 	     ((length(PosAdjacentesSafes,0)) -> random_member(NewPosIndex, PosAdjacentesPossibles);random_member(NewPosIndex, PosAdjacentesSafes)))).
+
+
+
