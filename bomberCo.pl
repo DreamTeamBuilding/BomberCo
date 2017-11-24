@@ -23,12 +23,12 @@
 jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
 	joueurActuel(IdJoueur),
-	
+
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	displayBoard(TaillePlateau),
-	
+
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
@@ -38,23 +38,23 @@ jouer :-
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
 			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
-			
+
 		)
 	),
 	decrementerBombes,
 	exploserBombes,
 	% Tuer des gens,
-	
+
 	joueurSuivant(IdJoueur,IdJoueurSuivant),
-	
+
 	retract(joueurActuel(_)),
 	assert(joueurActuel(IdJoueurSuivant)),
-	
+
 	tourActuel(TA),
 	retract(tourActuel(_)),
 	TourSuivant is TA + 1,
 	assert(tourActuel(TourSuivant)),
-	
+
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	jouer,
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
@@ -65,10 +65,10 @@ init(NbJoueurs, TaillePlateau) :-
 
 	(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 	assert(nbJoueurs(NbJoueurs)),
-	
+
 	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 	assert(taillePlateau(TaillePlateau)),
-	
+
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	% server(8000),
     lancerPartie
@@ -77,10 +77,10 @@ init(NbJoueurs, TaillePlateau) :-
 initGame :-
 	(fin(_) -> retractall(fin(_)); true),
 	assert(fin(0)),
-	
+
 	(joueurActuel(_) -> retractall(joueurActuel(_)); true),
 	assert(joueurActuel(0)),
-	
+
 	(tourActuel(_) -> retractall(tourActuel(_)); true),
 	assert(tourActuel(0)),
     % Initialisation du plateau
