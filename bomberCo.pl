@@ -2,9 +2,11 @@
 	plateauSav/1,
 	joueursSav/3,%joueursSav(Id, Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
-	indexAction/3,
+	indexAction/3,%indexAction(CodeMouvement, Deplacement, PoserBombe)
 	taillePlateau/1,
 	nbJoueurs/1,
+	joueurActuel/1,
+	tourActuel/1, %A supprimer
 	fin/1.
 :-[ia].
 :-[plateau].
@@ -12,62 +14,89 @@
 :-[bombes].
 :-[ihm].
 :-[tests].
+:-[monteCarlo].
 
-% Condition d'arrêt : 10 itérations
-%jouer(_):- gameover, !, write('Game is Over.').
-jouer:- nb_getval(tourActuel, TourActuel),TourActuel==1000, !,/* write('Game is Over.'),*/retract(fin(0)),assert(fin(1)).
+% Condition d'arret : 10 itérations
+
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+jouer:- (gameover;tourActuel(500)), !, retract(fin(0)),assert(fin(1)).
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+%jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
-	nb_getval(joueurActuel, JoueurActuel),
-	nb_getval(tourActuel, TourActuel),
-	
-	TourSuiant is TourActuel + 1,
-	taillePlateau(TaillePlateau),
-	%displayBoard(TaillePlateau),
-	joueursSav(JoueurActuel,PosJoueur,StatusJoueur),
-	(
-		not(joueursSav(JoueurActuel,_,-1))
-	;
-		plateauSav(Plateau),
-		ia(Plateau, PosJoueur, NewPosJoueur, _BombePosee, iav1),
-		actualiserJoueur(JoueurActuel,NewPosJoueur)%,
-		%(BombePosee==1 -> ajouterBombe(NewPosJoueur))
-		% TODO : pourquoi les joueurs se téléportent?
-		% ia next move
-		% jouer next move (deplacer, poser, rien)
-	),
-	
-	joueurSuivant(JoueurActuel,IdJoueurSuivant),
-	b_setval(joueurActuel, IdJoueurSuivant),
-	b_setval(tourActuel, TourSuivant),
-	%decrementerBombes
-	% Decrementer bombes,
-	% Tuer des gens,
-	% Actualiser NextPlayer
-	% Play next player
+	joueurActuel(IdJoueur),
 
-	% Delay pour les fps, wow, such graphismsz
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+%	taillePlateau(TaillePlateau),
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+%	displayBoard(TaillePlateau),
+	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
+	(StatusJoueur==0 -> true ;
+		(
+			plateauSav(Plateau),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav2),
+			% Debug
+			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
+			actualiserJoueur(IdJoueur,NewPosJoueur),
+			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
+
+		)
+	),
+	decrementerBombes,
+	exploserBombes,
+	% Tuer des gens,
+
+	joueurSuivant(IdJoueur,IdJoueurSuivant),
+
+	retract(joueurActuel(_)),
+	assert(joueurActuel(IdJoueurSuivant)),
+
+	tourActuel(TA),
+	retract(tourActuel(_)),
+	TourSuivant is TA + 1,
+	assert(tourActuel(TourSuivant)),
+
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+%	jouer,
+	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
 %%%%% Start !
 init(NbJoueurs, TaillePlateau) :-
+
+	(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+	assert(nbJoueurs(NbJoueurs)),
+
+	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+	assert(taillePlateau(TaillePlateau)),
+
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	server(8000),
+    lancerPartie
+	.
+
+initGame :-
+	(fin(_) -> retractall(fin(_)); true),
 	assert(fin(0)),
+
+	(joueurActuel(_) -> retractall(joueurActuel(_)); true),
+	assert(joueurActuel(0)),
+
+	(tourActuel(_) -> retractall(tourActuel(_)); true),
+	assert(tourActuel(0)),
     % Initialisation du plateau
-	initPlateau(TaillePlateau),
-    % Initialisation Player
-    initJoueurs(NbJoueurs, TaillePlateau),
+	initPlateau,
+	% Initialisation Player
+	initJoueurs,
 	% Initialisation des bombes
 	initBombes,
 	% Initialisation des regles de deplacement
-	initIndex(TaillePlateau),
-	server(8000),!
-	/*;write('erreur')*/.
+	initIndex.
+
 lancerPartie:-
-	(not(fin(_));retractall(fin(_))),
-	assert(fin(0)),
-	nb_setval(joueurActuel,0),
-	nb_setval(tourActuel,0),
-	jouer/*;write('erreur')*/.
-	
+	initGame,
+	jouer.
+
+
 stop:-
 	stopServer(8000).
 
@@ -78,5 +107,22 @@ showCoverage:-show_coverage(run_tests).
 
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
-
-moveJ1:-retract(joueursSav(0,Y,X)),YNext is Y+1,assert(joueursSav(0,YNext,X)).
+/*
+afficherLesDetails(Id, NP ,BombePosee):-
+	% On récupère toutes les positions des joueurs
+	findall(Positions,joueursSav(_,Positions,_),ListePositions),
+	% On récupère toutes les positions des bombes
+	findall(PositionsB,bombes(PositionsB, _),ListePositionsB),
+	% On récupère les temps avant explosion
+	findall(Tps,bombes(_,Tps),ListeTempsB),
+	% On récupère les infos sur le joueurs actif
+	joueursSav(Id, Pos, Stat),
+	write('Liste des joueurs : '),writeln(ListePositions),
+	write('Liste des bombes : '),writeln(ListePositionsB),
+	write('Liste des temps : '),writeln(ListeTempsB),
+	write('Tour du joueur : '), writeln(Id),
+	write('Position : '), writeln(Pos),
+	write('Status : '), writeln(Stat),
+	write('Position suivante : '), writeln(NP),
+	write('A pose une bombe? : '), writeln(BombePosee).
+*/

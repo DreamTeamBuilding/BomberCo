@@ -1,9 +1,8 @@
 %%%%% Positionne les joueurs dans les coins du plateau
-initJoueurs(NbJoueurs, TaillePlateau):-
-	(not(nbJoueurs(_));retractall(nbJoueurs(_))),
-	assert(nbJoueurs(NbJoueurs)),
+initJoueurs:-
+	taillePlateau(TaillePlateau),
 	nbJoueurs(NbJoueurs),
-	(not(joueursSav(_,_,_)) ; retractall(joueursSav(_,_,_))),
+	(joueursSav(_,_,_) -> retractall(joueursSav(_,_,_)); true),
 	(NbJoueurs < 5,NbJoueurs >1),
 
 	Position is TaillePlateau +1, assert(joueursSav(0,Position,-1)),
@@ -20,3 +19,19 @@ joueurSuivant(IdJoueur,IdJoueurSuivant):-
 	IdJoueurSuivant is mod(Id,NbJoueurs).
 
 plusieursEnVie:-joueursSav(X,_,-1),joueursSav(Y,_,-1),Y\==X.
+
+exploserBombes:-
+	taillePlateau(TaillePlateau),
+	% TODO : Oh c'est moche!!
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-1), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+1), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2*TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),!.
+
+tuer(IdJoueur):-
+	retract(joueursSav(IdJoueur, Position, _)),
+	assert(joueursSav(IdJoueur, Position, 0)).

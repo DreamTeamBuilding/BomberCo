@@ -10,14 +10,11 @@
 	position : absolute;
 }
 .bombe{
-	background-color : yellow;
 	position : absolute;
 }
 .joueurEnVie{
-	background-color : blue;
 	position : absolute;
 }
 .joueurMort{
-	background-color : #0c244c;
 	position : absolute;
 }

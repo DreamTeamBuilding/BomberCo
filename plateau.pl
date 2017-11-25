@@ -1,8 +1,6 @@
-initPlateau(TailleCote):-
-	% Nettoyer le plateau s'il existe d'une execution precedente
-	(not(taillePlateau(_));retractall(taillePlateau(_))),
-	assert(taillePlateau(TailleCote)),
-	(not(plateauSav(_));retract(plateauSav(_))),
+initPlateau:-
+	taillePlateau(TailleCote),
+	(plateauSav(_) -> retractall(plateauSav(_)); true),
 	% Instancie le nouveau plateau
 	TaillePlateau is TailleCote * TailleCote,
 	length(Plateau, TaillePlateau),
@@ -16,32 +14,39 @@ displayBoard(TailleCote):-
 	printElementBoard(B,TailleCote,0),nl.
 
 
-printElementBoard([],_,_).
+printElementBoard([],_,_):-!.
 printElementBoard([X|Plateau],TailleCote,Index) :-
 	%bombes(PosBombes,_),
 	(
-	(joueursSav(_,Index,Etat), Etat is -1) -> write('P');
-	joueursSav(_,Index,_) -> write('..');
-	bombes(Index,_) -> write('o');
-	bombes(Index-22, 0) -> write('+');
-	bombes(Index-11, 0) -> write('+');
-	bombes(Index+11, 0) -> write('+');
-	bombes(Index+22, 0) -> write('+');
-
-	writeVal(X)
-	),
+	(X==1, write('X'));
+	((joueursSav(_,Index,Etat), Etat is -1) -> write('P');false);
+	(joueursSav(_,Index,_) -> write('.');false);
+	(bombes(Index,_) -> write('o');false);
+	((bombes(Pos, 0), Pos is Index-2*TailleCote) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index-TailleCote) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index+TailleCote) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index+2*TailleCote) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index+1) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index+2) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index-1) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index-2) -> write('+');false);
+	(X==0, write(' '));
+	(X==1, write('X'))
+	),!,
 	IndexSuivant is Index + 1,
 	Mod is mod(IndexSuivant, TailleCote),
-	(Mod\==0 ; writeln(' ')),
+	(Mod==0 -> writeln(' ') ; true),
 	printElementBoard(Plateau,TailleCote,IndexSuivant).
 
+/*
 writeVal(Val) :-
 	(var(Val), write(' ')) ;
 	(Val==0, write(' ')) ;
 	(Val==1, write('X')).
+	*/
 
 fill(Plateau,TailleCote,Fin):-
-	Fin is TailleCote * TailleCote,
+	Fin is TailleCote * TailleCote,!,
 	assert(plateauSav(Plateau)).
 
 fill(Plateau, TailleCote, IndexActuel):-
@@ -60,8 +65,7 @@ fill(Plateau, TailleCote, IndexActuel):-
 		Mod==0 ;
 		% Si on est sur cases dont colonnes impaire + ligne impaire
 		(ColImpair==1, LigImpair>=1, LigImpair=<TailleCote)
-		)
-	->
+		)->
 		Value = 1
 	;
 		Value = 0
