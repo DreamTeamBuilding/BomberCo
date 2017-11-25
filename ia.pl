@@ -39,30 +39,30 @@ isPossible(FormerPos,NewPos, Board) :-
 posAdjacentes(Pos, [Haut, Gauche, Droite, Bas]) :- taillePlateau(TaillePlateau), Haut is Pos-TaillePlateau, Gauche is Pos-1, Droite is Pos+1, Bas is Pos + TaillePlateau.
 
 % Liste des positions accessibles depuis Pos
-posSuivantes(Pos, PositionsSuivantes) :- posAdjacentes(Pos,PosAdjacentes), append(PosAdjacentes,[Pos],PositionsSuivantes).
+posSuivantes(Pos, [Pos|PosAdjacentes]) :- posAdjacentes(Pos,PosAdjacentes).
 
 % Liste des positions realisables depuis FormerPos (pas d'obstacle)
 posSuivantesPossibles(_,_,[],[]):-!.
-posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], NewPAP) :- 
+posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], [X|PosSuivantesPossibles]) :- 
 	isPossible(FormerPos, X, Board),
 	posSuivantesPossibles(Board, FormerPos, PosSuivantes, PosSuivantesPossibles),
-	append(PosSuivantesPossibles,[X],NewPAP),
 	write("j'ajoute "),
 	write(X), 
 	write("   liste actuelle : "), 
-	writeln(NewPAP).
+	writeln([X|PosSuivantesPossibles]).
 posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :- 
 	writeln("j'ajoute pas, liste actuelle : "), 
 	writeln(PAP),
 	posSuivantesPossibles(Board, FormerPos, L, PAP).
 
 % Liste des positions safe
-posSuivantesSafe([],_,_).
-posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- posSuivantesSafe(ListeIndex,Plateau,NewPosSafes),isSafe(X,Plateau), append(PosSafes, [X], NewPosSafes). % la position est safe
+posSuivantesSafe([],_,[]):-!.
+posSuivantesSafe([X|ListeIndex],Plateau, [X|PosSafes]) :- posSuivantesSafe(ListeIndex,Plateau,PosSafes),isSafe(X,Plateau). % la position est safe
 posSuivantesSafe([_|ListeIndex],Plateau, PosSafes) :- posSuivantesSafe(ListeIndex,Plateau, PosSafes). % la position n'est pas safe
 
-posSuivantesPlusProches(_,[],_,_).
-posSuivantesPlusProches(Pos, [X|PosPlusProches], MeilleursMouvements, MeilleureDistance) :- distance(Pos,X,Distance), Distance =< MeilleureDistance, append(MeilleursMouvements,[X],NewMM), posSuivantesPlusProches(Pos,PosPlusProches,NewMM, Distance).
+posSuivantesPlusProches(_,[],[],_):-!.
+%%%% Si la nouvelle meilleure distance est PLUS PETITE que l'actuelle, pourquoi on ajoute X à la liste des meilleurs mouvements, on a plutot X EST LE meilleur mouvement non ?
+posSuivantesPlusProches(Pos, [X|PosPlusProches], [X|MeilleursMouvements], NewDistance) :- distance(Pos,X,NewDistance), NewDistance =< MeilleureDistance, posSuivantesPlusProches(Pos,PosPlusProches,MeilleursMouvements, MeilleureDistance).
 posSuivantesPlusProches(Pos, [_|PPP], MM, MD) :- posSuivantesPlusProches(Pos,PPP,MM,MD).
 
 
