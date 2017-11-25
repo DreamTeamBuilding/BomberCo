@@ -6,7 +6,7 @@ var interval ;
  
  function boucle(){
 	 alert('Début de partie !');
-	 interval = setInterval(function(){ requestData(); computeData() ;}, 100);
+	 interval = setInterval(function(){ requestData(); computeData() ;}, 300);
  }
  
  function start(){
