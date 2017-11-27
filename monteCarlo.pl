@@ -58,7 +58,7 @@ plusieursEnVieMC:-joueursSavMC(X,_,-1),joueursSavMC(Y,_,-1),Y\==X.
 
 
 
-jouerMC(IdGagnant):- (gameoverMC ; tourActuelMC(50)), !, taillePlateauMC(TaillePlateau),retract(fin(0)),assert(fin(1)).
+jouerMC(IdGagnant):- (gameoverMC, joueursSavMC(IdGagnant,_,-1) ; tourActuelMC(50)), !, taillePlateauMC(TaillePlateau),retract(fin(0)),assert(fin(1)).
 jouerMC(IdGagnant) :-
 	joueurActuelMC(IdJoueur),
 
@@ -92,3 +92,19 @@ jouerMC(IdGagnant) :-
 	jouer,
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
+
+
+jouerPartieDepuisEtat(IdJoueur, CompteurVictoires, NewPosJoueur, BombePosee) :-
+	actualiserJoueuC(IdJoueur,NewPosJoueur),
+	(BombePosee==1 -> ajouterBombe(NewPosJoueur); true),
+	plateauSavMC is plateauSav,
+	joueursSavMC is joueursSav,
+	bombesMC is bombes,
+	indexActionMC is indexAction,
+	taillePlateauMC is taillePlateau,
+	nbJoueursMC is nbJoueurs,
+	joueurActuelMC is joueurActuel,
+	tourActuelMC is tourActuel,
+	finMC is fin,
+	jouerMC(IdGagnant),
+	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1).
