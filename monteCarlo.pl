@@ -66,7 +66,7 @@ jouerMC(IdGagnant) :-
 	(StatusJoueur==0 -> true ;
 		(
 			plateauSavMC(Plateau),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav3),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueurMC(IdJoueur,NewPosJoueur),
@@ -93,17 +93,17 @@ jouerMC(IdGagnant) :-
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
-jouerSimulationsPosition(_,_,CompteurVictoires, VictoiresTotales 0) :- VictoiresTotales is CompteurVictoires.
+jouerSimulationsPosition(_,_,CompteurVictoires, VictoiresTotales, 0) :- VictoiresTotales is CompteurVictoires.
 jouerSimulationsPosition(IdJoueur, CompteurVictoires, VictoiresTotales, NewPosJoueur, NbSimulations) :-
-	plateauSavMC is plateauSav,
-	joueursSavMC is joueursSav,
-	bombesMC is bombes,
-	indexActionMC is indexAction,
-	taillePlateauMC is taillePlateau,
-	nbJoueursMC is nbJoueurs,
-	joueurActuelMC is joueurActuel,
-	tourActuelMC is tourActuel,
-	finMC is fin,
+	plateauSavMC = plateauSav,
+	joueursSavMC = joueursSav,
+	bombesMC = bombes,
+	indexActionMC = indexAction,
+	taillePlateauMC = taillePlateau,
+	nbJoueursMC = nbJoueurs,
+	joueurActuelMC = joueurActuel,
+	tourActuelMC = tourActuel,
+	finMC = fin,
 	actualiserJoueurMC(IdJoueur,NewPosJoueur),
 	jouerMC(IdGagnant),
 	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1; true),
@@ -112,15 +112,15 @@ jouerSimulationsPosition(IdJoueur, CompteurVictoires, VictoiresTotales, NewPosJo
 
 jouerSimulationsBombe(_,_, CompteurVictoires, VictoiresTotales, 0) :- VictoiresTotales is CompteurVictoires.
 jouerSimulationsBombe(IdJoueur, CompteurVictoires, VictoiresTotales, PosJoueur, NbSimulations) :-
-	plateauSavMC is plateauSav,
-	joueursSavMC is joueursSav,
-	bombesMC is bombes,
-	indexActionMC is indexAction,
-	taillePlateauMC is taillePlateau,
-	nbJoueursMC is nbJoueurs,
-	joueurActuelMC is joueurActuel,
-	tourActuelMC is tourActuel,
-	finMC is fin,
+	plateauSavMC = plateauSav,
+	joueursSavMC = joueursSav,
+	bombesMC = bombes,
+	indexActionMC = indexAction,
+	taillePlateauMC = taillePlateau,
+	nbJoueursMC = nbJoueurs,
+	joueurActuelMC = joueurActuel,
+	tourActuelMC = tourActuel,
+	finMC = fin,
 	ajouterBombeMC(PosJoueur),
 	jouerMC(IdGagnant),
 	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1; true),
