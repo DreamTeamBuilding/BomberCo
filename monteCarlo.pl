@@ -66,7 +66,7 @@ jouerMC(IdGagnant) :-
 	(StatusJoueur==0 -> true ;
 		(
 			plateauSavMC(Plateau),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav4),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueurMC(IdJoueur,NewPosJoueur),
@@ -93,8 +93,8 @@ jouerMC(IdGagnant) :-
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
-jouerSimulations_,_,_,_, 0).
-jouerSimulationsIdJoueur, CompteurVictoires, NewPosJoueur, BombePosee, NbSimulations) :-
+jouerSimulationsPosition(_,_,CompteurVictoires, VictoiresTotales 0) :- VictoiresTotales is CompteurVictoires.
+jouerSimulationsPosition(IdJoueur, CompteurVictoires, VictoiresTotales, NewPosJoueur, NbSimulations) :-
 	plateauSavMC is plateauSav,
 	joueursSavMC is joueursSav,
 	bombesMC is bombes,
@@ -105,9 +105,44 @@ jouerSimulationsIdJoueur, CompteurVictoires, NewPosJoueur, BombePosee, NbSimulat
 	tourActuelMC is tourActuel,
 	finMC is fin,
 	actualiserJoueurMC(IdJoueur,NewPosJoueur),
-	(BombePosee==1 -> ajouterBombeMC(NewPosJoueur); true),
 	jouerMC(IdGagnant),
-	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1),
+	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1; true),
 	NbSimulations is NbSimulations -1,
-	jouerSimulations(IdJoueur, CompteurVictoires, NewPosJoueur, BombePosee, NbSimulations).
+	jouerSimulationsPosition(IdJoueur, CompteurVictoires, VictoiresTotales, NewPosJoueur, NbSimulations).
+
+jouerSimulationsBombe(_,_, CompteurVictoires, VictoiresTotales, 0) :- VictoiresTotales is CompteurVictoires.
+jouerSimulationsBombe(IdJoueur, CompteurVictoires, VictoiresTotales, PosJoueur, NbSimulations) :-
+	plateauSavMC is plateauSav,
+	joueursSavMC is joueursSav,
+	bombesMC is bombes,
+	indexActionMC is indexAction,
+	taillePlateauMC is taillePlateau,
+	nbJoueursMC is nbJoueurs,
+	joueurActuelMC is joueurActuel,
+	tourActuelMC is tourActuel,
+	finMC is fin,
+	ajouterBombeMC(PosJoueur),
+	jouerMC(IdGagnant),
+	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1; true),
+	NbSimulations is NbSimulations -1,
+	jouerSimulationsBombe(IdJoueur, CompteurVictoires, VictoiresTotales, PosJoueur, NbSimulations).
+
+
+testerMeilleurCoup([], PosActuelle, MeilleurPos, CompteurVictoire, BombePosee) :-
+	joueurActuel(IdJoueur),
+	jouerSimulationsBombe(IdJoueur, 0, NewCompteurVictoire, PosActuelle, 250),
+	(NewCompteurVictoire > CompteurVictoire -> MeilleurPos is PosActuelle, BombePosee is 1; true).
+testerMeilleurCoup([X|L], PosActuelle, MeilleurPos, CompteurVictoire, BombePosee) :-
+	joueurActuel(IdJoueur),
+	jouerSimulationsPosition(IdJoueur, 0, NewCompteurVictoire, X, 250),
+	(NewCompteurVictoire > CompteurVictoire -> MeilleurPos is X, CompteurVictoire is NewCompteurVictoire; true),
+	testerMeilleurCoup(L, PosActuelle, MeilleurPos, CompteurVictoire, BombePosee).
+
+
+ia(Board, PosIndex, NewPosIndex, BombePosee, iavMC) :-
+	posSuivantes(PosIndex, PositionsSuivantes),
+	posSuivantesPossibles(Board, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
+	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, 0, BombePosee).
+
+
 
