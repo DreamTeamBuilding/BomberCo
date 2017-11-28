@@ -137,6 +137,7 @@ comp(L1, L1).
 		ia:distance(12, 27, 5), % Entre deux cases en diagonale
 		!.
 	test(isPossible):-
+		initBombes,
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		initIndex,
@@ -151,18 +152,40 @@ comp(L1, L1).
 		not(isPossible(12, 11, B)),
 		not(isPossible(12, 1, B)),
 		!.
-	test(isSafeTest):-
-		clean_dynamic,
-		assert(taillePlateau(11)),
-		initIndex,
-		initPlateau,
+	/*test(isSafeTest):-
+		%clean_dynamic,
 		assert(nbJoueurs(2)),
+		assert(taillePlateau(11)),
+		initPlateau,
+		initBombes,
+		initIndex,
 		nbJoueurs(2),
 		taillePlateau(11),
-		initBombes,
 		plateauSav(B),
-		assert(bombes(107, 1)),
-		not(isSafe(108, B)),
+		assert(bombes(14, 1)),
+		%not(isSafe(12, B)),
+		isSafe(107, B),
+		displayBoard(11),
+		!.*/
+	test(posAdjacentesTest):-
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		assert(taillePlateau(11)),
+		posAdjacentes(12, [1,11,13,23]),
+		posAdjacentes(37, [26,36,38,48]),
+		!.
+	test(posSuivantesTest):-
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		assert(taillePlateau(11)),
+		posSuivantes(12, [12,1,11,13,23]),
+		posSuivantes(37, [37,26,36,38,48]),
+		!.
+	test(posSuivantesPossiblesTest):-
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		assert(taillePlateau(11)),
+		initPlateau,
+		plateauSav(B),
+		posSuivantesPossibles(B, 12, [12,1,11,13,23], [12,13,23]),
+		posSuivantesPossibles(B, 25, [25,14,24,25,36], [25,14,36]),
 		!.
 :-end_tests(ia).
 
