@@ -258,6 +258,44 @@ comp(L1, L1).
 		not(isPossible(12, 11, B)),
 		not(isPossible(12, 1, B)),
 		!.
+	test(isSafeTest):-
+	%TODO Corriger le test / la methode
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		assert(nbJoueurs(2)),
+		assert(taillePlateau(11)),
+		initPlateau,
+		initBombes,
+		initIndex,
+		nbJoueurs(2),
+		taillePlateau(11),
+		plateauSav(B),
+		ajouterBombe(14),
+		not(isSafe(12, B)),
+		isSafe(107, B),
+		displayBoard(11),
+		initBombes,
+		!.
+	test(posAdjacentesTest):-
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		assert(taillePlateau(11)),
+		posAdjacentes(12, [1,11,13,23]),
+		posAdjacentes(37, [26,36,38,48]),
+		!.
+	test(posSuivantesTest):-
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		assert(taillePlateau(11)),
+		posSuivantes(12, [12,1,11,13,23]),
+		posSuivantes(37, [37,26,36,38,48]),
+		!.
+	test(posSuivantesPossiblesTest):-$
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		assert(taillePlateau(11)),
+		initPlateau,
+		plateauSav(B),
+		posSuivantesPossibles(B, 12, [12,1,11,13,23], [12,13,23]),
+		posSuivantesPossibles(B, 25, [25,14,24,25,36], [25,14,36]),
+		!.
 :-end_tests(ia).
 
 :-begin_tests(bombes).
