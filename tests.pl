@@ -195,7 +195,7 @@ comp(L1, L1).
 		decrementerBombes,
 		bombes(23,0),
 
-		%Joueur safe sauf le j1, id 0
+		%Joueur safe sauf le j2, id 1
 		retract(joueursSav(0,_,_)),
 		retract(joueursSav(1,_,_)),
 		retract(joueursSav(2,_,_)),
