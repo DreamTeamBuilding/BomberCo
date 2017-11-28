@@ -1,5 +1,6 @@
 :-begin_tests(plateau).
 	test(initPlateau):-
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		initPlateau,
 		taillePlateau(11),
@@ -19,6 +20,8 @@ comp(L1, L1).
 
 :-begin_tests(joueurs).
 	test(initJoueurs):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
 		initJoueurs,
@@ -27,6 +30,8 @@ comp(L1, L1).
 		joueursSav(_, 108, -1),
 		!.
 	test(initJoueurs):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(4)),
 		assert(taillePlateau(11)),
 		initJoueurs,
@@ -37,6 +42,8 @@ comp(L1, L1).
 		joueursSav(_, 108, -1),
 		!.
 	test(initJoueurs):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(3)),
 		assert(taillePlateau(11)),
 		initJoueurs,
@@ -46,6 +53,8 @@ comp(L1, L1).
 		joueursSav(_, 108, -1),
 		!.
 	test(plusieursEnVie):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
 		initJoueurs,
@@ -56,6 +65,8 @@ comp(L1, L1).
 		not(plusieursEnVie),
 		!.
 	test(actualiserJoueur):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
 		initJoueurs,
@@ -63,6 +74,8 @@ comp(L1, L1).
 		joueursSav(_, 13, -1),
 		!.
 	test(joueurSuivant):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
 		initJoueurs,
@@ -70,6 +83,8 @@ comp(L1, L1).
 		joueurSuivant(1,0),
 		!.
 	test(joueurSuivant):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(3)),
 		assert(taillePlateau(11)),
 		initJoueurs,
@@ -78,6 +93,8 @@ comp(L1, L1).
 		joueurSuivant(2,0),
 		!.
 	test(tuer):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
 		initJoueurs,
@@ -87,6 +104,7 @@ comp(L1, L1).
 		joueursSav(1, _, 0),
 		!.
 	test(exploserBombe):-
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		%TODO
 		!.
@@ -94,6 +112,7 @@ comp(L1, L1).
 
 :-begin_tests(ia).
 	test(initIndex):-
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		initIndex,
 		indexAction(1,-TaillePlateau,0),
@@ -104,6 +123,7 @@ comp(L1, L1).
 		indexAction(6,0,1),
 		!.
 	test(distance):-
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		initIndex,
 		ia:distance(12, 12, 0),
@@ -117,6 +137,7 @@ comp(L1, L1).
 		ia:distance(12, 27, 5), % Entre deux cases en diagonale
 		!.
 	test(isPossible):-
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		initIndex,
 		plateauSav(B),
@@ -136,6 +157,7 @@ comp(L1, L1).
 	test(initBombes):-
 		initBombes,
 		not(bombes(_,_)),
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		assert(nbJoueurs(2)),
 		ajouterBombe(12),
 		initBombes,
@@ -143,6 +165,7 @@ comp(L1, L1).
 		!.
 	test(ajouterBombe):-
 		initBombes,
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		assert(nbJoueurs(2)),
 		ajouterBombe(14),
 		nbJoueurs(NbJoueurs),
@@ -152,6 +175,7 @@ comp(L1, L1).
 		!.
 	test(decrementerBombes):-
 		initBombes,
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		assert(nbJoueurs(2)),
 		ajouterBombe(14),
 		ajouterBombe(23),
