@@ -104,9 +104,115 @@ comp(L1, L1).
 		joueursSav(1, _, 0),
 		!.
 	test(exploserBombe):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
-		%TODO
+		assert(nbJoueurs(4)),
+		initJoueurs,
+		initBombes,
+/*		ajouterBombe(36),
+		%20 decrementations pour BOUM
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		bombes(36,0),
+		
+		%+1 -1
+		retract(joueursSav(0,_,_)),
+		retract(joueursSav(1,_,_)),
+		retract(joueursSav(2,_,_)),
+		retract(joueursSav(3,_,_)),
+
+		assert(joueursSav(0,35, -1)),
+		assert(joueursSav(1,37, -1)),
+		assert(joueursSav(2,25, -1)),
+		assert(joueursSav(3,47, -1)),
+
+		exploserBombes(),
+		
+		joueursSav(0,35, 0),
+		joueursSav(1,37, 0),
+		joueursSav(2,25, 0),
+		joueursSav(3,47, 0),
+
+		%+2 -2	
+		retract(joueursSav(0,_,_)),
+		retract(joueursSav(1,_,_)),
+		retract(joueursSav(2,_,_)),
+		retract(joueursSav(3,_,_)),
+
+		assert(joueursSav(0,34, -1)),
+		assert(joueursSav(1,38, -1)),
+		assert(joueursSav(2,14, -1)),
+		assert(joueursSav(3,58, -1)),
+
+		bombes(36,0),
+		exploserBombes(),
+		joueursSav(0,34, 0),
+		joueursSav(1,38, 0),
+		joueursSav(2,14, 0),
+		joueursSav(3,58, 0),
+*/
+		%Autre bombe
+		ajouterBombe(23),
+		%20 decrementations pour BOUM
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		decrementerBombes,
+		bombes(23,0),
+
+		%Joueur safe sauf le j1, id 0
+		retract(joueursSav(0,_,_)),
+		retract(joueursSav(1,_,_)),
+		retract(joueursSav(2,_,_)),
+		retract(joueursSav(3,_,_)),
+
+		assert(joueursSav(0,25, -1)),
+		assert(joueursSav(1,12, -1)),
+		assert(joueursSav(2,56, -1)),
+		assert(joueursSav(3,108, -1)),
+
+		bombes(23,0),
+		exploserBombes(),
+		joueursSav(0,25, -1),
+		joueursSav(1,12, 0),
+		joueursSav(2,56, -1),
+		joueursSav(3,108, -1),
+
 		!.
 :-end_tests(joueurs).
 
@@ -137,6 +243,7 @@ comp(L1, L1).
 		ia:distance(12, 27, 5), % Entre deux cases en diagonale
 		!.
 	test(isPossible):-
+		initBombes,
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		initIndex,

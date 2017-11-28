@@ -21,16 +21,23 @@ joueurSuivant(IdJoueur,IdJoueurSuivant):-
 plusieursEnVie:-joueursSav(X,_,-1),joueursSav(Y,_,-1),Y\==X.
 
 exploserBombes:-
-	taillePlateau(TaillePlateau),
+	findall(IdJoueur,joueursSav(IdJoueur,_,_),ListeId),
 	% TODO : Oh c'est moche!!
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-1), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+1), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2*TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),!.
+	exploserBombes(ListeId).
+
+exploserBombes([]).
+exploserBombes([Id|Ids]):-
+	taillePlateau(TaillePlateau),
+	plateauSav(Plateau),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-1), bombes(PositionB, 0), write(PositionJ), write(" explose\n"), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2), PositionE is PositionB-1, nth0(PositionE, Plateau, 1), bombes(PositionB, 0), write(PositionJ), write(" explose\n"),tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+1), bombes(PositionB, 0), write(PositionJ), write(" explose\n"),tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2), PositionE is PositionB+1, nth0(PositionE, Plateau, 1), bombes(PositionB, 0), write(PositionJ), write(" explose\n"),tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-TaillePlateau), bombes(PositionB, 0), write(PositionJ), write(" explose\n"),tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2*TaillePlateau), PositionE is PositionB-TaillePlateau, nth0(PositionE, Plateau, 1), bombes(PositionB, 0), write(PositionJ), write(" explose\n"),tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+TaillePlateau), bombes(PositionB, 0), write(PositionJ), write(" explose\n"),tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), PositionE is PositionB+TaillePlateau, nth0(PositionE, Plateau, 1), bombes(PositionB, 0), write(PositionJ), write(" explose\n"),tuer(Id)) ; true),
+	exploserBombes(Ids).
 
 tuer(IdJoueur):-
 	retract(joueursSav(IdJoueur, Position, _)),

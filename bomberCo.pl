@@ -70,7 +70,7 @@ init(NbJoueurs, TaillePlateau) :-
 	assert(taillePlateau(TaillePlateau)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	server(8000),
+	%server(8000),
     lancerPartie
 	.
 
