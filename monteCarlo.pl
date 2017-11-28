@@ -66,7 +66,7 @@ jouerMC(IdGagnant) :-
 	(StatusJoueur==0 -> true ;
 		(
 			plateauSavMC(Plateau),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav3),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueurMC(IdJoueur,NewPosJoueur),
@@ -139,7 +139,7 @@ testerMeilleurCoup([X|L], PosActuelle, MeilleurPos, CompteurVictoire, BombePosee
 	testerMeilleurCoup(L, PosActuelle, MeilleurPos, CompteurVictoire, BombePosee).
 
 
-ia(Board, PosIndex, NewPosIndex, BombePosee, iavMC) :-
+ia(Board, PosIndex, NewPosIndex, BombePosee, iaMC) :-
 	posSuivantes(PosIndex, PositionsSuivantes),
 	posSuivantesPossibles(Board, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
 	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, 0, BombePosee).
