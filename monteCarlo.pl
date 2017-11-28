@@ -93,8 +93,8 @@ jouerMC(IdGagnant) :-
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
-
-jouerPartieDepuisEtat(IdJoueur, CompteurVictoires, NewPosJoueur, BombePosee) :-
+jouerPartieDepuisEtat(_,_,_,_, 0).
+jouerPartieDepuisEtat(IdJoueur, CompteurVictoires, NewPosJoueur, BombePosee, NbSimulations) :-
 	actualiserJoueuC(IdJoueur,NewPosJoueur),
 	(BombePosee==1 -> ajouterBombe(NewPosJoueur); true),
 	plateauSavMC is plateauSav,
@@ -107,4 +107,6 @@ jouerPartieDepuisEtat(IdJoueur, CompteurVictoires, NewPosJoueur, BombePosee) :-
 	tourActuelMC is tourActuel,
 	finMC is fin,
 	jouerMC(IdGagnant),
-	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1).
+	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1),
+	NbSimulations is NbSimulations -1,
+	jouerPartieDepuisEtat(IdJoueur, CompteurVictoires, NewPosJoueur, BombePosee, NbSimulations).
