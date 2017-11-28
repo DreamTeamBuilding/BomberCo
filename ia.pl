@@ -30,15 +30,15 @@ isSafe(Pos, Plateau) :-  % la case a l'index Pos est elle safe ?
 	CaseDessus is Pos-TaillePlateau,
 	CaseDessus2 is Pos-(2*TaillePlateau),
 	write("Je regarde si "), write(Pos), writeln(" est safe"),
-    (not(bombes(Pos, _));(bombes(Pos,Temps), Temps >= (5*NbJoueurs))), % bombe sur le joueur
-    (not(bombes(CaseDroite, _));(bombes(CaseDroite,Temps),Temps >= (4*NbJoueurs))), % bombe a droite
-    (not(bombes(CaseGauche, _));(bombes(CaseGauche,Temps), Temps >= (4*NbJoueurs))), % bombe a gauche
-    (not(bombes(CaseDessous, _));(bombes(CaseDessous,Temps), Temps >= (4*NbJoueurs))), % bombe en dessous
-    (not(bombes(CaseDessus, _));(bombes(CaseDessus,Temps), Temps >= (4*NbJoueurs))), % bombe  dessus
-    (not(bombes(CaseDroite2, _));(bombes(CaseDroite2,Temps), Temps >= (3*NbJoueurs)); ((nth0(CaseDroite, Plateau, Case), Case=1))), % bombe 2 case a droite sans mur entre
-    (not(bombes(CaseGauche2, _));(bombes(CaseGauche2,Temps), Temps >= (3*NbJoueurs)); ((nth0(CaseGauche, Plateau, Case), Case=1))),
-    (not(bombes(CaseDessous2, _));(bombes(CaseDessous2,Temps), Temps >= (3*NbJoueurs)); ((nth0(CaseDessous, Plateau, Case), Case==1))),
-    (not(bombes(CaseDessus2, _));(bombes(CaseDessus2,Temps), Temps >= (3*NbJoueurs)); ((nth0(CaseDessus, Plateau, Case), Case==1))),
+    (bombes(Pos, _) -> (bombes(Pos,Temps), Temps >= (5*NbJoueurs)) ; true), % bombe sur le joueur
+    (bombes(CaseDroite, _) -> (bombes(CaseDroite,Temps),Temps >= (4*NbJoueurs)) ; true), % bombe a droite
+    (bombes(CaseGauche, _) -> (bombes(CaseGauche,Temps), Temps >= (4*NbJoueurs)) ; true), % bombe a gauche
+    (bombes(CaseDessous, _) -> (bombes(CaseDessous,Temps), Temps >= (4*NbJoueurs)) ; true), % bombe en dessous
+    (bombes(CaseDessus, _) -> (bombes(CaseDessus,Temps), Temps >= (4*NbJoueurs)) ; true), % bombe  dessus
+    ((bombes(CaseDroite2, _), nth0(CaseDroite, Plateau, 0)) -> (bombes(CaseDroite2,Temps), Temps >= (3*NbJoueurs)); true), % bombe 2 case a droite sans mur entre
+    ((bombes(CaseGauche2, _), nth0(CaseGauche, Plateau, 0)) -> (bombes(CaseGauche2,Temps), Temps >= (3*NbJoueurs)); true),
+    ((bombes(CaseDessous2, _), nth0(CaseDessous, Plateau, 0)) -> (bombes(CaseDessous2,Temps), Temps >= (3*NbJoueurs)); true),
+    ((bombes(CaseDessus2, _), nth0(CaseDessus, Plateau, 0)) -> (bombes(CaseDessus2,Temps), Temps >= (3*NbJoueurs)); true),
      write(Pos), writeln(" est safe").
 
 isPossible(FormerPos,NewPos, Board) :-
