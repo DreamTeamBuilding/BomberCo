@@ -60,7 +60,7 @@ posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], [X|PosSuivantesPossible
 posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :-
 	posSuivantesPossibles(Board, FormerPos, L, PAP).
 
-% Liste des positions safe
+% Liste des positions safe (Liste des positions a tester, Plateau, Liste des positions safe )
 posSuivantesSafe([],_,[]) :- !.
 posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :-
 	isSafe(X,Plateau),

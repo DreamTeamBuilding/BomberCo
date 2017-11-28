@@ -107,6 +107,19 @@ showCoverage:-show_coverage(run_tests).
 
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
+
+% Clean de dynamic
+clean_dynamic:-
+	retractall(plateauSav(_)),
+	retractall(joueursSav(_,_,_)),
+	retractall(bombes(_,_)),
+	retractall(indexAction(_,_,_)),
+	retractall(taillePlateau(_)),
+	retractall(nbJoueurs(_)),
+	retractall(joueurActuel(_)),
+	retractall(tourActuel(_)),
+	retractall(fin(_)).
+
 /*
 afficherLesDetails(Id, NP ,BombePosee):-
 	% On récupère toutes les positions des joueurs

@@ -151,6 +151,19 @@ comp(L1, L1).
 		not(isPossible(12, 11, B)),
 		not(isPossible(12, 1, B)),
 		!.
+	test(isSafeTest):-
+		clean_dynamic,
+		assert(taillePlateau(11)),
+		initIndex,
+		initPlateau,
+		assert(nbJoueurs(2)),
+		nbJoueurs(2),
+		taillePlateau(11),
+		initBombes,
+		plateauSav(B),
+		assert(bombes(107, 1)),
+		not(isSafe(108, B)),
+		!.
 :-end_tests(ia).
 
 :-begin_tests(bombes).
