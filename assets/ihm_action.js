@@ -1,5 +1,4 @@
 var interval ;
-var fini = false;
  
  $(document).ready(function(){
 	 $('#conteneur2').html("<br/><input type='button' onclick='start()' value='Start the game'/>");
@@ -7,7 +6,7 @@ var fini = false;
  
  function boucle(){
 	 alert('Début de partie !');
-	 interval = setInterval(function(){ requestData(); computeData() ;}, 100);
+	 interval = setInterval(function(){ requestData(); computeData() ;}, 300);
  }
  
  function start(){
@@ -19,26 +18,23 @@ var fini = false;
 					console.log(result);    
 				}
 	 });
-	 boucle()
+	 boucle();
  }
  
  function fin(){
 	 clearInterval(interval);
-	 fini = true;
  }
  
  function computeData() {
-	 if(!fini){
-		$.ajax({
-					dataType: 'json', 
-					url:'http://localhost:8000/playMove',
-					contentType: 'application/json; charset=utf-8',
-					success: function (result) {
-						console.log(result);    
-					}
-		 });
-	 }
- }
+	$.ajax({
+				dataType: 'json', 
+				url:'http://localhost:8000/playMove',
+				contentType: 'application/json; charset=utf-8',
+				success: function (result) {
+					console.log(result);    
+				}
+	 });
+}
  
  function requestData(){
 	$.ajax({
@@ -68,33 +64,81 @@ var fini = false;
 	 var individualSize = 500/taille;
 	 
 	 var string = "";
-	 // Murs 
-	 for(index in jsonVar.plateau){
-		if(jsonVar.plateau[index]){
-		x = getX(index, taille);
-		y = getY(index, taille);
-		string += "<div class='mur'"+
-			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
-			"'></div>";
-		}
-	 }
 	 // Bombe
 	 for(pos in jsonVar.bombes){
-		index = jsonVar.bombes[pos];
-		x = getX(index, taille);
-		y = getY(index, taille);
-		string += "<img src='files/bomb.png' class='bombe'"+
-			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
-			"'/>";
+		var index = jsonVar.bombes[pos][0];
+		var temps = jsonVar.bombes[pos][1];
+		var x = getX(index, taille);
+		var y = getY(index, taille);
+		if(temps>0){
+			string += "<img src='files/bomb.png' class='bombe'"+
+				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+				"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
+				"'/>";
+		}else{
+			var xEplo = x-2;
+			var yExplo = y;
+			string += "<img src='files/boom.png' class='bombe'"+
+				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
+				"'/>";
+			xEplo = x-1;
+			yExplo = y;
+			string += "<img src='files/boom.png' class='bombe'"+
+				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
+				"'/>";
+			xEplo = x;
+			yExplo = y;
+			string += "<img src='files/boom.png' class='bombe'"+
+				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
+				"'/>";
+			xEplo = x+1;
+			yExplo = y;
+			string += "<img src='files/boom.png' class='bombe'"+
+				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
+				"'/>";
+			xEplo = x+2;
+			yExplo = y;
+			string += "<img src='files/boom.png' class='bombe'"+
+				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
+				"'/>";
+			xEplo = x;
+			yExplo = y-2;
+			string += "<img src='files/boom.png' class='bombe'"+
+				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
+				"'/>";
+			xEplo = x;
+			yExplo = y-1;
+			string += "<img src='files/boom.png' class='bombe'"+
+				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
+				"'/>";
+			xEplo = x;
+			yExplo = y+1;
+			string += "<img src='files/boom.png' class='bombe'"+
+				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
+				"'/>";
+			xEplo = x;
+			yExplo = y+2;
+			string += "<img src='files/boom.png' class='bombe'"+
+				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
+				"'/>";
+			
+		}
 	 }
 	 // Joueurs vivants
 	 for(pos in jsonVar.joueursVivants){
-		id = jsonVar.joueursVivants[pos][0];
-		index = jsonVar.joueursVivants[pos][1];
-		x = getX(index, taille);
-		y = getY(index, taille);
+		var id = jsonVar.joueursVivants[pos][0];
+		var index = jsonVar.joueursVivants[pos][1];
+		var x = getX(index, taille);
+		var y = getY(index, taille);
 		string += "<img src='files/perso"+id+".png' class='joueurEnVie'"+
 			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
@@ -102,16 +146,27 @@ var fini = false;
 	 }
 	 // Joueurs morts
 	 for(pos in jsonVar.joueursMorts){
-		id = jsonVar.joueursMorts[pos][0];
-		index = jsonVar.joueursMorts[pos][1];
-		x = getX(index, taille);
-		y = getY(index, taille);
+		var id = jsonVar.joueursMorts[pos][0];
+		var index = jsonVar.joueursMorts[pos][1];
+		var x = getX(index, taille);
+		var y = getY(index, taille);
 		string += "<img src='files/dead.png' class='joueurMort'"+
 			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
 			"'/>";
 	 }
 	 
+	 // Murs 
+	 for(index in jsonVar.plateau){
+		if(jsonVar.plateau[index]){
+		var x = getX(index, taille);
+		var y = getY(index, taille);
+		string += "<div class='mur'"+
+			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
+			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
+			"'></div>";
+		}
+	 }
 	 return string;
  }
  
@@ -121,3 +176,5 @@ var fini = false;
  function getY(index, taillePlateau){
 	 return (index-(index%taillePlateau))/taillePlateau;
  }
+ 
+ 

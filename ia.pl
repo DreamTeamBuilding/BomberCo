@@ -50,14 +50,13 @@ isPossible(FormerPos,NewPos, Board) :-
 posAdjacentes(Pos, [Haut, Gauche, Droite, Bas]) :- taillePlateau(TaillePlateau), Haut is Pos-TaillePlateau, Gauche is Pos-1, Droite is Pos+1, Bas is Pos + TaillePlateau.
 
 % Liste des positions accessibles depuis Pos
-posSuivantes(Pos, PositionsSuivantes) :- posAdjacentes(Pos,PosAdjacentes), append(PosAdjacentes,[Pos],PositionsSuivantes).
+posSuivantes(Pos, [Pos|PosAdjacentes]) :- posAdjacentes(Pos,PosAdjacentes).
 
 % Liste des positions realisables depuis FormerPos (pas d'obstacle)
 posSuivantesPossibles(_,_,[],[]):-!.
-posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], NewPAP) :-
+posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], [X|PosSuivantesPossibles]) :-
 	isPossible(FormerPos, X, Board),
-	posSuivantesPossibles(Board, FormerPos, PosSuivantes, PosSuivantesPossibles),
-	append(PosSuivantesPossibles,[X],NewPAP).
+	posSuivantesPossibles(Board, FormerPos, PosSuivantes, PosSuivantesPossibles).
 posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :-
 	posSuivantesPossibles(Board, FormerPos, L, PAP).
 
@@ -72,8 +71,9 @@ posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :-
 	% TODO : CORRIGER RETOUR
 posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- write("Je n'ajoute pas "),writeln(X),posSuivantesSafe(ListeIndex,Plateau, PosSafes).
 
-posSuivantesPlusProches(_,[],_,_).
-posSuivantesPlusProches(Pos, [X|PosPlusProches], MeilleursMouvements, MeilleureDistance) :- distance(Pos,X,Distance), Distance =< MeilleureDistance, append(MeilleursMouvements,[X],NewMM), posSuivantesPlusProches(Pos,PosPlusProches,NewMM, Distance).
+posSuivantesPlusProches(_,[],[],_):-!.
+%%%% Si la nouvelle meilleure distance est PLUS PETITE que l'actuelle, pourquoi on ajoute X à la liste des meilleurs mouvements, on a plutot X EST LE meilleur mouvement non ?
+posSuivantesPlusProches(Pos, [X|PosPlusProches], [X|MeilleursMouvements], NewDistance) :- distance(Pos,X,NewDistance), NewDistance =< MeilleureDistance, posSuivantesPlusProches(Pos,PosPlusProches,MeilleursMouvements, MeilleureDistance).
 posSuivantesPlusProches(Pos, [_|PPP], MM, MD) :- posSuivantesPlusProches(Pos,PPP,MM,MD).
 
 
@@ -88,10 +88,15 @@ ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :-
 % maniere random tant qu'elle n'est pas sortie
 ia(Board, PosIndex, NewPosIndex, BombePosee, iav2) :-
 	posSuivantes(PosIndex, PositionsSuivantes), posSuivantesPossibles(Board, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
-	 (length(PosSuivantesPossibles,0) -> NewPosIndex is PosIndex, BombePosee is 0;
-	 (isSafe(PosIndex, Board) ->
-            repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex,NewPosIndex,Board), isSafe(NewPosIndex, Board);
-            Move is random(5),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex,NewPosIndex, Board), !)).
+	 (length(PosSuivantesPossibles,0) ->
+		NewPosIndex is PosIndex, BombePosee is 0
+	 ;
+		(isSafe(PosIndex, Board) ->
+				(repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex,NewPosIndex,Board), isSafe(NewPosIndex, Board),!)
+			;
+				(repeat, Move is random(5),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex,NewPosIndex, Board), !)
+		)
+	).
 
 % iav3 : detecte et evite les zones de danger
 % et cherche si un deplacement peut la mettre en securite si pas safe

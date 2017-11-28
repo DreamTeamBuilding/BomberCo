@@ -19,7 +19,7 @@
 % Condition d'arret : 10 itérations
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
+%jouer:- (gameover;tourActuel(500)), !, retract(fin(0)),assert(fin(1)).
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
@@ -29,12 +29,11 @@ jouer :-
 	taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	displayBoard(TaillePlateau),
-
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
 			plateauSav(Plateau),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav3),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav2),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
@@ -71,7 +70,7 @@ init(NbJoueurs, TaillePlateau) :-
 	assert(taillePlateau(TaillePlateau)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	% server(8000),
+%	server(8000),
     lancerPartie
 	.
 
@@ -96,7 +95,6 @@ initGame :-
 lancerPartie:-
 	initGame,
 	jouer.
-
 
 
 stop:-

@@ -53,11 +53,11 @@ getInfoGame(_):-
 	tourActuel(TourActuel),
 	findall([Y,X],joueursSav(Y,X,-1),JoueursVivants),
 	findall([Y,X],joueursSav(Y,X,0),JoueursMorts),
-	findall(X,bombes(X,_),Bombes),
+	findall([X,Y],bombes(X,Y),Bombes),
 	plateauSav(Plateau),
 	getStringFromDoubleList(JoueursVivants,StrVivants),
 	getStringFromDoubleList(JoueursMorts,StrMorts),
-	getStringFromList(Bombes,StrBombes),
+	getStringFromDoubleList(Bombes,StrBombes),
 	getStringFromList(Plateau,StrPlateau),
 	StringTab = [
 	"{",
