@@ -89,14 +89,12 @@ jouerMC(IdGagnant) :-
 	assert(tourActuelMC(TourSuivant)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	jouer,
+	jouerMC(IdGagnant),
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
-jouerPartieDepuisEtat(_,_,_,_, 0).
-jouerPartieDepuisEtat(IdJoueur, CompteurVictoires, NewPosJoueur, BombePosee, NbSimulations) :-
-	actualiserJoueuC(IdJoueur,NewPosJoueur),
-	(BombePosee==1 -> ajouterBombe(NewPosJoueur); true),
+jouerSimulations_,_,_,_, 0).
+jouerSimulationsIdJoueur, CompteurVictoires, NewPosJoueur, BombePosee, NbSimulations) :-
 	plateauSavMC is plateauSav,
 	joueursSavMC is joueursSav,
 	bombesMC is bombes,
@@ -106,7 +104,10 @@ jouerPartieDepuisEtat(IdJoueur, CompteurVictoires, NewPosJoueur, BombePosee, NbS
 	joueurActuelMC is joueurActuel,
 	tourActuelMC is tourActuel,
 	finMC is fin,
+	actualiserJoueurMC(IdJoueur,NewPosJoueur),
+	(BombePosee==1 -> ajouterBombeMC(NewPosJoueur); true),
 	jouerMC(IdGagnant),
 	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1),
 	NbSimulations is NbSimulations -1,
-	jouerPartieDepuisEtat(IdJoueur, CompteurVictoires, NewPosJoueur, BombePosee, NbSimulations).
+	jouerSimulations(IdJoueur, CompteurVictoires, NewPosJoueur, BombePosee, NbSimulations).
+
