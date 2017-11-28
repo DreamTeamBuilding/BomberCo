@@ -152,8 +152,10 @@ comp(L1, L1).
 		not(isPossible(12, 11, B)),
 		not(isPossible(12, 1, B)),
 		!.
-	/*test(isSafeTest):-
-		%clean_dynamic,
+	test(isSafeTest):-
+	%TODO Corriger le test / la methode
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
 		initPlateau,
@@ -162,11 +164,12 @@ comp(L1, L1).
 		nbJoueurs(2),
 		taillePlateau(11),
 		plateauSav(B),
-		assert(bombes(14, 1)),
-		%not(isSafe(12, B)),
+		ajouterBombe(14),
+		not(isSafe(12, B)),
 		isSafe(107, B),
 		displayBoard(11),
-		!.*/
+		initBombes,
+		!.
 	test(posAdjacentesTest):-
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
@@ -179,7 +182,7 @@ comp(L1, L1).
 		posSuivantes(12, [12,1,11,13,23]),
 		posSuivantes(37, [37,26,36,38,48]),
 		!.
-	test(posSuivantesPossiblesTest):-
+	test(posSuivantesPossiblesTest):-$
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		initPlateau,
