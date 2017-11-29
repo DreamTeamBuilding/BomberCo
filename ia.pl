@@ -15,8 +15,12 @@ initIndex :-
 distance(Pos1, Pos2, Distance) :-  taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), Distance is (DiffX+DiffY).
 
 adversairePlusProche(_, [], _).
-adversairePlusProche(Pos, [PosJoueur|L], DistancePP) :- distance(Pos,PosJoueur,Distance), (Distance=<DistancePP) ,adversairePlusProche(Pos,L,Distance).
-adversairePlusProche(Pos, [_|L],DistancePP) :- adversairePlusProche(Pos,L,DistancePP).
+adversairePlusProche(Pos, [PosJoueur|L], DistancePP) :- 
+	distance(Pos,PosJoueur,Distance), 
+	(Distance=<DistancePP),
+	adversairePlusProche(Pos,L,Distance).
+adversairePlusProche(Pos, [_|L],DistancePP) :- 
+	adversairePlusProche(Pos,L,DistancePP).
 
 isSafe(Pos, Plateau) :-  % la case a l'index Pos est elle safe ?
 	taillePlateau(TaillePlateau),
@@ -112,6 +116,28 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav3) :-
 	     random_member(NewPosIndex, PosSuivantesPossibles);
 	     random_member(NewPosIndex, PosSuivantesSafes))),
     !).
+	
+% iav3b : detecte et evite les zones de danger
+% et cherche si un deplacement peut la mettre en securite si pas safe
+%si elle est coincée elle pose pas de bombe
+ia(Board, PosIndex, NewPosIndex,BombePosee, iav3b) :-
+		posSuivantes(PosIndex, PositionsSuivantes), posSuivantesPossibles(Board, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
+		(length(PosSuivantesPossibles,0) ->  NewPosIndex is PosIndex, BombePosee is 0;
+		% Si position actuelle = safe : on prend un coup random mais safe
+		(isSafe(PosIndex, Board) -> 
+			posAdjacentes(PosIndex,PosAdjacentes), posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles), posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafe),
+			(length(PosAdjacentesSafe,0) ->  (NewPosIndex is PosIndex, BombePosee is 0);
+			repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif,
+			isPossible(PosIndex, NewPosIndex, Board), isSafe(NewPosIndex, Board),!);
+
+		% Si position actuelle = danger : on cherche les deplacements possibles et safe
+		posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board,PosIndex, PosAdjacentes, PosSuivantesPossibles),
+		posSuivantesSafe(PosSuivantesPossibles, Board, PosSuivantesSafes),
+	     % si PosSuivantesSafes est vide : piocher dans PosSuivantesPossibles
+	     ((length(PosSuivantesSafes,0)) ->
+	     random_member(NewPosIndex, PosSuivantesPossibles);
+	     random_member(NewPosIndex, PosSuivantesSafes))),
+    !).
 
 
 % iav4 : se rapproche de l'adversaire pour poser des bombes avec les
@@ -121,18 +147,21 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 	posSuivantesPossibles(Board, PosIndex, PosSuivantes, PosSuivantesPossibles),
 	(length(PosSuivantesPossibles,0) -> NewPosIndex is PosIndex, BombePosee is 0;
 	(isSafe(PosIndex, Board) ->
-	    % si Safe :
-	    joueursSav(_,PosJoueurs,-1), adversairePlusProche(PosIndex, PosJoueurs, DistanceVolOiseau),
-		 (   DistanceVolOiseau =< 3 ->
-		% si proche de l'adversaire le + proche : random mais a plus de chances de bomber
-		repeat, Move is random(10*(4-DistanceVolOiseau)), (Move > 6 -> Move = 6; true), indexAction(Move,MvmtRelatif,BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex, NewPosIndex,Board), isSafe(NewPosIndex,Board),!;
-		% si loin de l'adversaire le + proche : random mais essaye de s'approcher
-		posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles),
-		posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
-		posSuivantesPlusProches(PosIndex, PosAdjacentesSafes, MeilleursMouvements,_),
-		% Si aucun meilleur mouvement = aucun deplacement Safe : on reste au meme endroit
-		(length(MeilleursMouvements,0)) -> NewPosIndex is PosIndex;random_member(NewPosIndex, MeilleursMouvements)
-		);
+		posAdjacentes(PosIndex,PosAdjacentes), posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles), posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafe),
+		(length(PosAdjacentesSafe,0) ->  
+			(NewPosIndex is PosIndex, BombePosee is 0);
+			% si Safe :
+			joueursSav(_,PosJoueurs,-1), adversairePlusProche(PosIndex, PosJoueurs, DistanceVolOiseau),
+			(   DistanceVolOiseau =< 3 ->
+			% si proche de l'adversaire le + proche : random mais a plus de chances de bomber
+			repeat, Move is random(10*(4-DistanceVolOiseau)), (Move > 6 -> Move = 6; true), indexAction(Move,MvmtRelatif,BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex, NewPosIndex,Board), isSafe(NewPosIndex,Board),!;
+			% si loin de l'adversaire le + proche : random mais essaye de s'approcher
+			posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles),
+			posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
+			posSuivantesPlusProches(PosIndex, PosAdjacentesSafes, MeilleursMouvements,_),
+			% Si aucun meilleur mouvement = aucun deplacement Safe : on reste au meme endroit
+			(length(MeilleursMouvements,0)) -> NewPosIndex is PosIndex;random_member(NewPosIndex, MeilleursMouvements)
+			);
 	    % Si dans zone de danger : on regarde quelles positions adjacentes sont safe
             posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles),
 	    posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
