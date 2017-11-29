@@ -20,33 +20,6 @@ decrementerListe([X|Liste], [Y|ListeDec], [Pos|ListePos]):-
   (Y>=0 -> assert(bombes(Pos, Y)) ; true),
 decrementerListe(Liste, ListeDec, ListePos).
 
-/*
-A virer
-*//*
-exploserBombes:-
- 	findall(IdJoueur,joueursSav(IdJoueur,_,_),ListeId),
- % TODO : Oh c'est moche!!
- % J'ai rajouté mon botox - Lulu Swag
- 	exploserBombes(ListeId).
- 
- exploserBombes([]).
- exploserBombes([Id|Ids]):-
- 	taillePlateau(TaillePlateau),
- 	plateauSav(Plateau),
- 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-1), bombes(PositionB, 0), tuer(Id)) ; true),
- 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2), PositionE is PositionJ-1, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
- 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+1), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2), PositionE is PositionJ+1, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
- 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
- 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2*TaillePlateau), PositionE is PositionJ-TaillePlateau, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
- 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
- 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), PositionE is PositionJ+TaillePlateau, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
- 	exploserBombes(Ids).
- */
- 
-/*
-A garder
-*/
 exploserBombes:-
  	findall(IndexBombes,bombes(IndexBombes,0),ListesBombes),
  	exploserBombes(ListesBombes).
@@ -55,11 +28,10 @@ exploserBombes([]).
 exploserBombes([BombesAEXploser|Autres]):-
 	taillePlateau(TaillePlateau),
 	porteeBombes(PorteeBombes),
-	PremierRang is (1),
-	exploserGauche(BombesAEXploser, PremierRang, PorteeBombes),
-	exploserDroite(BombesAEXploser, PremierRang, PorteeBombes),
-	exploserBas(BombesAEXploser, PremierRang, PorteeBombes, TaillePlateau),
-	exploserHaut(BombesAEXploser, PremierRang, PorteeBombes, TaillePlateau),
+	exploserGauche(BombesAEXploser, 1, PorteeBombes),
+	exploserDroite(BombesAEXploser, 1, PorteeBombes),
+	exploserBas(BombesAEXploser, 1, PorteeBombes, TaillePlateau),
+	exploserHaut(BombesAEXploser, 1, PorteeBombes, TaillePlateau),
 	exploserBombes(Autres).
 
 
