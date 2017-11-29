@@ -98,6 +98,9 @@ function handlePress(e){
 
  function fin(){
 	 clearInterval(interval);
+	 realPlayer = false;
+	 realPlayerTurn = false;
+	 $("h1").text("Game over");
  }
  
  function computeData() {

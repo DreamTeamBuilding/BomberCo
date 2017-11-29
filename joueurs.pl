@@ -33,5 +33,5 @@ jouerLeJoueur(Action, Plateau, PosIndex, NewPosIndex, BombePosee):-
 	(length(PosSuivantesPossibles,0) ->
 	 (NewPosIndex is PosIndex, BombePosee is 0)
 	;
-	 (indexAction(Move,I,BombePosee), NewPosIndex is PosIndex+I,(not(isPossible(PosIndex, NewPosIndex, Plateau)) -> NewPosIndex is PosIndex ; true))
+	 (indexAction(Action,I,BombePosee), NewPosIndex is PosIndex+I,(not(isPossible(PosIndex, NewPosIndex, Plateau)) -> NewPosIndex is PosIndex ; true))
 	).
