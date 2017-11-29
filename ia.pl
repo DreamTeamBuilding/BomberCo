@@ -125,16 +125,20 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav3) :-
 		(length(PosSuivantesPossibles,0) ->  NewPosIndex is PosIndex, BombePosee is 0;
 		% Si position actuelle = safe : on prend un coup random mais safe
 		(isSafe(PosIndex, Board) ->
-		repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif,
-		isPossible(PosIndex, NewPosIndex, Board), isSafe(NewPosIndex, Board),!;
+			repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif,
+			isPossible(PosIndex, NewPosIndex, Board), isSafe(NewPosIndex, Board),!
+		;
 
 		% Si position actuelle = danger : on cherche les deplacements possibles et safe
-		posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board,PosIndex, PosAdjacentes, PosSuivantesPossibles),
-		posSuivantesSafe(PosSuivantesPossibles, Board, PosSuivantesSafes),
+			posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board,PosIndex, PosAdjacentes, PosSuivantesPossibles),
+			posSuivantesSafe(PosSuivantesPossibles, Board, PosSuivantesSafes),
 		% si PosSuivantesSafes est vide : piocher dans PosSuivantesPossibles
-		((length(PosSuivantesSafes,0)) ->
-		random_member(NewPosIndex, PosSuivantesPossibles);
-		random_member(NewPosIndex, PosSuivantesSafes))),
+			(length(PosSuivantesSafes,0) ->
+				random_member(NewPosIndex, PosSuivantesPossibles)
+				;
+				random_member(NewPosIndex, PosSuivantesSafes)
+			)
+		),
     !).
 
 % iav3b : detecte et evite les zones de danger
