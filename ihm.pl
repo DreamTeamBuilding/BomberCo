@@ -36,14 +36,16 @@ accueil(_) :-
 starting(Request) :-
 	http_parameters(Request, [
 		players(PlayersData,[]),
-		size(SizeData,[])
+		size(SizeData,[]),
+		ia(IaData, [])
 		]),
 	atom_number(PlayersData, Players),
 	atom_number(SizeData, Size),
+	atom_number(IaData, Ia),
 	lancerPartie(Players, Size),
 	reply_json_dict("{\"result\":1}").
 
-playMove(_) :-
+playMove(Request) :-
 	(
 		fin(0)
 	->

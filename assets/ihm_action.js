@@ -10,22 +10,85 @@ var interval ;
  }
  
  function start(){
+
  	var numberOfPlayer = 2;
  	var boardSize = 11;
+
+	var numberOfPlayer = prompt("Enter number of player :", "2,3,4")[0];
+	console.log(numberOfPlayer);
+	var boardSize = prompt("Enter size :", "11");
+	console.log(boardSize);
+	var iaChoosen = prompt("Choose ia :", "0,1,2,3,4,5,6")[0];
+	console.log(iaChoosen);
+	
 	$.ajax({
 				dataType: 'json', 
 				url:'http://localhost:8000/starting',
 				data: {
 					'players': numberOfPlayer, 
-					'size': boardSize },
+					'size': boardSize,
+					'ia': iaChoosen },
 				contentType: 'application/json; charset=utf-8',
 				success: function (result) {
 					console.log(result);    
 				}
 	 });
-	 boucle();
+	if (iaChoosen == 0)
+		$(document).keydown(handlePress);
+	boucle();
  }
  
+function handlePress(e){
+	var action = 5;
+	switch(e.which)
+	{
+		case 90:
+		case 122:
+			console.log("haut");
+			action = 1;
+			break;
+		case 83:
+		case 115:
+			console.log("bas");
+			action = 2;
+			break;
+		case 81:
+		case 113:
+			console.log("gauche");
+			action = 4;
+			break;
+		case 68:
+		case 100:
+			console.log("droite");
+			action = 3;
+			break;
+		case 16:
+			console.log("bombe");
+			action = 6;
+			break;
+		case 32:
+			console.log("immobile");
+			action = 5;
+			break;
+		default:
+			console.log("autre");
+			action = 5;
+			break;
+	}
+	$.ajax({
+				dataType: 'json', 
+				url:'http://localhost:8000/playMove',
+				data: {
+					'action': action 
+				},
+				contentType: 'application/json; charset=utf-8',
+				success: function (result) {
+					console.log(result);    
+				}
+	 });
+	
+}
+
  function fin(){
 	 clearInterval(interval);
  }
