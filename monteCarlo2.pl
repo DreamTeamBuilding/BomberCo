@@ -1,98 +1,53 @@
-:- dynamic
-	plateauSavMC/1,
-	joueursSavMC/3,%joueursSav(Id, Positions, Etats)
-	bombesMC/2,%bombes(Positions, TempsRestant)
-	indexActionMC/3,%indexAction(CodeMouvement, Deplacement, PoserBombe)
-	taillePlateauMC/1,
-	nbJoueursMC/1,
-	joueurActuelMC/1,
-	tourActuelMC/1, %A supprimer
-	finMC/1.
-:-[ia].
-
-actualiserJoueurMC(IdJoueur,NewPosJoueur):-
-	retract(joueursSavMC(IdJoueur,_,StatusPrec)),assert(joueursSavMC(IdJoueur,NewPosJoueur,StatusPrec)).
-
-ajouterBombeMC(Position):-
-  nbJoueursMC(NbJoueurs),
-  Duree is NbJoueurs*5,
-  assert(bombesMC(Position, Duree)).
-
-decrementerBombesMC:-
-  findall(Temps,bombesMC(_, Temps), ListeTemps),
-  findall(Pos,bombesMC(Pos,_),ListePos),
-  decrementerListeMC(ListeTemps, ListeTempsDec, ListePos).
-
-decrementerListeMC([],[],[]).
-decrementerListeMC([X|Liste], [Y|ListeDec], [Pos|ListePos]):-
-  Y is X-1,
-  retract(bombesMC(Pos, _)),
-  (Y>=0 -> assert(bombesMC(Pos, Y)) ; true),
-decrementerListeMC(Liste, ListeDec, ListePos).
-
-
-exploserBombesMC:-
-	taillePlateauMC(TaillePlateau),
-	% TODO : Oh c'est moche!!
-	((joueursSavMC(Id, PositionJ, Status), PositionB is (PositionJ-1), bombesMC(PositionB, 0), tuerMC(Id)) ; true),
-	((joueursSavMC(Id, PositionJ, Status), PositionB is (PositionJ-2), bombesMC(PositionB, 0), tuerMC(Id)) ; true),
-	((joueursSavMC(Id, PositionJ, Status), PositionB is (PositionJ+1), bombesMC(PositionB, 0), tuerMC(Id)) ; true),
-	((joueursSavMC(Id, PositionJ, Status), PositionB is (PositionJ+2), bombesMC(PositionB, 0), tuerMC(Id)) ; true),
-	((joueursSavMC(Id, PositionJ, Status), PositionB is (PositionJ-TaillePlateau), bombesMC(PositionB, 0), tuerMC(Id)) ; true),
-	((joueursSavMC(Id, PositionJ, Status), PositionB is (PositionJ-2*TaillePlateau), bombesMC(PositionB, 0), tuerMC(Id)) ; true),
-	((joueursSavMC(Id, PositionJ, Status), PositionB is (PositionJ+TaillePlateau), bombesMC(PositionB, 0), tuerMC(Id)) ; true),
-	((joueursSavMC(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), bombesMC(PositionB, 0), tuerMC(Id)) ; true),!.
-
-tuerMC(IdJoueur):-
-	retract(joueursSavMC(IdJoueur, Position, _)),
-	assert(joueursSavMC(IdJoueur, Position, 0)).
-
-joueurSuivantMC(IdJoueur,IdJoueurSuivant):-
-	nbJoueursMC(NbJoueurs),
-	Id is IdJoueur + 1,
-	IdJoueurSuivant is mod(Id,NbJoueurs).
-
-gameoverMC:-not(plusieursEnVieMC).
-
-plusieursEnVieMC:-joueursSavMC(X,_,-1),joueursSavMC(Y,_,-1),Y\==X.
+iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
+	posSuivantes(PosIndex, PositionsSuivantes),
+	posSuivantesPossibles(PosIndex, PositionsSuivantes, PosSuivantesPossibles),
+	writeln(PosSuivantesPossibles)/* ,
+	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, 0, BombePosee)*/.
 
 
 
-jouerMC(IdGagnant):- (gameoverMC, joueursSavMC(IdGagnant,_,-1) ; tourActuelMC(50)), !, taillePlateauMC(TaillePlateau),retract(fin(0)),assert(fin(1)).
+jouerMC(IdGagnant):- (gameover, joueursSav(IdGagnant,_,-1) ; tourActuel(50)), !.
 jouerMC(IdGagnant) :-
-	joueurActuelMC(IdJoueur),
+	joueurActuel(IdJoueur),
 
-	joueursSavMC(IdJoueur,PosJoueur,StatusJoueur),
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	taillePlateau(TaillePlateau),
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	displayBoard(TaillePlateau),
+	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
-		(
-			plateauSavMC(Plateau),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
+		( 
+			(IdJoueur==0 ->
+				iaJ1(Ia) ; iaGenerale(Ia)
+			),
+			ia(PosJoueur, NewPosJoueur, BombePosee, Ia),
+			%iaMC(PosJoueur, NewPosJoueur, BombePosee, iaMC),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
-			actualiserJoueurMC(IdJoueur,NewPosJoueur),
-			(BombePosee==1 -> ajouterBombeMC(NewPosJoueur); true)
+			actualiserJoueur(IdJoueur,NewPosJoueur),
+			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
 
 		)
 	),
-	decrementerBombesMC,
-	exploserBombesMC,
+	decrementerBombes,
+	exploserBombes,
 	% Tuer des gens,
 
-	joueurSuivantMC(IdJoueur,IdJoueurSuivant),
+	joueurSuivant(IdJoueur,IdJoueurSuivant),
 
-	retract(joueurActuelMC(_)),
-	assert(joueurActuelMC(IdJoueurSuivant)),
+	retract(joueurActuel(_)),
+	assert(joueurActuel(IdJoueurSuivant)),
 
-	tourActuelMC(TA),
-	retract(tourActuelMC(_)),
+	tourActuel(TA),
+	retract(tourActuel(_)),
 	TourSuivant is TA + 1,
-	assert(tourActuelMC(TourSuivant)),
+	assert(tourActuel(TourSuivant)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	jouerMC(IdGagnant),
-	true %a delete (me permet de commenter plus simplement la ligne au dessus)
+	!
 	.
-
+/*
 jouerSimulationsPosition(_,_,CompteurVictoires, VictoiresTotales, 0) :-
 	VictoiresTotales is CompteurVictoires.
 jouerSimulationsPosition(IdJoueur, CompteurVictoires, VictoiresTotales, NewPosJoueur, NbSimulations) :-
@@ -109,22 +64,22 @@ jouerSimulationsPosition(IdJoueur, CompteurVictoires, VictoiresTotales, NewPosJo
 		write("3"),
 	indexAction(CodeTEMP,_,_),
 	indexAction(CodeTEMP,DeplacementTEMP,PoserTEMP),!,
-	assert(indexActionMC(CodeTEMP,DeplacementTEMP,PoserTEMP)),
+	assert(indexAction(CodeTEMP,DeplacementTEMP,PoserTEMP)),
 	taillePlateau(TailleTEMP),
-	assert(taillePlateauMC(TailleTEMP)),
+	assert(taillePlateau(TailleTEMP)),
 	nbJoueurs(NbTEMP),
-	assert(nbJoueursMC(NbTEMP)),
+	assert(nbJoueurs(NbTEMP)),
 	joueurActuel(JoueurTEMP),
-	assert(joueurActuelMC(JoueurTEMP)),
+	assert(joueurActuel(JoueurTEMP)),
 	tourActuel(TourTEMP),
-	assert(tourActuelMC(TourTEMP)),
+	assert(tourActuel(TourTEMP)),
 	fin(FinTEMP),
-	assert(finMC(FinTEMP)),
+	assert(fin(FinTEMP)),
 
-	actualiserJoueurMC(IdJoueur,NewPosJoueur),!,
+	actualiserJoueur(IdJoueur,NewPosJoueur),!,
 	write("hello simu 3"),
 
-	jouerMC(IdGagnant),
+	jouer(IdGagnant),
 	write("hello simu 4"),
 
 	%(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1; true),
@@ -168,12 +123,4 @@ testerMeilleurCoup([X|L], PosActuelle, MeilleurPos, CompteurVictoire, BombePosee
 	testerMeilleurCoup(L, PosActuelle, MeilleurPos, CompteurVictoire, BombePosee).
 
 
-iaMC(Board, PosIndex, NewPosIndex, BombePosee, iaMC) :-
-	write("hello"),
-	posSuivantes(PosIndex, PositionsSuivantes),
-	posSuivantesPossibles(Board, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
-	write(PosSuivantesPossibles),
-	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, 0, BombePosee).
-
-
-
+*/

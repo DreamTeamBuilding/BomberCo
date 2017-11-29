@@ -31,16 +31,15 @@ jouer :-
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	displayBoard(TaillePlateau),
+	displayBoard(TaillePlateau), 
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
-			plateauSav(Plateau),
 			(IdJoueur==0 ->
 				iaJ1(Ia) ; iaGenerale(Ia)
 			),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, Ia),
-			%iaMC(Plateau, PosJoueur, NewPosJoueur, BombePosee, iaMC),
+			ia(PosJoueur, NewPosJoueur, BombePosee, Ia),
+			%iaMC(PosJoueur, NewPosJoueur, BombePosee, iaMC),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
