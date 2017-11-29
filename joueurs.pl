@@ -7,8 +7,8 @@ initJoueurs:-
 
 	Position is TaillePlateau +1, assert(joueursSav(0,Position,-1)),
 	Position2 is TaillePlateau*TaillePlateau-TaillePlateau-2, assert(joueursSav(1,Position2,-1)),
-	(NbJoueurs < 3 ; (Position3 is TaillePlateau*2-2), assert(joueursSav(2,Position3,-1))),
-	(NbJoueurs < 4 ; (Position4 is TaillePlateau*TaillePlateau-TaillePlateau*2+1, assert(joueursSav(3,Position4,-1)))).
+	(NbJoueurs < 3 -> true ; (Position3 is TaillePlateau*2-2), assert(joueursSav(2,Position3,-1))),
+	(NbJoueurs < 4 -> true ; (Position4 is TaillePlateau*TaillePlateau-TaillePlateau*2+1, assert(joueursSav(3,Position4,-1)))).
 
 actualiserJoueur(IdJoueur,NewPosJoueur):-
 	retract(joueursSav(IdJoueur,_,StatusPrec)),assert(joueursSav(IdJoueur,NewPosJoueur,StatusPrec)).

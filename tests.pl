@@ -259,25 +259,20 @@ comp(L1, L1).
 		not(isPossible(12, 1, B)),
 		!.
 	test(isSafeTest):-
-		%clean_dynamic,
-		/*(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
-		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		assert(nbJoueurs(2)),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
-		ajouterBombe(12),
-		initPlateau,
-		initBombes,
-		initIndex,
-		nbJoueurs(2),
-		taillePlateau(11),
+		initGame,
 		displayBoard(11),
 		plateauSav(B),
 		ajouterBombe(14),
-		%assert(bombes(14, 1)),
+		assert(bombes(14, 1)),
+		decrementerBombes,
 		displayBoard(11),
-		%not(isSafe(12, B)),
-		isSafe(14, B),
-		initBombes,*/
+		isSafe(28, B),
+		not(isSafe(14, B)),
+		initBombes,
 		!.
 	test(posAdjacentesTest):-
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
