@@ -14,7 +14,7 @@ var interval ;
 	console.log(numberOfPlayer);
 	var boardSize = prompt("Taille plateau :", "11");
 	console.log(boardSize);
-	var iaPlayer1 = prompt("Choisir ia joueur 1 :", "0,1,2,3,4,5,6")[0];
+	var iaPlayer1 = prompt("Choisir ia joueur 1\nSeule l'ia joueur 1 peut être un vrai joueur :", "0,1,2,3,4,5,6")[0];
 	console.log(iaPlayer1);
 	var iaPlayer2 = prompt("Choisir ia joueur 2 :", "1,2,3,4,5,6")[0];
 	console.log(iaPlayer2);
@@ -144,61 +144,12 @@ function handlePress(e){
 				"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
 				"'/>";
 		}else{
-			var xEplo = x-2;
+			var xEplo = x;
 			var yExplo = y;
 			string += "<img src='files/boom.png' class='bombe'"+
 				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
 				"'/>";
-			xEplo = x-1;
-			yExplo = y;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x;
-			yExplo = y;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x+1;
-			yExplo = y;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x+2;
-			yExplo = y;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x;
-			yExplo = y-2;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x;
-			yExplo = y-1;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x;
-			yExplo = y+1;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x;
-			yExplo = y+2;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			
 		}
 	 }
 	 // Joueurs vivants
