@@ -33,7 +33,7 @@ isSafe(Pos, Plateau) :-  % la case a l'index Pos est elle safe ?
 	CaseDessous2 is Pos+(2*TaillePlateau),
 	CaseDessus is Pos-TaillePlateau,
 	CaseDessus2 is Pos-(2*TaillePlateau),
-	write("Je regarde si "), write(Pos), writeln(" est safe"),
+	%write("Je regarde si "), write(Pos), writeln(" est safe"),
     (bombes(Pos, _) -> (bombes(Pos,Temps), Temps >= (5*NbJoueurs)) ; true), % bombe sur le joueur
     (bombes(CaseDroite, _) -> (bombes(CaseDroite,Temps),Temps >= (4*NbJoueurs)) ; true), % bombe a droite
     (bombes(CaseGauche, _) -> (bombes(CaseGauche,Temps), Temps >= (4*NbJoueurs)) ; true), % bombe a gauche
@@ -42,8 +42,8 @@ isSafe(Pos, Plateau) :-  % la case a l'index Pos est elle safe ?
     ((bombes(CaseDroite2, _), nth0(CaseDroite, Plateau, 0)) -> (bombes(CaseDroite2,Temps), Temps >= (3*NbJoueurs)); true), % bombe 2 case a droite sans mur entre
     ((bombes(CaseGauche2, _), nth0(CaseGauche, Plateau, 0)) -> (bombes(CaseGauche2,Temps), Temps >= (3*NbJoueurs)); true),
     ((bombes(CaseDessous2, _), nth0(CaseDessous, Plateau, 0)) -> (bombes(CaseDessous2,Temps), Temps >= (3*NbJoueurs)); true),
-    ((bombes(CaseDessus2, _), nth0(CaseDessus, Plateau, 0)) -> (bombes(CaseDessus2,Temps), Temps >= (3*NbJoueurs)); true),
-     write(Pos), writeln(" est safe").
+    ((bombes(CaseDessus2, _), nth0(CaseDessus, Plateau, 0)) -> (bombes(CaseDessus2,Temps), Temps >= (3*NbJoueurs)); true).
+    %write(Pos), writeln(" est safe").
 
 isPossible(FormerPos,NewPos, Board) :-
 	not(bombes(NewPos,_)),
@@ -69,7 +69,10 @@ posSuivantesSafe([],_,[]) :- !.
 posSuivantesSafe([X|ListeIndex],Plateau, [X|PosSafes]) :-
 	isSafe(X,Plateau),
 	posSuivantesSafe(ListeIndex,Plateau,PosSafes).
-posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- write("Je n'ajoute pas "),writeln(X),posSuivantesSafe(ListeIndex,Plateau, PosSafes).
+posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- 
+	%write("Je n'ajoute pas "),
+	%writeln(X),
+	posSuivantesSafe(ListeIndex,Plateau, PosSafes).
 
 posSuivantesPlusProches(_,[],[],_):-!.
 %%%% Si la nouvelle meilleure distance est PLUS PETITE que l'actuelle, pourquoi on ajoute X à la liste des meilleurs mouvements, on a plutot X EST LE meilleur mouvement non ?

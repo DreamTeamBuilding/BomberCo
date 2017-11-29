@@ -5,6 +5,7 @@
 :- use_module(library(http/html_write)).
 :- use_module(library(http/html_head)).
 :- use_module(library(http/http_json)).
+:- use_module(library(http/http_parameters)).
 :- use_module(bomberCo).
 
 :- multifile http:location/3.
@@ -17,6 +18,7 @@ http:location(files, "/files", []).
 :- http_handler(root(game), getInfoGame, []).
 :- http_handler(root(starting), starting, []).
 :- http_handler(root(playMove), playMove, []).
+:- http_handler(root(parameter), parameter, []).
 
 server(Port) :- http_server(http_dispatch, [port(Port)]).
 stopServer(Port) :- http_stop_server(Port,[]).
@@ -32,8 +34,14 @@ accueil(_) :-
 	   script(src="files/jquery.js",""),
 	   script(src="files/ihm_action.js","")]).
 	
-starting(_) :-
-	lancerPartie,
+starting(Request) :-
+	http_parameters(Request, [
+		players(PlayersData,[]),
+		size(SizeData,[])
+		]),
+	atom_number(PlayersData, Players),
+	atom_number(SizeData, Size),
+	lancerPartie(Players, Size),
 	reply_json_dict("{\"result\":1}").
 
 playMove(_) :-

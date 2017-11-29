@@ -2,17 +2,22 @@ var interval ;
  
  $(document).ready(function(){
 	 $('#conteneur2').html("<br/><input type='button' onclick='start()' value='Start the game'/>");
- });
- 
+});
+
  function boucle(){
 	 alert('Début de partie !');
 	 interval = setInterval(function(){ requestData(); computeData() ;}, 300);
  }
  
  function start(){
+ 	var numberOfPlayer = 2;
+ 	var boardSize = 11;
 	$.ajax({
 				dataType: 'json', 
 				url:'http://localhost:8000/starting',
+				data: {
+					'players': numberOfPlayer, 
+					'size': boardSize },
 				contentType: 'application/json; charset=utf-8',
 				success: function (result) {
 					console.log(result);    
