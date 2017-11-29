@@ -3,6 +3,7 @@
 	joueursSav/3,%joueursSav(Id, Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
 	indexAction/3,%indexAction(CodeMouvement, Deplacement, PoserBombe)
+	porteeBombes/1, %portee des bombes
 	taillePlateau/1,
 	nbJoueurs/1,
 	joueurActuel/1,
@@ -75,6 +76,9 @@ init(NbJoueurs, TaillePlateau) :-
 	.
 
 initGame :-
+	(porteeBombes(_) -> retractall(porteeBombes(_)); true),
+	assert(porteeBombes(2)),
+	
 	(fin(_) -> retractall(fin(_)); true),
 	assert(fin(0)),
 
