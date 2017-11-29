@@ -2,17 +2,20 @@ iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
 	posSuivantes(PosIndex, PositionsSuivantes),
 	posSuivantesPossibles(PosIndex, PositionsSuivantes, PosSuivantesPossibles),
 	writeln(PosSuivantesPossibles),
-	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, 0, BombePosee).
-
-
-testerMeilleurCoup([], PosActuelle, MeilleurePos, CompteurVictoire, BombePosee) :-
+	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, _ScoreDeLAction)
 	/*
-	TODO : remonter la valeur finale trouvée, on peut check le min/max du coup
+	Utiliser Coup (indexAction) au lieu de NewPosIndex, pour condenser la position et la bombe
 	*/
-	PosActuelle=MeilleurePos.
-	
-	
-testerMeilleurCoup([X|L], PosActuelle, MeilleurePos, CompteurVictoire, BombePosee) :-
+	.
+
+% Lance l'initialisation de la recherche de max
+testerMeilleurCoup([PremierePos|AutresPos], PosActuelle, MeilleurePos, MeilleurScore) :-
+	testerMeilleurCoup(AutresPos, PosActuelle, PremierePos,MeilleurPos, -10000000, MeilleurScore).
+
+% Validation du max
+testerMeilleurCoup([], _, MeilleurePos, MeilleurePos, MeilleurScore, MeilleurScore)
+% Recherche du max parmis les autres coups
+testerMeilleurCoup([X|L], PosActuelle, MeulleurePos0, MeilleurePos, MeilleurScore0, MeilleurScore) :-
 	/*
 	sav des dynamics (plateauSav, joueursSav, bombes, joueurActuel, tourActuel)
 	
@@ -24,7 +27,17 @@ testerMeilleurCoup([X|L], PosActuelle, MeilleurePos, CompteurVictoire, BombePose
 	restaurer les dynamics.
 	
 	*/
-	testerMeilleurCoup(L, PosActuelle, MeilleurePos, CompteurVictoire, BombePosee).
+	% tests pour le maximum
+	/*
+		if(scoreTrouve > MeilleurScore0){
+			MeilleurScore1 = scoreTrouve,
+			MeilleurePos1 = posTrouvee
+		}else{
+			MeilleurScore1 = MeilleurScore0,
+			MeilleurePos1 = MeilleurePos0
+		}
+	*/
+	testerMeilleurCoup([X|L], PosActuelle, MeulleurePos1, MeilleurePos, MeilleurScore1, MeilleurScore).
 
 jouerMC(IdGagnant):- (gameover, joueursSav(IdGagnant,_,-1) ; tourActuel(50)), !.
 jouerMC(IdGagnant) :-
