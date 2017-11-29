@@ -36,10 +36,10 @@ comp(L1, L1).
 		assert(taillePlateau(11)),
 		initJoueurs,
 		nbJoueurs(4),
-		joueursSav(_, 12, -1),
-		joueursSav(_, 20, -1),
-		joueursSav(_, 100, -1),
-		joueursSav(_, 108, -1),
+		joueursSav(_,12,-1),
+		joueursSav(_,20,-1),
+		joueursSav(_,100,-1),
+		joueursSav(_,108,-1),
 		!.
 	test(initJoueurs):-
 		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
@@ -291,7 +291,7 @@ comp(L1, L1).
 		posSuivantes(12, [12,1,11,13,23]),
 		posSuivantes(37, [37,26,36,38,48]),
 		!.
-	test(posSuivantesPossiblesTest):-$
+	test(posSuivantesPossiblesTest):-
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		initPlateau,
