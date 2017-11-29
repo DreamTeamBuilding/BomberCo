@@ -19,7 +19,7 @@
 :-[tests].
 :-[monteCarlo].
 
-% Condition d'arret : 10 itérations
+% Condition d'arret : 10 iterations
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 %jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
