@@ -34,7 +34,7 @@ jouer :-
 	(StatusJoueur==0 -> true ;
 		(
 			plateauSav(Plateau),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav4),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav3),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
@@ -76,9 +76,6 @@ init(NbJoueurs, TaillePlateau) :-
 	.
 
 initGame :-
-	(porteeBombes(_) -> retractall(porteeBombes(_)); true),
-	assert(porteeBombes(2)),
-
 	(fin(_) -> retractall(fin(_)); true),
 	assert(fin(0)),
 
