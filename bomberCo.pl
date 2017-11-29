@@ -36,11 +36,11 @@ jouer :-
 	(StatusJoueur==0 -> true ;
 		(
 			plateauSav(Plateau),
-			/*(IdJoueur==0 ->
+			(IdJoueur==0 ->
 				iaJ1(Ia) ; iaGenerale(Ia)
 			),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, Ia),*/
-			iaMC(Plateau, PosJoueur, NewPosJoueur, BombePosee, iaMC),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, Ia),
+			%iaMC(Plateau, PosJoueur, NewPosJoueur, BombePosee, iaMC),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
