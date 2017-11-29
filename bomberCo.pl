@@ -22,9 +22,9 @@
 % Condition d'arret : 10 itérations
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%jouer:- (gameover;tourActuel(500)), !, retract(fin(0)),assert(fin(1)).
+%jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
+jouer:- (gameover ; tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
 	joueurActuel(IdJoueur),
 
@@ -64,7 +64,7 @@ jouer :-
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	jouer,
-	! %a delete (me permet de commenter plus simplement la ligne au dessus)
+	!
 	.
 
 %%%%% Start !

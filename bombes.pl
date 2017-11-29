@@ -13,7 +13,7 @@ decrementerBombes:-
   findall(Pos,bombes(Pos,_),ListePos),
   decrementerListe(ListeTemps, _, ListePos).
 
-decrementerListe([],[],[]).
+decrementerListe([],[],[]):-!.
 decrementerListe([X|Liste], [Y|ListeDec], [Pos|ListePos]):-
   Y is X-1,
   retract(bombes(Pos, _)),
@@ -22,9 +22,9 @@ decrementerListe(Liste, ListeDec, ListePos).
 
 exploserBombes:-
  	findall(IndexBombes,bombes(IndexBombes,0),ListesBombes),
- 	exploserBombes(ListesBombes).
+ 	exploserBombes(ListesBombes),!.
 
-exploserBombes([]).
+exploserBombes([]):-!.
 exploserBombes([BombesAEXploser|Autres]):-
 	taillePlateau(TaillePlateau),
 	porteeBombes(PorteeBombes),
