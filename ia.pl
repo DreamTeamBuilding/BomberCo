@@ -20,7 +20,7 @@ adversairePlusProche(Pos,[X|ListeJoueurs],Min,PosPlusProche):- adversairePlusPro
 adversairePlusProche(_,[],Min,Min,PosPlusProche) :- write("Distance Finale : "),writeln(Min),!.
 adversairePlusProche(Pos, [PosJoueur|L], DistancePP, MinFinal, PosPlusProche) :-
 	write("Distance a battre : "),writeln(DistancePP),
-	write(" Position anaysée : "),writeln(PosJoueur),
+	write(" Position anaysee : "),writeln(PosJoueur),
 	distance(Pos,PosJoueur,Distance),
 	write(" distance detectee : "),writeln(Distance),
 	(var(DistancePP) -> (DistancePP is Distance, PosPlusProche is PosJoueur) ; true),
@@ -189,7 +189,7 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 		(length(MeilleursMouvements,0)) -> NewPosIndex is PosIndex;random_member(NewPosIndex, MeilleursMouvements)
 		);
 		writeln("Danger"),
-	    % Si position actuelle = danger : on cherche les déplacements possibles et safe
+	    % Si position actuelle = danger : on cherche les deplacements possibles et safe
             posAdjacentes(PosIndex, PosAdjacentes),
 	    posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles),
 	    posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
@@ -198,6 +198,3 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 	     random_member(NewPosIndex, PosAdjacentesPossibles), writeln("Pas de case safe autour");
 	     random_member(NewPosIndex, PosAdjacentesSafes), writeln("Choix parmi les cases safes"))),
 	 !).
-
-
-
