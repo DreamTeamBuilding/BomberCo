@@ -60,7 +60,7 @@ posSuivantes(Pos, [Pos|PosAdjacentes]) :- posAdjacentes(Pos,PosAdjacentes).
 posSuivantesPossibles(_,_,[],[]):-!.
 posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], [X|PosSuivantesPossibles]) :-
 	isPossible(FormerPos, X, Board),
-	posSuivantesPossibles(Board, FormerPos, PosSuivantes, PosSuivantesPossibles).
+	posSuivantesPossibles(Board, FormerPos, PosSuivantes, PosSuivantesPossibles),!.
 posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :-
 	posSuivantesPossibles(Board, FormerPos, L, PAP).
 
@@ -68,12 +68,12 @@ posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :-
 posSuivantesSafe([],_,[]) :- !.
 posSuivantesSafe([X|ListeIndex],Plateau, [X|PosSafes]) :-
 	isSafe(X,Plateau),
-	posSuivantesSafe(ListeIndex,Plateau,PosSafes).
+	posSuivantesSafe(ListeIndex,Plateau,PosSafes),!.
 posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- write("Je n'ajoute pas "),writeln(X),posSuivantesSafe(ListeIndex,Plateau, PosSafes).
 
 posSuivantesPlusProches(_,[],[],_):-!.
 %%%% Si la nouvelle meilleure distance est PLUS PETITE que l'actuelle, pourquoi on ajoute X à la liste des meilleurs mouvements, on a plutot X EST LE meilleur mouvement non ?
-posSuivantesPlusProches(Pos, [X|PosPlusProches], [X|MeilleursMouvements], NewDistance) :- distance(Pos,X,NewDistance), NewDistance =< MeilleureDistance, posSuivantesPlusProches(Pos,PosPlusProches,MeilleursMouvements, MeilleureDistance).
+posSuivantesPlusProches(Pos, [X|PosPlusProches], [X|MeilleursMouvements], NewDistance) :- distance(Pos,X,NewDistance), NewDistance =< MeilleureDistance, posSuivantesPlusProches(Pos,PosPlusProches,MeilleursMouvements, MeilleureDistance),!.
 posSuivantesPlusProches(Pos, [_|PPP], MM, MD) :- posSuivantesPlusProches(Pos,PPP,MM,MD).
 
 
@@ -81,8 +81,11 @@ posSuivantesPlusProches(Pos, [_|PPP], MM, MD) :- posSuivantesPlusProches(Pos,PPP
 ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :-
 	 posSuivantes(PosIndex, PositionsSuivantes),
 	 posSuivantesPossibles(Plateau, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
-	 (length(PosSuivantesPossibles,0) -> NewPosIndex is PosIndex, BombePosee is 0;
-	 repeat, Move is random(7), indexAction(Move,I,BombePosee), NewPosIndex is PosIndex+I,isPossible(PosIndex, NewPosIndex, Plateau), !).
+	 (length(PosSuivantesPossibles,0) -> 
+		(NewPosIndex is PosIndex, BombePosee is 0)
+	;
+		(repeat, Move is random(7), indexAction(Move,I,BombePosee), NewPosIndex is PosIndex+I,isPossible(PosIndex, NewPosIndex, Plateau), !)
+	),!.
 
 % iav2 : Detecte et evite les zones de danger des bombes et bouge de
 % maniere random tant qu'elle n'est pas sortie
@@ -96,7 +99,7 @@ ia(Board, PosIndex, NewPosIndex, BombePosee, iav2) :-
 			;
 				(repeat, Move is random(5),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex,NewPosIndex, Board), !)
 		)
-	).
+	),!.
 
 % iav3 : detecte et evite les zones de danger
 % et cherche si un deplacement peut la mettre en securite si pas safe
