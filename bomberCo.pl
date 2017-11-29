@@ -65,6 +65,43 @@ jouer :-
 	!
 	.
 
+
+jouerVraiJoueur(Action) :-
+	joueurActuel(IdJoueur),
+
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	taillePlateau(TaillePlateau),
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	displayBoard(TaillePlateau),
+	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
+	(StatusJoueur==0 -> true ;
+		(
+			plateauSav(Plateau),
+			jouerLeJoueur(Action, Plateau, PosJoueur, NewPosJoueur, BombePosee).
+			actualiserJoueur(IdJoueur,NewPosJoueur),
+			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
+
+		)
+	),
+	decrementerBombes,
+	exploserBombes,
+	% Tuer des gens,
+
+	joueurSuivant(IdJoueur,IdJoueurSuivant),
+
+	retract(joueurActuel(_)),
+	assert(joueurActuel(IdJoueurSuivant)),
+
+	tourActuel(TA),
+	retract(tourActuel(_)),
+	TourSuivant is TA + 1,
+	assert(tourActuel(TourSuivant)),
+
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	jouer,
+	!
+	.
+
 %%%%% Start !
 init :-
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/

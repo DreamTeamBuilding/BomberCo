@@ -25,3 +25,13 @@ plusieursEnVie:-joueursSav(X,_,-1),joueursSav(Y,_,-1),Y\==X.
 tuer(IdJoueur):-
 	retract(joueursSav(IdJoueur, Position, _)),
 	assert(joueursSav(IdJoueur, Position, 0)).
+
+jouerLeJoueur(Action, Plateau, PosIndex, NewPosIndex, BombePosee):-
+	posSuivantes(PosIndex, PositionsSuivantes),
+	posSuivantesPossibles(Plateau, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
+	% TODO : supprimer?
+	(length(PosSuivantesPossibles,0) ->
+	 (NewPosIndex is PosIndex, BombePosee is 0)
+	;
+	 (indexAction(Move,I,BombePosee), NewPosIndex is PosIndex+I,(not(isPossible(PosIndex, NewPosIndex, Plateau)) -> NewPosIndex is PosIndex ; true))
+	).
