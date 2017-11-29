@@ -82,15 +82,16 @@ posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- write("Je n'ajoute pas "),
 
 % posSuivantesPlusProches(PosCible,PosSuivantesSafes,PosSuivantesPlusProc
 % hes, MeileureDistance)
-posSuivantesPlusProches(PosCible, PosSafes, PosPlusProches, DistanceMin) :- posSuivantePlusProches(PosCible,PosSafes,PosPlusProches,DistanceMin,DistanceMin).
-
-posSuivantesPlusProches(_,[],[],_,_):-!.
-posSuivantesPlusProches(PosCible, [X|PosSuivantesSafes], [X|MeilleursMouvements], DistanceMinCourante, DistanceMin ) :-
+posSuivantesPlusProches(_,[],[],_):-!.
+posSuivantesPlusProches(PosCible, [X|PosSuivantesSafes], [X|MeilleursMouvements], DistanceMin) :-
 	write("Position Cible : "), writeln(PosCible),
+	write("Je teste la position : "), writeln(X),
 	distance(PosCible,X,Distance),
-	Min is min(Distance,DistanceMinCourante),
-	posSuivantesPlusProches(PosCible,PosSuivantesSafes,MeilleursMouvements, Min, DistanceMin).
-posSuivantesPlusProches(Pos, [_|PPP], MM, Min, DistanceMin) :- posSuivantesPlusProches(Pos,PPP,MM,Min, DistanceMin).
+	write("Distance : "), writeln(Distance),
+	(   var(DistanceMin) -> DistanceMin is Distance;true),
+	Distance =< DistanceMin,
+	posSuivantesPlusProches(PosCible,PosSuivantesSafes,MeilleursMouvements,Distance).
+posSuivantesPlusProches(Pos, [_|PPP], MM, DistanceMin) :- posSuivantesPlusProches(Pos,PPP,MM,DistanceMin).
 
 
 % iav1 : fait tout de maniere random
@@ -180,7 +181,8 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 		posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles),
 		posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
 		writeln(PosAdjacentesSafes),
-		posSuivantesPlusProches(PosIndex, PosAdjacentesSafes, MeilleursMouvements,_),
+		posSuivantesPlusProches(20, PosAdjacentesSafes, MeilleursMouvements,_),
+		write("Meilleures Positions Safes : "),writeln(MeilleursMouvements),
 		% Si aucun meilleur mouvement => aucun deplacement Safe : on reste au meme endroit
 		(length(MeilleursMouvements,0)) -> NewPosIndex is PosIndex;random_member(NewPosIndex, MeilleursMouvements)
 		);
