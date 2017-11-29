@@ -81,6 +81,7 @@ function handlePress(e){
 			break;
 	}
 	if (realPlayer && realPlayerTurn) {
+		requestData();
 		$.ajax({
 					dataType: 'json', 
 					url:'http://localhost:8000/playMoveJoueur',
