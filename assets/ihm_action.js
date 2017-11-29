@@ -1,5 +1,7 @@
 var interval ;
- 
+var realPlayerTurn = false;
+var realPlayer = false;
+
  $(document).ready(function(){
 	 $('#conteneur2').html("<br/><input type='button' onclick='start()' value='Start the game'/>");
 });
@@ -33,8 +35,11 @@ var interval ;
 					console.log(result);    
 				}
 	 });
-	if (iaPlayer1 == 0)
+	if (iaPlayer1 == 0){
+		realPlayerTurn = true;
+		realPlayer = true;
 		$(document).keydown(handlePress);
+	}
 	boucle();
  }
  
@@ -75,18 +80,20 @@ function handlePress(e){
 			action = 5;
 			break;
 	}
-	$.ajax({
-				dataType: 'json', 
-				url:'http://localhost:8000/playMove',
-				data: {
-					'action': action 
-				},
-				contentType: 'application/json; charset=utf-8',
-				success: function (result) {
-					console.log(result);    
-				}
-	 });
-	
+	if (realPlayer && realPlayerTurn) {
+		$.ajax({
+					dataType: 'json', 
+					url:'http://localhost:8000/playMoveJoueur',
+					data: {
+						'action': action 
+					},
+					contentType: 'application/json; charset=utf-8',
+					success: function (result) {
+						console.log(result);    
+					}
+		 });
+		realPlayerTurn = false;
+	}
 }
 
  function fin(){
@@ -94,6 +101,7 @@ function handlePress(e){
  }
  
  function computeData() {
+ 	if(!realPlayerTurn) {
 	$.ajax({
 				dataType: 'json', 
 				url:'http://localhost:8000/playMove',
@@ -102,6 +110,9 @@ function handlePress(e){
 					console.log(result);    
 				}
 	 });
+	if (realPlayer)
+		realPlayerTurn = true;
+	}
 }
  
  function requestData(){
