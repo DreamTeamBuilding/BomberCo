@@ -13,7 +13,7 @@ initIndex :-
 
 
 distance(Pos1, Pos2, Distance) :-  taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), Distance is (DiffX+DiffY).
-
+/*
 % Retourne la distance avec l'adversaire le + proche
 adversairePlusProche(Pos,[X|ListeJoueurs],Min,PosPlusProche):- adversairePlusProche(Pos,ListeJoueurs,X,Min,PosPlusProche).
 
@@ -28,7 +28,7 @@ adversairePlusProche(Pos, [PosJoueur|L], DistancePP, MinFinal, PosPlusProche) :-
 	write("Minimum courant : "),writeln(Min),
 	adversairePlusProche(Pos,L,Min,MinFinal, PosPlusProche).
  adversairePlusProche(Pos, [_|L],Min, MinFinal, PosPlusProche) :- adversairePlusProche(Pos,L,Min, MinFinal, PosPlusProche).
-
+*/
 isSafe(Pos, Plateau) :-  % la case a l'index Pos est elle safe ?
 	taillePlateau(TaillePlateau),
 	nbJoueurs(NbJoueurs),
@@ -65,7 +65,7 @@ posSuivantes(Pos, [Pos|PosAdjacentes]) :- posAdjacentes(Pos,PosAdjacentes).
 posSuivantesPossibles(_,_,[],[]):-!.
 posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], [X|PosSuivantesPossibles]) :-
 	isPossible(FormerPos, X, Board),
-	posSuivantesPossibles(Board, FormerPos, PosSuivantes, PosSuivantesPossibles).
+	posSuivantesPossibles(Board, FormerPos, PosSuivantes, PosSuivantesPossibles),!.
 posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :-
 	posSuivantesPossibles(Board, FormerPos, L, PAP).
 
@@ -159,7 +159,7 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav3b) :-
 	     random_member(NewPosIndex, PosSuivantesSafes))),
     !).
 
-
+/*
 % iav4 : se rapproche de l'adversaire pour poser des bombes avec les
 % fonctionnalites precedentes
 ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
@@ -198,3 +198,4 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 	     random_member(NewPosIndex, PosAdjacentesPossibles), writeln("Pas de case safe autour");
 	     random_member(NewPosIndex, PosAdjacentesSafes), writeln("Choix parmi les cases safes"))),
 	 !).
+*/

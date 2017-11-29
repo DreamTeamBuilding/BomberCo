@@ -17,7 +17,7 @@
 :-[bombes].
 :-[ihm].
 :-[tests].
-:-[monteCarlo].
+:-[monteCarlo2].
 
 % Condition d'arret : 10 iterations
 
@@ -40,6 +40,7 @@ jouer :-
 				iaJ1(Ia) ; iaGenerale(Ia)
 			),
 			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, Ia),
+			%iaMC(Plateau, PosJoueur, NewPosJoueur, BombePosee, iaMC),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),

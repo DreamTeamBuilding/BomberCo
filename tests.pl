@@ -304,6 +304,7 @@ comp(L1, L1).
 		decrementerBombes,
 		posSuivantesSafe([12,13,23], Board,[]),
 		!.
+		/*
 	test(adversairePlusProcheTest):-
 		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		assert(nbJoueurs(2)),
@@ -314,7 +315,7 @@ comp(L1, L1).
 		plateauSav(_Board),
 		adversairePlusProche(12,[20,108], 8, 20),
 		adversairePlusProche(108,[12,20], 8, 20),
-		!.
+		!.*/
 	test(posSuivantesPlusProchesTest):-
 		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		assert(nbJoueurs(2)),
