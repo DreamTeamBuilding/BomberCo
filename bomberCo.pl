@@ -3,6 +3,7 @@
 	joueursSav/3,%joueursSav(Id, Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
 	indexAction/3,%indexAction(CodeMouvement, Deplacement, PoserBombe)
+	porteeBombes/1, %portee des bombes
 	taillePlateau/1,
 	nbJoueurs/1,
 	joueurActuel/1,
@@ -19,16 +20,16 @@
 % Condition d'arret : 10 itérations
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-jouer:- (gameover;tourActuel(500)), !, retract(fin(0)),assert(fin(1)).
+%jouer:- (gameover;tourActuel(500)), !, retract(fin(0)),assert(fin(1)).
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
+jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
 	joueurActuel(IdJoueur),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	taillePlateau(TaillePlateau),
+	taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	displayBoard(TaillePlateau),
+	displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
@@ -56,7 +57,7 @@ jouer :-
 	assert(tourActuel(TourSuivant)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	jouer,
+	jouer,
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
@@ -70,11 +71,14 @@ init(NbJoueurs, TaillePlateau) :-
 	assert(taillePlateau(TaillePlateau)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	server(8000),
+%	server(8000),
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
 initGame :-
+	(porteeBombes(_) -> retractall(porteeBombes(_)); true),
+	assert(porteeBombes(2)),
+	
 	(fin(_) -> retractall(fin(_)); true),
 	assert(fin(0)),
 
