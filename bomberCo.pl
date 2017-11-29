@@ -16,7 +16,7 @@
 :-[tests].
 :-[monteCarlo].
 
-% Condition d'arret : 10 itérations
+% Condition d'arret : 10 iterations
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 %jouer:- (gameover;tourActuel(500)), !, retract(fin(0)),assert(fin(1)).
@@ -67,11 +67,10 @@ init(NbJoueurs, TaillePlateau) :-
 	assert(nbJoueurs(NbJoueurs)),
 
 	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-	assert(taillePlateau(TaillePlateau)),
+	assert(taillePlateau(TaillePlateau))
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 %	server(8000),
-    lancerPartie
 	.
 
 initGame :-

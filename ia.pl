@@ -12,17 +12,22 @@ initIndex :-
     assert(indexAction(6,0,1)).              %Bombe
 
 
-listeAdversaires(_,[]) :-!.
-listeAdversaires(PosJoueur, [PosAdv|ListeAdversaires]):- writeln("Je suis beau"),joueursSav(_,PosAdv,-1), PosJoueur \== PosAdv, listeAdversaires(PosJoueur,ListeAdversaires).
-listeAdversaires(PosJoueur, [_|ListeAdversaires]):- writeln("PUUTE"),listeAdversaires(PosJoueur,ListeAdversaires).
-
 distance(Pos1, Pos2, Distance) :-  taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), Distance is (DiffX+DiffY).
 
-adversairePlusProche(_,[],_) :- !.
-adversairePlusProche(Pos, [PosJoueur|L], DistancePP) :- write("Distance a battre : "),writeln(DistancePP), write(" Position anaysée : "),writeln(PosJoueur),
+% Retourne la distance avec l'adversaire le + proche
+adversairePlusProche(Pos,ListeJoueurs,Min):- adversairePlusProche(Pos,ListeJoueurs,Min,Min).
+
+adversairePlusProche(_,[],Min,Min) :- %write("Distance Finale : "),writeln(X),
+	!.
+adversairePlusProche(Pos, [PosJoueur|L], DistancePP, MinFinal ) :-
+	write("Distance a battre : "),writeln(DistancePP), write(" Position anaysée : "),writeln(PosJoueur),
 	distance(Pos,PosJoueur,Distance),
-	 write(" distance detectee : "),writeln(Distance),
-	(Distance=<DistancePP) ,adversairePlusProche(Pos,L,Distance).
+	write(" distance detectee : "),writeln(Distance),
+	(var(DistancePP) -> DistancePP is Distance; true),
+	Min is min(Distance,DistancePP),
+	write("Minimum courant : "),writeln(Min),
+	adversairePlusProche(Pos,L,Min,MinFinal).
+
 adversairePlusProche(Pos, [_|L],DistancePP) :- writeln("IAJIDK"),adversairePlusProche(Pos,L,DistancePP).
 
 isSafe(Pos, Plateau) :-  % la case a l'index Pos est elle safe ?
@@ -74,9 +79,16 @@ posSuivantesSafe([X|ListeIndex],Plateau, [X|PosSafes]) :-
 	posSuivantesSafe(ListeIndex,Plateau,PosSafes).
 posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- write("Je n'ajoute pas "),writeln(X),posSuivantesSafe(ListeIndex,Plateau, PosSafes).
 
-posSuivantesPlusProches(_,[],[],_):-!.
-%%%% Si la nouvelle meilleure distance est PLUS PETITE que l'actuelle, pourquoi on ajoute X Ã  la liste des meilleurs mouvements, on a plutot X EST LE meilleur mouvement non ?
-posSuivantesPlusProches(Pos, [X|PosPlusProches], [X|MeilleursMouvements], NewDistance) :- distance(Pos,X,NewDistance), NewDistance =< MeilleureDistance, posSuivantesPlusProches(Pos,PosPlusProches,MeilleursMouvements, MeilleureDistance).
+% posSuivantesPlusProches(PosCible,PosSuivantesSafes,PosSuivantesPlusProc
+% hes, MeileureDistance)
+posSuivantesPlusProches(PosCible, PosSafes, PosPlusProches, DistanceMin) :- posSuivantePlusProches(PosCible,PosSafes,PosPlusProches,DistanceMin,DistanceMin).
+
+posSuivantesPlusProches(_,[],[],_,_):-!.
+posSuivantesPlusProches(PosCible, [X|PosSuivantesSafes], [X|MeilleursMouvements], DistanceMinCourante, DistanceMin ) :-
+	write("Position Cible : "), writeln(PosCible),
+	distance(PosCible,X,Distance),
+	Min is min(Distance,DistanceMinCourante),
+	posSuivantesPlusProches(PosCible,PosSuivantesSafes,MeilleursMouvements, Min, DistanceMin).
 posSuivantesPlusProches(Pos, [_|PPP], MM, MD) :- posSuivantesPlusProches(Pos,PPP,MM,MD).
 
 
@@ -130,11 +142,12 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 	writeln("Je peux bouger"),
 	% Si position actuelle = safe : on regarde a quelle distance est le joueur le + proche
 	(isSafe(PosIndex, Board) ->
-	writeln("Securite"),
-	 listeAdversaires(PosIndex,PosJoueurs),
-	 write("Adversaires : "), writeln(PosJoueurs),
-	 adversairePlusProche(PosIndex, PosJoueurs, DistanceVolOiseau),
-	 write("Distance : "), writeln(DistanceVolOiseau),
+	 writeln("Securite"),
+	 findall(X,joueursSav(_,X,_),PosJoueurs),
+	 delete(PosJoueurs,PosIndex,PosAdversaires),
+	 write("Adversaires : "), writeln(PosAdversaires),
+	 adversairePlusProche(PosIndex, PosAdversaires, DistanceVolOiseau),
+	 write("Distance du plus proche: "), writeln(DistanceVolOiseau),
 		 (   DistanceVolOiseau =< 3 ->
 		% si proche de l'adversaire le + proche : random mais a plus de chances de bomber
 		repeat,writeln("Je peux sentir son odeur"), Move is random(10*(4-DistanceVolOiseau)), (Move > 6 -> Move = 6; true), indexAction(Move,MvmtRelatif,BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex, NewPosIndex,Board), isSafe(NewPosIndex,Board),!;
@@ -143,6 +156,7 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 		posAdjacentes(PosIndex, PosAdjacentes),
 		posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles),
 		posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafes),
+		writeln(PosAdjacentesSafes),
 		posSuivantesPlusProches(PosIndex, PosAdjacentesSafes, MeilleursMouvements,_),
 		% Si aucun meilleur mouvement => aucun deplacement Safe : on reste au meme endroit
 		(length(MeilleursMouvements,0)) -> NewPosIndex is PosIndex;random_member(NewPosIndex, MeilleursMouvements)
