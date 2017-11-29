@@ -1,10 +1,30 @@
 iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
 	posSuivantes(PosIndex, PositionsSuivantes),
 	posSuivantesPossibles(PosIndex, PositionsSuivantes, PosSuivantesPossibles),
-	writeln(PosSuivantesPossibles)/* ,
-	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, 0, BombePosee)*/.
+	writeln(PosSuivantesPossibles),
+	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, 0, BombePosee).
 
 
+testerMeilleurCoup([], PosActuelle, MeilleurePos, CompteurVictoire, BombePosee) :-
+	/*
+	TODO : remonter la valeur finale trouvée, on peut check le min/max du coup
+	*/
+	PosActuelle=MeilleurePos.
+	
+	
+testerMeilleurCoup([X|L], PosActuelle, MeilleurePos, CompteurVictoire, BombePosee) :-
+	/*
+	sav des dynamics (plateauSav, joueursSav, bombes, joueurActuel, tourActuel)
+	
+	jouer le coup
+	faire plein (a definir) de parties a partir de la en se remplacer par un iav1 (dans la methode jouerMC !!)
+	regarder le tourActuel, et IdGagnant pour attribuer un score à ce coup
+	enregistrer le coup comme meilleur si c'est le cas
+	
+	restaurer les dynamics.
+	
+	*/
+	testerMeilleurCoup(L, PosActuelle, MeilleurePos, CompteurVictoire, BombePosee).
 
 jouerMC(IdGagnant):- (gameover, joueursSav(IdGagnant,_,-1) ; tourActuel(50)), !.
 jouerMC(IdGagnant) :-
@@ -110,17 +130,6 @@ jouerSimulationsBombe(IdJoueur, CompteurVictoires, VictoiresTotales, PosJoueur, 
 	jouerSimulationsBombe(IdJoueur, CompteurVictoires, VictoiresTotales, PosJoueur, NbSimulations).
 
 
-testerMeilleurCoup([], PosActuelle, MeilleurPos, CompteurVictoire, BombePosee) :-
-	joueurActuel(IdJoueur),
-	jouerSimulationsBombe(IdJoueur, 0, NewCompteurVictoire, PosActuelle, 250),
-	(NewCompteurVictoire > CompteurVictoire -> MeilleurPos is PosActuelle, BombePosee is 1; true).
-testerMeilleurCoup([X|L], PosActuelle, MeilleurPos, CompteurVictoire, BombePosee) :-
-	joueurActuel(IdJoueur),
-	write("hello test"),
-	jouerSimulationsPosition(IdJoueur, 0, NewCompteurVictoire, X, 250),
-	write(IdJoueur), write(" "), write(NewCompteurVictoire),
-	(NewCompteurVictoire > CompteurVictoire -> MeilleurPos is X, CompteurVictoire is NewCompteurVictoire; true),
-	testerMeilleurCoup(L, PosActuelle, MeilleurPos, CompteurVictoire, BombePosee).
 
 
 */

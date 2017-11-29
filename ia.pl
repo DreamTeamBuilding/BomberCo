@@ -76,7 +76,7 @@ posSuivantesSafe([],[]) :- !.
 posSuivantesSafe([X|ListeIndex],[X|PosSafes]) :-
 	isSafe(X),
 	posSuivantesSafe(ListeIndex,PosSafes),!.
-posSuivantesSafe([X|ListeIndex],PosSafes) :- posSuivantesSafe(ListeIndex, PosSafes).
+posSuivantesSafe([_|ListeIndex],PosSafes) :- posSuivantesSafe(ListeIndex, PosSafes).
 
 % posSuivantesPlusProches(PosCible,PosSuivantesSafes,PosSuivantesPlusProc
 % hes, MeileureDistance)
