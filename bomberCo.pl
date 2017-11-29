@@ -33,7 +33,7 @@ jouer :-
 	(StatusJoueur==0 -> true ;
 		(
 			plateauSav(Plateau),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav2),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav4),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
@@ -107,6 +107,7 @@ showCoverage:-show_coverage(run_tests).
 
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
+
 /*
 afficherLesDetails(Id, NP ,BombePosee):-
 	% On récupère toutes les positions des joueurs
