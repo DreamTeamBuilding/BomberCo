@@ -82,7 +82,7 @@ posSuivantesSafe([X|ListeIndex],Plateau, PosSafes) :- write("Je n'ajoute pas "),
 
 % posSuivantesPlusProches(PosCible,PosSuivantesSafes,PosSuivantesPlusProc
 % hes, MeileureDistance)
-posSuivantesPlusProches(PosCible, PosSafes, PosPlusProches, DistanceMin) :- posSuivantePlusProches(PosCible,PosSafes,PosPlusProches,DistanceMin,DistanceMin).
+posSuivantesPlusProches(PosCible, PosSafes, PosPlusProches, DistanceMin) :- posSuivantesPlusProches(PosCible,PosSafes,PosPlusProches,DistanceMin,DistanceMin).
 
 posSuivantesPlusProches(_,[],[],_,_):-!.
 posSuivantesPlusProches(PosCible, [X|PosSuivantesSafes], [X|MeilleursMouvements], DistanceMinCourante, DistanceMin ) :-
