@@ -298,9 +298,31 @@ comp(L1, L1).
 		assert(taillePlateau(11)),
 		initGame,
 		initBombes,
-		plateauSav(B),
-		displayBoard(11),
-		posSuivantesSafe([[12,13,23]], B, [12,13,23]),
+		plateauSav(Board),
+		posSuivantesSafe([12,13,23], Board, [12,13,23]),
+		ajouterBombe(13),
+		decrementerBombes,
+		posSuivantesSafe([12,13,23], Board,[]),
+		!.
+	test(adversairePlusProcheTest):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		assert(nbJoueurs(2)),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		assert(taillePlateau(11)),
+		initGame,
+		initBombes,
+		plateauSav(Board),
+		%TODO Appeller la methode et check les retours.
+		!.
+	test(posSuivantesPlusProchesTest):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		assert(nbJoueurs(2)),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		assert(taillePlateau(11)),
+		initGame,
+		initBombes,
+		plateauSav(Board),
+		%TODO Appeller la methode et check les retours.
 		!.
 :-end_tests(ia).
 
