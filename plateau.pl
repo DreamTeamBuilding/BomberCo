@@ -17,7 +17,6 @@ displayBoard(TailleCote):-
 
 printElementBoard([],_,_):-!.
 printElementBoard([X|Plateau],TailleCote,Index) :-
-	%bombes(PosBombes,_),
 	(
 	(X==1, write('X'));
 	((joueursSav(_,Index,Etat), Etat is -1) -> write('P');false);
@@ -31,13 +30,6 @@ printElementBoard([X|Plateau],TailleCote,Index) :-
 	Mod is mod(IndexSuivant, TailleCote),
 	(Mod==0 -> writeln(' ') ; true),
 	printElementBoard(Plateau,TailleCote,IndexSuivant).
-
-/*
-writeVal(Val) :-
-	(var(Val), write(' ')) ;
-	(Val==0, write(' ')) ;
-	(Val==1, write('X')).
-	*/
 
 fill(Plateau,TailleCote,Fin):-
 	Fin is TailleCote * TailleCote,!,

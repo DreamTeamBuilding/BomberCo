@@ -277,7 +277,8 @@ comp(L1, L1).
 		initGame(2,11),
 		initBombes,
 		plateauSav(_Board),
-		%TODO Appeller la methode et check les retours.
+		adversairePlusProche(12,[20,108], 8, 20),
+		adversairePlusProche(108,[12,20], 8, 20),
 		!.
 	test(posSuivantesPlusProchesTest):-
 		initGame(2,11),
