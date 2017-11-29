@@ -127,8 +127,8 @@ jouerSimulationsPosition(IdJoueur, CompteurVictoires, VictoiresTotales, NewPosJo
 	jouerMC(IdGagnant),
 	write("hello simu 4"),
 
-	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1; true),
-	NbSimulations is NbSimulations -1,
+	%(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1; true),
+	NbSimulations is NbSimulations-1,
 
 	write("hello simu 5"),
 
