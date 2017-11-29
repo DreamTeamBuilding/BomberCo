@@ -71,7 +71,7 @@ init(NbJoueurs, TaillePlateau) :-
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	server(8000),
-    lancerPartie
+	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
 initGame :-
@@ -107,23 +107,3 @@ showCoverage:-show_coverage(run_tests).
 
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
-
-/*
-afficherLesDetails(Id, NP ,BombePosee):-
-	% On récupère toutes les positions des joueurs
-	findall(Positions,joueursSav(_,Positions,_),ListePositions),
-	% On récupère toutes les positions des bombes
-	findall(PositionsB,bombes(PositionsB, _),ListePositionsB),
-	% On récupère les temps avant explosion
-	findall(Tps,bombes(_,Tps),ListeTempsB),
-	% On récupère les infos sur le joueurs actif
-	joueursSav(Id, Pos, Stat),
-	write('Liste des joueurs : '),writeln(ListePositions),
-	write('Liste des bombes : '),writeln(ListePositionsB),
-	write('Liste des temps : '),writeln(ListeTempsB),
-	write('Tour du joueur : '), writeln(Id),
-	write('Position : '), writeln(Pos),
-	write('Status : '), writeln(Stat),
-	write('Position suivante : '), writeln(NP),
-	write('A pose une bombe? : '), writeln(BombePosee).
-*/
