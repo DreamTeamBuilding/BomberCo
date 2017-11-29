@@ -10,16 +10,14 @@ var interval ;
  }
  
  function start(){
-
- 	var numberOfPlayer = 2;
- 	var boardSize = 11;
-
-	var numberOfPlayer = prompt("Enter number of player :", "2,3,4")[0];
+	var numberOfPlayer = prompt("Nombre de joueur :", "2,3,4")[0];
 	console.log(numberOfPlayer);
-	var boardSize = prompt("Enter size :", "11");
+	var boardSize = prompt("Taille plateau :", "11");
 	console.log(boardSize);
-	var iaChoosen = prompt("Choose ia :", "0,1,2,3,4,5,6")[0];
-	console.log(iaChoosen);
+	var iaPlayer1 = prompt("Choisir ia joueur 1 :", "0,1,2,3,4,5,6")[0];
+	console.log(iaPlayer1);
+	var iaPlayer2 = prompt("Choisir ia joueur 2 :", "1,2,3,4,5,6")[0];
+	console.log(iaPlayer2);
 	
 	$.ajax({
 				dataType: 'json', 
@@ -27,13 +25,15 @@ var interval ;
 				data: {
 					'players': numberOfPlayer, 
 					'size': boardSize,
-					'ia': iaChoosen },
+					'iaPlayer1': iaPlayer1,
+					'iaPlayer2': iaPlayer2
+					 },
 				contentType: 'application/json; charset=utf-8',
 				success: function (result) {
 					console.log(result);    
 				}
 	 });
-	if (iaChoosen == 0)
+	if (iaPlayer1 == 0)
 		$(document).keydown(handlePress);
 	boucle();
  }

@@ -22,7 +22,7 @@
 % Condition d'arret : 10 iterations
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
+%	jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 jouer:- (gameover ; tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
@@ -44,7 +44,6 @@ jouer :-
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
 			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
-
 		)
 	),
 	decrementerBombes,
@@ -73,7 +72,7 @@ init :-
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
-initGame(NbJoueurs, TaillePlateau, Ia1, Ia2) :-
+initGame(NbJoueurs, TaillePlateau) :-
 	(fin(_) -> retractall(fin(_)); true),
 	assert(fin(0)),
 
@@ -83,7 +82,6 @@ initGame(NbJoueurs, TaillePlateau, Ia1, Ia2) :-
 	(tourActuel(_) -> retractall(tourActuel(_)); true),
 	assert(tourActuel(0)),
 
-	preparerIa(Ia1, Ia2),
     % Initialisation du plateau
 	initPlateau(TaillePlateau),
 	% Initialisation Player
@@ -94,6 +92,7 @@ initGame(NbJoueurs, TaillePlateau, Ia1, Ia2) :-
 	initIndex.
 
 lancerPartie(NbJoueurs, TaillePlateau, Ia1, Ia2):-
+	preparerIa(Ia1, Ia2),
 	initGame(NbJoueurs, TaillePlateau),
 	jouer.
 

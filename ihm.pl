@@ -37,12 +37,14 @@ starting(Request) :-
 	http_parameters(Request, [
 		players(PlayersData,[]),
 		size(SizeData,[]),
-		ia(IaData, [])
+		iaPlayer1(IaPlayer1Data, []),
+		iaPlayer2(IaPlayer2Data, [])
 		]),
 	atom_number(PlayersData, Players),
 	atom_number(SizeData, Size),
-	atom_number(IaData, Ia),
-	lancerPartie(Players, Size),
+	atom_number(IaPlayer1Data, IaPlayer1),
+	atom_number(IaPlayer2Data, IaPlayer2),
+	lancerPartie(Players, Size, IaPlayer1, IaPlayer2),
 	reply_json_dict("{\"result\":1}").
 
 playMove(Request) :-
