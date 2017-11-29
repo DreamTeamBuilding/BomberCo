@@ -76,9 +76,6 @@ init(NbJoueurs, TaillePlateau) :-
 	.
 
 initGame :-
-	(porteeBombes(_) -> retractall(porteeBombes(_)); true),
-	assert(porteeBombes(2)),
-	
 	(fin(_) -> retractall(fin(_)); true),
 	assert(fin(0)),
 
