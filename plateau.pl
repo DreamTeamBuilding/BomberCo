@@ -6,7 +6,7 @@ initPlateau:-
 	length(Plateau, TaillePlateau),
 	% On le remplit et le sav
 	fill(Plateau, TailleCote, 0).
-	
+
 
 % Affichage du plateau
 displayBoard(TailleCote):-
@@ -16,20 +16,14 @@ displayBoard(TailleCote):-
 
 printElementBoard([],_,_):-!.
 printElementBoard([X|Plateau],TailleCote,Index) :-
+	plateauSav(PO),
 	%bombes(PosBombes,_),
 	(
 	(X==1, write('X'));
 	((joueursSav(_,Index,Etat), Etat is -1) -> write('P');false);
 	(joueursSav(_,Index,_) -> write('.');false);
-	(bombes(Index,_) -> write('o');false);
-	((bombes(Pos, 0), Pos is Index-2*TailleCote) -> write('+');false);
-	((bombes(Pos, 0), Pos is Index-TailleCote) -> write('+');false);
-	((bombes(Pos, 0), Pos is Index+TailleCote) -> write('+');false);
-	((bombes(Pos, 0), Pos is Index+2*TailleCote) -> write('+');false);
-	((bombes(Pos, 0), Pos is Index+1) -> write('+');false);
-	((bombes(Pos, 0), Pos is Index+2) -> write('+');false);
-	((bombes(Pos, 0), Pos is Index-1) -> write('+');false);
-	((bombes(Pos, 0), Pos is Index-2) -> write('+');false);
+	((bombes(Index, TempsRest), TempsRest>=0) -> write('o');false);
+	((bombes(Index, TempsRest), TempsRest<0) -> write('+');false);
 	(X==0, write(' '));
 	(X==1, write('X'))
 	),!,

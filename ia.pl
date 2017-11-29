@@ -28,7 +28,8 @@ adversairePlusProche(Pos, [PosJoueur|L], DistancePP, MinFinal ) :-
 	write("Minimum courant : "),writeln(Min),
 	adversairePlusProche(Pos,L,Min,MinFinal).
 
-adversairePlusProche(Pos, [_|L],DistancePP) :- writeln("IAJIDK"),adversairePlusProche(Pos,L,DistancePP).
+ adversairePlusProche(Pos, [_|L],Min, MinFinal) :-
+ writeln("IAJIDK"),adversairePlusProche(Pos,L,Min, MinFinal).
 
 isSafe(Pos, Plateau) :-  % la case a l'index Pos est elle safe ?
 	taillePlateau(TaillePlateau),
@@ -42,15 +43,15 @@ isSafe(Pos, Plateau) :-  % la case a l'index Pos est elle safe ?
 	CaseDessus is Pos-TaillePlateau,
 	CaseDessus2 is Pos-(2*TaillePlateau),
 	write("Je regarde si "), write(Pos), writeln(" est safe"),
-    (not(bombes(Pos, _));(bombes(Pos,Temps), Temps >= (5*NbJoueurs))), % bombe sur le joueur
-    (not(bombes(CaseDroite, _));(bombes(CaseDroite,Temps),Temps >= (4*NbJoueurs))), % bombe a droite
-    (not(bombes(CaseGauche, _));(bombes(CaseGauche,Temps), Temps >= (4*NbJoueurs))), % bombe a gauche
-    (not(bombes(CaseDessous, _));(bombes(CaseDessous,Temps), Temps >= (4*NbJoueurs))), % bombe en dessous
-    (not(bombes(CaseDessus, _));(bombes(CaseDessus,Temps), Temps >= (4*NbJoueurs))), % bombe  dessus
-    (not(bombes(CaseDroite2, _));(bombes(CaseDroite2,Temps), Temps >= (3*NbJoueurs)); ((nth0(CaseDroite, Plateau, Case), Case=1))), % bombe 2 case a droite sans mur entre
-    (not(bombes(CaseGauche2, _));(bombes(CaseGauche2,Temps), Temps >= (3*NbJoueurs)); ((nth0(CaseGauche, Plateau, Case), Case=1))),
-    (not(bombes(CaseDessous2, _));(bombes(CaseDessous2,Temps), Temps >= (3*NbJoueurs)); ((nth0(CaseDessous, Plateau, Case), Case==1))),
-    (not(bombes(CaseDessus2, _));(bombes(CaseDessus2,Temps), Temps >= (3*NbJoueurs)); ((nth0(CaseDessus, Plateau, Case), Case==1))),
+    (bombes(Pos, _) -> (bombes(Pos,Temps), Temps >= (5*NbJoueurs)) ; true), % bombe sur le joueur
+    (bombes(CaseDroite, _) -> (bombes(CaseDroite,Temps),Temps >= (4*NbJoueurs)) ; true), % bombe a droite
+    (bombes(CaseGauche, _) -> (bombes(CaseGauche,Temps), Temps >= (4*NbJoueurs)) ; true), % bombe a gauche
+    (bombes(CaseDessous, _) -> (bombes(CaseDessous,Temps), Temps >= (4*NbJoueurs)) ; true), % bombe en dessous
+    (bombes(CaseDessus, _) -> (bombes(CaseDessus,Temps), Temps >= (4*NbJoueurs)) ; true), % bombe  dessus
+    ((bombes(CaseDroite2, _), nth0(CaseDroite, Plateau, 0)) -> (bombes(CaseDroite2,Temps), Temps >= (3*NbJoueurs)); true), % bombe 2 case a droite sans mur entre
+    ((bombes(CaseGauche2, _), nth0(CaseGauche, Plateau, 0)) -> (bombes(CaseGauche2,Temps), Temps >= (3*NbJoueurs)); true),
+    ((bombes(CaseDessous2, _), nth0(CaseDessous, Plateau, 0)) -> (bombes(CaseDessous2,Temps), Temps >= (3*NbJoueurs)); true),
+    ((bombes(CaseDessus2, _), nth0(CaseDessus, Plateau, 0)) -> (bombes(CaseDessus2,Temps), Temps >= (3*NbJoueurs)); true),
      write(Pos), writeln(" est safe").
 
 isPossible(FormerPos,NewPos, Board) :-
@@ -72,7 +73,7 @@ posSuivantesPossibles(Board, FormerPos,[X|PosSuivantes], [X|PosSuivantesPossible
 posSuivantesPossibles(Board, FormerPos, [_|L], PAP) :-
 	posSuivantesPossibles(Board, FormerPos, L, PAP).
 
-% Liste des positions safe
+% Liste des positions safe (Liste des positions a tester, Plateau, Liste des positions safe )
 posSuivantesSafe([],_,[]) :- !.
 posSuivantesSafe([X|ListeIndex],Plateau, [X|PosSafes]) :-
 	isSafe(X,Plateau),
@@ -89,7 +90,7 @@ posSuivantesPlusProches(PosCible, [X|PosSuivantesSafes], [X|MeilleursMouvements]
 	distance(PosCible,X,Distance),
 	Min is min(Distance,DistanceMinCourante),
 	posSuivantesPlusProches(PosCible,PosSuivantesSafes,MeilleursMouvements, Min, DistanceMin).
-posSuivantesPlusProches(Pos, [_|PPP], MM, MD) :- posSuivantesPlusProches(Pos,PPP,MM,MD).
+posSuivantesPlusProches(Pos, [_|PPP], MM, Min, DistanceMin) :- posSuivantesPlusProches(Pos,PPP,MM,Min, DistanceMin).
 
 
 % iav1 : fait tout de maniere random
@@ -130,6 +131,28 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav3) :-
 		((length(PosSuivantesSafes,0)) ->
 		random_member(NewPosIndex, PosSuivantesPossibles);
 		random_member(NewPosIndex, PosSuivantesSafes))),
+    !).
+
+% iav3b : detecte et evite les zones de danger
+% et cherche si un deplacement peut la mettre en securite si pas safe
+%si elle est coincée elle pose pas de bombe
+ia(Board, PosIndex, NewPosIndex,BombePosee, iav3b) :-
+		posSuivantes(PosIndex, PositionsSuivantes), posSuivantesPossibles(Board, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
+		(length(PosSuivantesPossibles,0) ->  NewPosIndex is PosIndex, BombePosee is 0;
+		% Si position actuelle = safe : on prend un coup random mais safe
+		(isSafe(PosIndex, Board) ->
+			posAdjacentes(PosIndex,PosAdjacentes), posSuivantesPossibles(Board, PosIndex, PosAdjacentes, PosAdjacentesPossibles), posSuivantesSafe(PosAdjacentesPossibles, Board, PosAdjacentesSafe),
+			(length(PosAdjacentesSafe,0) ->  (NewPosIndex is PosIndex, BombePosee is 0);
+			repeat, Move is random(7),indexAction(Move, MvmtRelatif, BombePosee), NewPosIndex is PosIndex+MvmtRelatif,
+			isPossible(PosIndex, NewPosIndex, Board), isSafe(NewPosIndex, Board),!);
+
+		% Si position actuelle = danger : on cherche les deplacements possibles et safe
+		posAdjacentes(PosIndex, PosAdjacentes), posSuivantesPossibles(Board,PosIndex, PosAdjacentes, PosSuivantesPossibles),
+		posSuivantesSafe(PosSuivantesPossibles, Board, PosSuivantesSafes),
+	     % si PosSuivantesSafes est vide : piocher dans PosSuivantesPossibles
+	     ((length(PosSuivantesSafes,0)) ->
+	     random_member(NewPosIndex, PosSuivantesPossibles);
+	     random_member(NewPosIndex, PosSuivantesSafes))),
     !).
 
 

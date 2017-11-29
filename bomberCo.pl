@@ -3,6 +3,7 @@
 	joueursSav/3,%joueursSav(Id, Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
 	indexAction/3,%indexAction(CodeMouvement, Deplacement, PoserBombe)
+	porteeBombes/1, %portee des bombes
 	taillePlateau/1,
 	nbJoueurs/1,
 	joueurActuel/1,
@@ -67,13 +68,17 @@ init(NbJoueurs, TaillePlateau) :-
 	assert(nbJoueurs(NbJoueurs)),
 
 	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-	assert(taillePlateau(TaillePlateau))
+	assert(taillePlateau(TaillePlateau)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 %	server(8000),
+	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
 initGame :-
+	(porteeBombes(_) -> retractall(porteeBombes(_)); true),
+	assert(porteeBombes(2)),
+
 	(fin(_) -> retractall(fin(_)); true),
 	assert(fin(0)),
 
@@ -106,22 +111,3 @@ showCoverage:-show_coverage(run_tests).
 
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
-/*
-afficherLesDetails(Id, NP ,BombePosee):-
-	% On récupère toutes les positions des joueurs
-	findall(Positions,joueursSav(_,Positions,_),ListePositions),
-	% On récupère toutes les positions des bombes
-	findall(PositionsB,bombes(PositionsB, _),ListePositionsB),
-	% On récupère les temps avant explosion
-	findall(Tps,bombes(_,Tps),ListeTempsB),
-	% On récupère les infos sur le joueurs actif
-	joueursSav(Id, Pos, Stat),
-	write('Liste des joueurs : '),writeln(ListePositions),
-	write('Liste des bombes : '),writeln(ListePositionsB),
-	write('Liste des temps : '),writeln(ListeTempsB),
-	write('Tour du joueur : '), writeln(Id),
-	write('Position : '), writeln(Pos),
-	write('Status : '), writeln(Stat),
-	write('Position suivante : '), writeln(NP),
-	write('A pose une bombe? : '), writeln(BombePosee).
-*/
