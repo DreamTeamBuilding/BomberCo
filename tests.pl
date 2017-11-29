@@ -311,8 +311,9 @@ comp(L1, L1).
 		assert(taillePlateau(11)),
 		initGame,
 		initBombes,
-		plateauSav(Board),
-		%TODO Appeller la methode et check les retours.
+		plateauSav(_Board),
+		adversairePlusProche(12,[20,108], 8, 20),
+		adversairePlusProche(108,[12,20], 8, 20),
 		!.
 	test(posSuivantesPlusProchesTest):-
 		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
@@ -321,7 +322,7 @@ comp(L1, L1).
 		assert(taillePlateau(11)),
 		initGame,
 		initBombes,
-		plateauSav(Board),
+		plateauSav(_Board),
 		%TODO Appeller la methode et check les retours.
 		!.
 :-end_tests(ia).

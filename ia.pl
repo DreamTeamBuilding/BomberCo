@@ -15,21 +15,18 @@ initIndex :-
 distance(Pos1, Pos2, Distance) :-  taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), Distance is (DiffX+DiffY).
 
 % Retourne la distance avec l'adversaire le + proche
-adversairePlusProche(Pos,ListeJoueurs,Min):- adversairePlusProche(Pos,ListeJoueurs,Min,Min).
-
-adversairePlusProche(_,[],Min,Min) :- %write("Distance Finale : "),writeln(X),
-	!.
-adversairePlusProche(Pos, [PosJoueur|L], DistancePP, MinFinal ) :-
-	write("Distance a battre : "),writeln(DistancePP), write(" Position anaysée : "),writeln(PosJoueur),
+adversairePlusProche(Pos,ListeJoueurs,Min,PosPlusProche):- adversairePlusProche(Pos,ListeJoueurs,Min,Min,PosPlusProche).
+adversairePlusProche(_,[],Min,Min,PosPlusProche) :- write("Distance Finale : "),writeln(Min),!.
+adversairePlusProche(Pos, [PosJoueur|L], DistancePP, MinFinal, PosPlusProche) :-
+	write("Distance a battre : "),writeln(DistancePP), 
+	write(" Position anaysée : "),writeln(PosJoueur),
 	distance(Pos,PosJoueur,Distance),
 	write(" distance detectee : "),writeln(Distance),
-	(var(DistancePP) -> DistancePP is Distance; true),
+	(var(DistancePP) -> (DistancePP is Distance, PosPlusProche is PosJoueur) ; true),
 	Min is min(Distance,DistancePP),
 	write("Minimum courant : "),writeln(Min),
 	adversairePlusProche(Pos,L,Min,MinFinal).
-
- adversairePlusProche(Pos, [_|L],Min, MinFinal) :-
- writeln("IAJIDK"),adversairePlusProche(Pos,L,Min, MinFinal).
+ adversairePlusProche(Pos, [_|L],Min, MinFinal, PosPlusProche) :- adversairePlusProche(Pos,L,Min, MinFinal).
 
 isSafe(Pos, Plateau) :-  % la case a l'index Pos est elle safe ?
 	taillePlateau(TaillePlateau),
@@ -169,7 +166,7 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 	 findall(X,joueursSav(_,X,_),PosJoueurs),
 	 delete(PosJoueurs,PosIndex,PosAdversaires),
 	 write("Adversaires : "), writeln(PosAdversaires),
-	 adversairePlusProche(PosIndex, PosAdversaires, DistanceVolOiseau),
+	 adversairePlusProche(PosIndex, PosAdversaires, DistanceVolOiseau, PosPlusProche),
 	 write("Distance du plus proche: "), writeln(DistanceVolOiseau),
 		 (   DistanceVolOiseau =< 3 ->
 		% si proche de l'adversaire le + proche : random mais a plus de chances de bomber
