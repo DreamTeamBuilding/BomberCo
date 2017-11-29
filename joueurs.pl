@@ -31,13 +31,13 @@ exploserBombes([Id|Ids]):-
 	taillePlateau(TaillePlateau),
 	plateauSav(Plateau),
 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-1), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2), PositionE is PositionB-1, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2), PositionE is PositionJ-1, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+1), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2), PositionE is PositionB+1, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2), PositionE is PositionJ+1, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2*TaillePlateau), PositionE is PositionB-TaillePlateau, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2*TaillePlateau), PositionE is PositionJ-TaillePlateau, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
 	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), PositionE is PositionB+TaillePlateau, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
+	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), PositionE is PositionJ+TaillePlateau, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
 	exploserBombes(Ids).
 
 tuer(IdJoueur):-

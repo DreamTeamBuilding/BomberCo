@@ -16,20 +16,21 @@ displayBoard(TailleCote):-
 
 printElementBoard([],_,_):-!.
 printElementBoard([X|Plateau],TailleCote,Index) :-
+	plateauSav(PO),
 	%bombes(PosBombes,_),
 	(
 	(X==1, write('X'));
 	((joueursSav(_,Index,Etat), Etat is -1) -> write('P');false);
 	(joueursSav(_,Index,_) -> write('.');false);
 	(bombes(Index,_) -> write('o');false);
-	((bombes(Pos, 0), Pos is Index-2*TailleCote) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index-2*TailleCote, PosE is Index-TailleCote, nth0(PosE,PO,0)) -> write('+');false);
 	((bombes(Pos, 0), Pos is Index-TailleCote) -> write('+');false);
 	((bombes(Pos, 0), Pos is Index+TailleCote) -> write('+');false);
-	((bombes(Pos, 0), Pos is Index+2*TailleCote) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index+2*TailleCote, PosE is Index+TailleCote, nth0(PosE,PO,0)) -> write('+');false);
 	((bombes(Pos, 0), Pos is Index+1) -> write('+');false);
-	((bombes(Pos, 0), Pos is Index+2) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index+2, PosE is Index+1, nth0(PosE,PO,0)) -> write('+');false);
 	((bombes(Pos, 0), Pos is Index-1) -> write('+');false);
-	((bombes(Pos, 0), Pos is Index-2) -> write('+');false);
+	((bombes(Pos, 0), Pos is Index-2, PosE is Index-1, nth0(PosE,PO,0)) -> write('+');false);
 	(X==0, write(' '));
 	(X==1, write('X'))
 	),!,

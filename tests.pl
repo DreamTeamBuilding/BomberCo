@@ -110,7 +110,7 @@ comp(L1, L1).
 		assert(nbJoueurs(4)),
 		initJoueurs,
 		initBombes,
-/*		ajouterBombe(36),
+		ajouterBombe(36),
 		%20 decrementations pour BOUM
 		decrementerBombes,
 		decrementerBombes,
@@ -169,7 +169,7 @@ comp(L1, L1).
 		joueursSav(1,38, 0),
 		joueursSav(2,14, 0),
 		joueursSav(3,58, 0),
-*/
+
 		%Autre bombe
 		ajouterBombe(23),
 		%20 decrementations pour BOUM
