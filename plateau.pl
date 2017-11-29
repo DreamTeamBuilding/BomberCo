@@ -17,7 +17,6 @@ displayBoard(TailleCote):-
 
 printElementBoard([],_,_):-!.
 printElementBoard([X|Plateau],TailleCote,Index) :-
-	plateauSav(PO),
 	%bombes(PosBombes,_),
 	(
 	(X==1, write('X'));
