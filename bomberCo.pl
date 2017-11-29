@@ -33,7 +33,7 @@ jouer :-
 	(StatusJoueur==0 -> true ;
 		(
 			plateauSav(Plateau),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav4),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav1),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
