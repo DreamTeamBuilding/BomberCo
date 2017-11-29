@@ -260,7 +260,7 @@ comp(L1, L1).
 		!.
 	test(isSafeTest):-
 		%clean_dynamic,
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		/*(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
@@ -277,7 +277,7 @@ comp(L1, L1).
 		displayBoard(11),
 		%not(isSafe(12, B)),
 		isSafe(14, B),
-		initBombes,
+		initBombes,*/
 		!.
 	test(posAdjacentesTest):-
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
