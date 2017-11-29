@@ -36,9 +36,9 @@ comp(L1, L1).
 		assert(taillePlateau(11)),
 		initJoueurs,
 		nbJoueurs(4),
-		joueursSav(_, 12, -1),  
+		joueursSav(_, 12, -1),
 		joueursSav(_, 20, -1),
-		joueursSav(_, 100, -1),  
+		joueursSav(_, 100, -1),
 		joueursSav(_, 108, -1),
 		!.
 	test(initJoueurs):-
@@ -259,21 +259,24 @@ comp(L1, L1).
 		not(isPossible(12, 1, B)),
 		!.
 	test(isSafeTest):-
-	%TODO Corriger le test / la methode
+		%clean_dynamic,
 		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
+		ajouterBombe(12),
 		initPlateau,
 		initBombes,
 		initIndex,
 		nbJoueurs(2),
 		taillePlateau(11),
+		displayBoard(11),
 		plateauSav(B),
 		ajouterBombe(14),
-		not(isSafe(12, B)),
-		isSafe(107, B),
+		%assert(bombes(14, 1)),
 		displayBoard(11),
+		%not(isSafe(12, B)),
+		isSafe(14, B),
 		initBombes,
 		!.
 	test(posAdjacentesTest):-
