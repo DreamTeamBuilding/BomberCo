@@ -9,6 +9,8 @@
 	joueurActuel/1,
 	tourActuel/1, %A supprimer
 	fin/1.
+	iaJ1/1, % Ia du joueur 1
+	iaGenerale/1, % Ia du reste des joueurs
 :-[ia].
 :-[plateau].
 :-[joueurs].
@@ -97,6 +99,17 @@ lancerPartie:-
 	initGame,
 	jouer.
 
+preparerIa(Ia1, Ia2) :-
+	(Ia1==1 -> assert(iaJ1(ia1)) ; true),
+	(Ia1==2 -> assert(iaJ1(ia2)) ; true),
+	(Ia1==3 -> assert(iaJ1(ia3)) ; true),
+	(Ia1==4 -> assert(iaJ1(ia3b)) ; true),
+	(Ia1==5 -> assert(iaJ1(ia4)) ; true),
+	(Ia2==1 -> assert(iaGenerale(ia1)) ; true),
+	(Ia2==2 -> assert(iaGenerale(ia2)) ; true),
+	(Ia2==3 -> assert(iaGenerale(ia3)) ; true),
+	(Ia2==4 -> assert(iaGenerale(ia3b)) ; true),
+	(Ia2==5 -> assert(iaGenerale(ia4)) ; true).
 
 stop:-
 	stopServer(8000).
