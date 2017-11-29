@@ -10,7 +10,7 @@ var realPlayer = false;
 	 alert('Début de partie !');
 	 interval = setInterval(function(){ requestData(); computeData() ;}, 300);
  }
- 
+
  function start(){
 	var numberOfPlayer = prompt("Nombre de joueur :", "2,3,4")[0];
 	console.log(numberOfPlayer);
@@ -20,19 +20,19 @@ var realPlayer = false;
 	console.log(iaPlayer1);
 	var iaPlayer2 = prompt("Choisir ia joueur 2 :", "1,2,3,4,5,6")[0];
 	console.log(iaPlayer2);
-	
+
 	$.ajax({
-				dataType: 'json', 
+				dataType: 'json',
 				url:'http://localhost:8000/starting',
 				data: {
-					'players': numberOfPlayer, 
+					'players': numberOfPlayer,
 					'size': boardSize,
 					'iaPlayer1': iaPlayer1,
 					'iaPlayer2': iaPlayer2
 					 },
 				contentType: 'application/json; charset=utf-8',
 				success: function (result) {
-					console.log(result);    
+					console.log(result);
 				}
 	 });
 	if (iaPlayer1 == 0){
@@ -42,7 +42,7 @@ var realPlayer = false;
 	}
 	boucle();
  }
- 
+
 function handlePress(e){
 	var action = 5;
 	switch(e.which)
@@ -83,14 +83,14 @@ function handlePress(e){
 	if (realPlayer && realPlayerTurn) {
 		requestData();
 		$.ajax({
-					dataType: 'json', 
+					dataType: 'json',
 					url:'http://localhost:8000/playMoveJoueur',
 					data: {
-						'action': action 
+						'action': action
 					},
 					contentType: 'application/json; charset=utf-8',
 					success: function (result) {
-						console.log(result);    
+						console.log(result);
 					}
 		 });
 		realPlayerTurn = false;
@@ -103,39 +103,39 @@ function handlePress(e){
 	 realPlayerTurn = false;
 	 $("h1").text("Game over");
  }
- 
+
  function computeData() {
  	if(!realPlayerTurn) {
 	$.ajax({
-				dataType: 'json', 
+				dataType: 'json',
 				url:'http://localhost:8000/playMove',
 				contentType: 'application/json; charset=utf-8',
 				success: function (result) {
-					console.log(result);    
+					console.log(result);
 				}
 	 });
 	if (realPlayer)
 		realPlayerTurn = true;
 	}
 }
- 
+
  function requestData(){
 	$.ajax({
-				dataType: 'json', 
+				dataType: 'json',
 				url:'http://localhost:8000/game',
 				contentType: 'application/json; charset=utf-8',
 				success: function (game) {
-					console.log(game);    
+					console.log(game);
 					writeHtml(buildString(game));
 				}
 	 });
  }
- 
+
  function writeHtml(code){
 	 $('#conteneur').html(code);
  }
- 
- 
+
+
  function buildString(infoGame){
 	 var jsonVar = JSON.parse(infoGame);
 	 if(jsonVar.fin==1){
@@ -143,10 +143,15 @@ function handlePress(e){
 		 return;
 	 }
 	 var taille = jsonVar.taillePlateau;
-	 
+
 	 var individualSize = 500/taille;
-	 
+
 	 var string = "";
+
+   // Sol
+   $('#conteneur').css( 'background', 'url(files/ground.png)' );
+   $('#conteneur').css( 'background-size', individualSize);
+
 	 // Bombe
 	 for(pos in jsonVar.bombes){
 		var index = jsonVar.bombes[pos][0];
@@ -189,26 +194,24 @@ function handlePress(e){
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
 			"'/>";
 	 }
-	 
-	 // Murs 
+
+	 // Murs
 	 for(index in jsonVar.plateau){
 		if(jsonVar.plateau[index]){
 		var x = getX(index, taille);
 		var y = getY(index, taille);
-		string += "<div class='mur'"+
+		string += "<img src='files/wall.png' class='mur'"+
 			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
-			"'></div>";
+			"'/>";
 		}
 	 }
 	 return string;
  }
- 
+
  function getX(index, taillePlateau){
 	 return index%taillePlateau;
  }
  function getY(index, taillePlateau){
 	 return (index-(index%taillePlateau))/taillePlateau;
  }
- 
- 
