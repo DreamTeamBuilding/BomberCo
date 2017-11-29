@@ -264,12 +264,9 @@ comp(L1, L1).
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		initGame,
-		displayBoard(11),
 		plateauSav(B),
 		ajouterBombe(14),
-		assert(bombes(14, 1)),
 		decrementerBombes,
-		displayBoard(11),
 		isSafe(28, B),
 		not(isSafe(14, B)),
 		initBombes,
@@ -293,6 +290,17 @@ comp(L1, L1).
 		plateauSav(B),
 		posSuivantesPossibles(B, 12, [12,1,11,13,23], [12,13,23]),
 		posSuivantesPossibles(B, 25, [25,14,24,25,36], [25,14,36]),
+		!.
+	test(posSuivantesSafeTest):-
+		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+		assert(nbJoueurs(2)),
+		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+		assert(taillePlateau(11)),
+		initGame,
+		initBombes,
+		plateauSav(B),
+		displayBoard(11),
+		posSuivantesSafe([[12,13,23]], B, [12,13,23]),
 		!.
 :-end_tests(ia).
 
