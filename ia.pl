@@ -79,10 +79,9 @@ posSuivantesPlusProches(Pos, [_|PPP], MM, MD) :- posSuivantesPlusProches(Pos,PPP
 
 % iav1 : fait tout de maniere random
 ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :-
-	 writeln('Je suis ia1 ! Je suis debile !'),
 	 posSuivantes(PosIndex, PositionsSuivantes),
 	 posSuivantesPossibles(Plateau, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
-	 (length(PosSuivantesPossibles,0) -> 
+	 (length(PosSuivantesPossibles,0) ->
 		(NewPosIndex is PosIndex, BombePosee is 0)
 	;
 		(repeat, Move is random(7), indexAction(Move,I,BombePosee), NewPosIndex is PosIndex+I,isPossible(PosIndex, NewPosIndex, Plateau), !)
@@ -91,7 +90,6 @@ ia(Plateau, PosIndex, NewPosIndex, BombePosee, iav1) :-
 % iav2 : Detecte et evite les zones de danger des bombes et bouge de
 % maniere random tant qu'elle n'est pas sortie
 ia(Board, PosIndex, NewPosIndex, BombePosee, iav2) :-
-	writeln('Je suis ia2 ! Je suis peureuse !'),
 	posSuivantes(PosIndex, PositionsSuivantes), posSuivantesPossibles(Board, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
 	 (length(PosSuivantesPossibles,0) ->
 		NewPosIndex is PosIndex, BombePosee is 0

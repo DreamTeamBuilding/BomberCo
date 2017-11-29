@@ -39,8 +39,7 @@ jouer :-
 			(IdJoueur==0 ->
 				iaJ1(Ia) ; iaGenerale(Ia)
 			),
-			writeln(Ia),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iav2),
+			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, Ia),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
