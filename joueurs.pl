@@ -7,8 +7,8 @@ initJoueurs:-
 
 	Position is TaillePlateau +1, assert(joueursSav(0,Position,-1)),
 	Position2 is TaillePlateau*TaillePlateau-TaillePlateau-2, assert(joueursSav(1,Position2,-1)),
-	(NbJoueurs < 3 ; (Position3 is TaillePlateau*2-2), assert(joueursSav(2,Position3,-1))),
-	(NbJoueurs < 4 ; (Position4 is TaillePlateau*TaillePlateau-TaillePlateau*2+1, assert(joueursSav(3,Position4,-1)))).
+	(NbJoueurs < 3 -> true ; (Position3 is TaillePlateau*2-2), assert(joueursSav(2,Position3,-1))),
+	(NbJoueurs < 4 -> true ; (Position4 is TaillePlateau*TaillePlateau-TaillePlateau*2+1, assert(joueursSav(3,Position4,-1)))).
 
 actualiserJoueur(IdJoueur,NewPosJoueur):-
 	retract(joueursSav(IdJoueur,_,StatusPrec)),assert(joueursSav(IdJoueur,NewPosJoueur,StatusPrec)).
@@ -19,26 +19,6 @@ joueurSuivant(IdJoueur,IdJoueurSuivant):-
 	IdJoueurSuivant is mod(Id,NbJoueurs).
 
 plusieursEnVie:-joueursSav(X,_,-1),joueursSav(Y,_,-1),Y\==X.
-
-exploserBombes:-
-	findall(IdJoueur,joueursSav(IdJoueur,_,_),ListeId),
-	% TODO : Oh c'est moche!!
-	% J'ai rajouté mon botox - Lulu Swag
-	exploserBombes(ListeId).
-
-exploserBombes([]).
-exploserBombes([Id|Ids]):-
-	taillePlateau(TaillePlateau),
-	plateauSav(Plateau),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-1), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2), PositionE is PositionB-1, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+1), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2), PositionE is PositionB+1, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ-2*TaillePlateau), PositionE is PositionB-TaillePlateau, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+TaillePlateau), bombes(PositionB, 0), tuer(Id)) ; true),
-	((joueursSav(Id, PositionJ, Status), PositionB is (PositionJ+2*TaillePlateau), PositionE is PositionB+TaillePlateau, nth0(PositionE, Plateau, 0), bombes(PositionB, 0), tuer(Id)) ; true),
-	exploserBombes(Ids).
 
 tuer(IdJoueur):-
 	retract(joueursSav(IdJoueur, Position, _)),
