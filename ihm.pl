@@ -18,6 +18,8 @@ http:location(files, "/files", []).
 :- http_handler(root(game), getInfoGame, []).
 :- http_handler(root(starting), starting, []).
 :- http_handler(root(playMove), playMove, []).
+:- http_handler(root(playMoveJoueur), playMoveJoueur, []).
+
 
 server(Port) :- http_server(http_dispatch, [port(Port)]).
 stopServer(Port) :- http_stop_server(Port,[]).
@@ -47,11 +49,25 @@ starting(Request) :-
 	lancerPartie(Players, Size, IaPlayer1, IaPlayer2),
 	reply_json_dict("{\"result\":1}").
 
-playMove(Request) :-
+playMove(_) :-
 	(
 		fin(0)
 	->
 		(jouer,reply_json_dict("{\"result\":1}"))
+	;
+		reply_json_dict("{\"result\":0}")
+	)
+	.
+
+playMoveJoueur(Request) :-
+	http_parameters(Request, [
+		action(ActionData,[optional(true)])
+		]),
+	atom_number(ActionData, Action),
+	(
+		fin(0)
+	->
+		(jouerVraiJoueur(Action),reply_json_dict("{\"result\":1}"))
 	;
 		reply_json_dict("{\"result\":0}")
 	)

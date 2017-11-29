@@ -22,16 +22,16 @@
 % Condition d'arret : 10 iterations
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
+	jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-jouer:- (gameover ; tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
+%jouer:- (gameover ; tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
 	joueurActuel(IdJoueur),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	taillePlateau(TaillePlateau),
+%	taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	displayBoard(TaillePlateau),
+%	displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
@@ -61,7 +61,7 @@ jouer :-
 	assert(tourActuel(TourSuivant)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	jouer,
+%	jouer,
 	!
 	.
 
@@ -70,14 +70,14 @@ jouerVraiJoueur(Action) :-
 	joueurActuel(IdJoueur),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	taillePlateau(TaillePlateau),
+%	taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	displayBoard(TaillePlateau),
+%	displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
 			plateauSav(Plateau),
-			jouerLeJoueur(Action, Plateau, PosJoueur, NewPosJoueur, BombePosee).
+			jouerLeJoueur(Action, Plateau, PosJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
 			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
 
@@ -98,14 +98,14 @@ jouerVraiJoueur(Action) :-
 	assert(tourActuel(TourSuivant)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	jouer,
+%	jouer,
 	!
 	.
 
 %%%%% Start !
 init :-
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	server(8000),
+	server(8000),
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
@@ -130,8 +130,8 @@ initGame(NbJoueurs, TaillePlateau) :-
 
 lancerPartie(NbJoueurs, TaillePlateau, Ia1, Ia2):-
 	preparerIa(Ia1, Ia2),
-	initGame(NbJoueurs, TaillePlateau),
-	jouer.
+	initGame(NbJoueurs, TaillePlateau).
+	%jouer.
 
 preparerIa(Ia1, Ia2) :-
 	(iaJ1(_) -> retractall(iaJ1(_)); true),
@@ -145,7 +145,8 @@ preparerIa(Ia1, Ia2) :-
 	(Ia2==2 -> assert(iaGenerale(iav2)) ; true),
 	(Ia2==3 -> assert(iaGenerale(iav3)) ; true),
 	(Ia2==4 -> assert(iaGenerale(iav3b)) ; true),
-	(Ia2==5 -> assert(iaGenerale(iav4)) ; true).
+	(Ia2==5 -> assert(iaGenerale(iav4)) ; true),
+	(Ia1==0 -> assert(iaJ1(0)) ; true).
 
 stop:-
 	stopServer(8000).
