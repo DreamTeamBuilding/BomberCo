@@ -12,9 +12,13 @@ initIndex :-
     assert(indexAction(6,0,1)).              %Bombe
 
 
+listeAdversaires(_,[]) :-!.
+listeAdversaires(PosJoueur, [PosAdv|ListeAdversaires]):- writeln("Je suis beau"),joueursSav(_,PosAdv,-1), PosJoueur \== PosAdv, listeAdversaires(PosJoueur,ListeAdversaires).
+listeAdversaires(PosJoueur, [_|ListeAdversaires]):- writeln("PUUTE"),listeAdversaires(PosJoueur,ListeAdversaires).
+
 distance(Pos1, Pos2, Distance) :-  taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), Distance is (DiffX+DiffY).
 
-adversairePlusProche(_,[],_) :- writeln("bite"),!.
+adversairePlusProche(_,[],_) :- !.
 adversairePlusProche(Pos, [PosJoueur|L], DistancePP) :- write("Distance a battre : "),writeln(DistancePP), write(" Position anaysée : "),writeln(PosJoueur),
 	distance(Pos,PosJoueur,Distance),
 	 write(" distance detectee : "),writeln(Distance),
@@ -127,7 +131,10 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 	% Si position actuelle = safe : on regarde a quelle distance est le joueur le + proche
 	(isSafe(PosIndex, Board) ->
 	writeln("Securite"),
-	    joueursSav(_,PosJoueurs,-1), adversairePlusProche(PosIndex, PosJoueurs, DistanceVolOiseau), writeln("Coucou Oiseau"),
+	 listeAdversaires(PosIndex,PosJoueurs),
+	 write("Adversaires : "), writeln(PosJoueurs),
+	 adversairePlusProche(PosIndex, PosJoueurs, DistanceVolOiseau),
+	 write("Distance : "), writeln(DistanceVolOiseau),
 		 (   DistanceVolOiseau =< 3 ->
 		% si proche de l'adversaire le + proche : random mais a plus de chances de bomber
 		repeat,writeln("Je peux sentir son odeur"), Move is random(10*(4-DistanceVolOiseau)), (Move > 6 -> Move = 6; true), indexAction(Move,MvmtRelatif,BombePosee), NewPosIndex is PosIndex+MvmtRelatif, isPossible(PosIndex, NewPosIndex,Board), isSafe(NewPosIndex,Board),!;

@@ -22,7 +22,7 @@ plusieursEnVie:-joueursSav(X,_,-1),joueursSav(Y,_,-1),Y\==X.
 
 listeAdversaires(_,[]) :-!.
 listeAdversaires(PosJoueur, [PosAdv|ListeAdversaires]):- joueursSav(_,PosAdv,-1), PosJoueur \== PosAdv, listeAdversaires(PosJoueur,ListeAdversaires).
-listeAdversaires(PosJoueur, [_|ListeAdversaires]):- listeAdversaires(PosJoueur,ListeAdversaires).
+listeAdve
 
 exploserBombes:-
 	taillePlateau(TaillePlateau),
