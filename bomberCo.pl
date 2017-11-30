@@ -26,15 +26,16 @@
 %	jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
 /** POUR EVAL IA : DECOMMENTER/COMMENTER ICI **/
 %	jouer:- (gameover;tourActuel(50)), retract(fin(0)),assert(fin(1)), !.
+jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-jouer:- (gameover ; tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
+%jouer:- (gameover ; tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
 	joueurActuel(IdJoueur),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	taillePlateau(TaillePlateau),
+	%taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	displayBoard(TaillePlateau),
+	%displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
@@ -64,7 +65,7 @@ jouer :-
 	assert(tourActuel(TourSuivant)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	jouer,
+	%jouer,
 	!
 	.
 
@@ -73,9 +74,9 @@ jouerVraiJoueur(Action) :-
 	joueurActuel(IdJoueur),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	taillePlateau(TaillePlateau),
+	%taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	displayBoard(TaillePlateau),
+	%displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
@@ -100,14 +101,14 @@ jouerVraiJoueur(Action) :-
 	assert(tourActuel(TourSuivant)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	jouer,
+	%jouer,
 	!
 	.
 
 %%%%% Start !
 init :-
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	server(8000),
+server(8000),
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
@@ -159,12 +160,16 @@ tests:- run_tests.
 showCoverage:-show_coverage(run_tests).
 
 eval:-
-	ia1vsia2,
-	ia1vsia3,
-	ia1vsia4,
-	ia2vsia3,
-	ia2vsia4,
-	ia3vsia4,
+	%ia1vsia2,
+	%ia1vsia3,
+	%ia1vsia4,
+	%ia2vsia3,
+	%ia2vsia4,
+	%ia3vsia4,
+	ia1vsia5,
+	ia2vsia5,
+	ia3vsia5,
+	ia4vsia5,
 	!.
 
 %%%%% Fin de jeu :

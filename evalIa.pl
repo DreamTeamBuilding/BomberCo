@@ -148,3 +148,78 @@ ia3vsia4:-
 	statNbTour(NombresTours),
 	statTempsMoy(TempsMs),
 	statDefaites(0,1, Defaites).
+
+
+ia1vsia5:-
+	writeln("-------IA1 vs IA5-------"),
+	writeln("J1 est ia1"),
+	writeln("J2 est ia5"),
+	NbIter is 100,
+	TaillePlateau is 11,
+	length(Defaites, NbIter),
+	length(NombresTours, NbIter),
+	length(TempsMs, NbIter),
+	evalIa(NbIter, Defaites, NombresTours, TempsMs, TaillePlateau, 1, 5),
+	statNbTour(NombresTours),
+	statTempsMoy(TempsMs),
+	statDefaites(0,1, Defaites).
+
+
+ia2vsia5:-
+	writeln("-------IA2 vs IA5-------"),
+	writeln("J1 est ia2"),
+	writeln("J2 est ia5"),
+	NbIter is 100,
+	TaillePlateau is 11,
+	length(Defaites, NbIter),
+	length(NombresTours, NbIter),
+	length(TempsMs, NbIter),
+	evalIa(NbIter, Defaites, NombresTours, TempsMs, TaillePlateau, 2, 5),
+	statNbTour(NombresTours),
+	statTempsMoy(TempsMs),
+	statDefaites(0,1, Defaites).
+
+
+ia2vsia5:-
+	writeln("-------IA2 vs IA5-------"),
+	writeln("J1 est ia2"),
+	writeln("J2 est ia5"),
+	NbIter is 100,
+	TaillePlateau is 11,
+	length(Defaites, NbIter),
+	length(NombresTours, NbIter),
+	length(TempsMs, NbIter),
+	evalIa(NbIter, Defaites, NombresTours, TempsMs, TaillePlateau, 3, 5),
+	statNbTour(NombresTours),
+	statTempsMoy(TempsMs),
+	statDefaites(0,1, Defaites).
+
+
+ia3vsia5:-
+	writeln("-------IA3 vs IA5-------"),
+	writeln("J1 est ia3"),
+	writeln("J2 est ia5"),
+	NbIter is 100,
+	TaillePlateau is 11,
+	length(Defaites, NbIter),
+	length(NombresTours, NbIter),
+	length(TempsMs, NbIter),
+	evalIa(NbIter, Defaites, NombresTours, TempsMs, TaillePlateau, 3, 5),
+	statNbTour(NombresTours),
+	statTempsMoy(TempsMs),
+	statDefaites(0,1, Defaites).
+
+
+ia4vsia5:-
+	writeln("-------IA4 vs IA5-------"),
+	writeln("J1 est ia4"),
+	writeln("J2 est ia5"),
+	NbIter is 100,
+	TaillePlateau is 11,
+	length(Defaites, NbIter),
+	length(NombresTours, NbIter),
+	length(TempsMs, NbIter),
+	evalIa(NbIter, Defaites, NombresTours, TempsMs, TaillePlateau, 4, 5),
+	statNbTour(NombresTours),
+	statTempsMoy(TempsMs),
+	statDefaites(0,1, Defaites).
