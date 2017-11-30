@@ -78,8 +78,8 @@ init(NbJoueurs, TaillePlateau, Ia1, Ia2) :-
 	preparerIa(Ia1, Ia2),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	server(8000),
-	lancerPartie
+	% server(8000)
+	true
 	.
 
 initGame :-
