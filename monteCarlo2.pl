@@ -1,23 +1,18 @@
 iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
-	posSuivantes(PosIndex, PositionsSuivantes),
-	posSuivantesPossibles(PosIndex, PositionsSuivantes, PosSuivantesPossibles),
-	writeln(PosSuivantesPossibles),
 	joueursSav(IdJoueur,PosIndex,_),
 	tourActuel(TA),
-	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, BombePosee, _ScoreDeLAction, IdJoueur, TA)
-	/*
-	Utiliser Coup (indexAction) au lieu de NewPosIndex, pour condenser la position et la bombe
-	*/
+	Actions = [1,2,3,4,5,6],
+	testerMeilleurCoup(Actions, ActionJouee, _ScoreDeLAction, IdJoueur, TA)
 	.
 % Je vois pas pourquoi on a besoin de PosActuelle :/
 % Lance l'initialisation de la recherche de max
-testerMeilleurCoup([PremierePos|AutresPos], PosActuelle, MeilleurePos, BombePosee, MeilleurScore,IdJoueur) :-
-	testerMeilleurCoup(AutresPos, PosActuelle, PremierePos, MeilleurePos,BombePosee,BombePosee, -10000000, MeilleurScore,IdJoueur). %% l'init du meilleur score est degueu ^^
+testerMeilleurCoup([PremierePos|AutresPos], MeilleurePos, MeilleurScore,IdJoueur) :-
+	testerMeilleurCoup(AutresPos, PremierePos, MeilleurePos,, -10000000, MeilleurScore,IdJoueur). %% l'init du meilleur score est degueu ^^
 
 % Validation du max
-testerMeilleurCoup([], _, MeilleurePos, MeilleurePos,BombePosee,BombePosee, MeilleurScore, MeilleurScore,_).
+testerMeilleurCoup([], MeilleurePos, MeilleurePos, MeilleurScore, MeilleurScore,_).
 % Recherche du max parmis les autres coups
-testerMeilleurCoup([X|L], PosActuelle, MeilleurePos0, MeilleurePos,BombePosee0, BombePosee, MeilleurScore0, MeilleurScore,IdJoueur) :-
+testerMeilleurCoup([X|L], MeilleurePos0, MeilleurePos, MeilleurScore0, MeilleurScore,IdJoueur) :-
 
 	%sav des dynamics (plateauSav, joueursSav, bombes, joueurActuel, tourActuel)
 
@@ -28,9 +23,9 @@ testerMeilleurCoup([X|L], PosActuelle, MeilleurePos0, MeilleurePos,BombePosee0, 
 
 	% tests pour le maximum
 	(   ScoreTrouve > MeilleurScore0 ->
-	MeilleurScore1 is ScoreTrouve, MeilleurePos1 is X, BombePosee1 is Bombe;
-	MeilleurScore1 is MeilleurScore0, MeilleurePos1 is MeilleurePos0, BombePosee1 is BombePosee0),
-	testerMeilleurCoup([X|L], PosActuelle, MeilleurePos1, MeilleurePos, BombePosee1,BombePosee, MeilleurScore1, MeilleurScore,IdJoueur).
+	MeilleurScore1 is ScoreTrouve, MeilleurePos1 is X;
+	MeilleurScore1 is MeilleurScore0, MeilleurePos1 is MeilleurePos0),
+	testerMeilleurCoup([X|L],, MeilleurePos1, MeilleurePos, MeilleurScore1, MeilleurScore,IdJoueur).
 
 jouerMC(IdGagnant):- ((gameover, joueursSav(IdGagnant,_,-1)) ; tourActuel(50)), !. % Mettre
 jouerMC(IdGagnant) :-
