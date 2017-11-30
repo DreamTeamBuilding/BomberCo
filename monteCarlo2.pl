@@ -25,7 +25,7 @@ testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, Mei
 	(   ScoreTrouve > MeilleurScore0 ->
 	MeilleurScore1 is ScoreTrouve, MeilleureAction1 is X;
 	MeilleurScore1 is MeilleurScore0, MeilleureAction1 is MeilleureAction0),
-	testerMeilleurCoup([X|L], MeilleurePos1, MeilleurePos, MeilleurScore1, MeilleurScore,IdJoueur).
+	testerMeilleurCoup([X|L], MeilleureAction1, MeilleureAction, MeilleurScore1, MeilleurScore,IdJoueur).
 
 jouerMC(IdGagnant):- ((gameover, joueursSav(IdGagnant,_,-1)) ; tourActuel(50)), !. % Mettre
 jouerMC(IdGagnant) :-
