@@ -54,3 +54,39 @@ J1 a perdu : 5 fois.
 J2 a perdu : 2 fois.
 Il y a eu 93 egalites.
 J2 est meilleur
+-------IA1 vs IA5-------
+J1 est ia1
+J2 est ia5
+Moy nombre tour : 1
+Moy temps ms : 0.03
+J1 a perdu : 0 fois.
+J2 a perdu : 0 fois.
+Il y a eu 100 egalites.
+J2 est meilleur
+-------IA2 vs IA5-------
+J1 est ia2
+J2 est ia5
+Moy nombre tour : 1
+Moy temps ms : 0.03
+J1 a perdu : 0 fois.
+J2 a perdu : 0 fois.
+Il y a eu 100 egalites.
+J2 est meilleur
+-------IA3 vs IA5-------
+J1 est ia3
+J2 est ia5
+Moy nombre tour : 1
+Moy temps ms : 0.03
+J1 a perdu : 0 fois.
+J2 a perdu : 0 fois.
+Il y a eu 100 egalites.
+J2 est meilleur
+-------IA4 vs IA5-------
+J1 est ia4
+J2 est ia5
+Moy nombre tour : 1
+Moy temps ms : 0.07
+J1 a perdu : 0 fois.
+J2 a perdu : 0 fois.
+Il y a eu 100 egalites.
+J2 est meilleur
