@@ -108,10 +108,10 @@ posSuivantesPlusProches(PosCible, [X|PosSuivantesSafes], PosMin, DistanceMin) :-
 
 posSuivantesPlusProches(_,[],_,DistanceMin,DistanceMin):-!.
 posSuivantesPlusProches(PosCible, [X|PosSuivantesSafes],PosMin ,DistanceMinCourante, DistanceMin) :-
-	write("Position Cible : "), writeln(PosCible),
-	write("Je teste la position : "), writeln(X),
+	%write("Position Cible : "), writeln(PosCible),
+	%write("Je teste la position : "), writeln(X),
 	distance(PosCible,X,Distance),
-	write("Distance : "), writeln(Distance),
+	%write("Distance : "), writeln(Distance),
 	(   var(DistanceMinCourante) -> DistanceMinCourante is Distance;true),
 	Min is min(Distance,DistanceMinCourante),
 	posSuivantesPlusProches(PosCible,PosSuivantesSafes,PosMin,Min,DistanceMin).
