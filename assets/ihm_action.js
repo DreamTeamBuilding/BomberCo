@@ -1,6 +1,7 @@
 var interval ;
-var realPlayerTurn = false;
+var playerTurn = 1;
 var realPlayer = false;
+var numberOfPlayer = 2;
 
  $(document).ready(function(){
 	 $('#conteneur2').html("<br/><input type='button' onclick='start()' value='Start the game'/>");
@@ -8,22 +9,29 @@ var realPlayer = false;
 
  function boucle(){
 	 alert('Début de partie !');
-	 interval = setInterval(function(){ requestData(); computeData() ;}, 300);
+	 //Clear l'intervalle précédent
+	 clearInterval(interval);
+	 //Plus court pour real player pour eviter impression de non reactivite aux commandes
+	 if(realPlayer)
+	 	interval = setInterval(function(){ play();}, 30);
+	 else
+	 	interval = setInterval(function(){ play();}, 300);
  }
 
  function start(){
-	var numberOfPlayer = prompt("Nombre de joueur :", "2,3,4")[0];
+	$("h1").text("Boom boom boom boom");
+	numberOfPlayer = prompt("Nombre de joueur :", "2,3,4")[0];
 	console.log(numberOfPlayer);
 	var boardSize = prompt("Taille plateau :", "11");
 	console.log(boardSize);
-	var iaPlayer1 = prompt("Choisir ia joueur 1\nSeule l'ia joueur 1 peut être un vrai joueur :", "0,1,2,3,4,5,6")[0];
+	var iaPlayer1 = prompt("Choisir ia joueur 1\nSeule l'ia joueur 1 peut être un vrai joueur :", "0,1,2,3,4,5")[0];
 	console.log(iaPlayer1);
-	var iaPlayer2 = prompt("Choisir ia joueur 2 :", "1,2,3,4,5,6")[0];
+	var iaPlayer2 = prompt("Choisir ia autre(s) joueur(s) :", "1,2,3,4,5")[0];
 	console.log(iaPlayer2);
 
 	$.ajax({
 				dataType: 'json',
-				url:'http://localhost:8000/starting',
+				url:'/starting',
 				data: {
 					'players': numberOfPlayer,
 					'size': boardSize,
@@ -36,7 +44,6 @@ var realPlayer = false;
 				}
 	 });
 	if (iaPlayer1 == 0){
-		realPlayerTurn = true;
 		realPlayer = true;
 		$(document).keydown(handlePress);
 	}
@@ -80,49 +87,59 @@ function handlePress(e){
 			action = 5;
 			break;
 	}
-	if (realPlayer && realPlayerTurn) {
+	if (realPlayer && playerTurn%numberOfPlayer == 1) {
 		requestData();
-		$.ajax({
-					dataType: 'json',
-					url:'http://localhost:8000/playMoveJoueur',
-					data: {
-						'action': action
-					},
-					contentType: 'application/json; charset=utf-8',
-					success: function (result) {
-						console.log(result);
-					}
-		 });
-		realPlayerTurn = false;
+		computeDataRealPlayer(action);
+		playerTurn++;
 	}
 }
 
  function fin(){
 	 clearInterval(interval);
+	 interval = null;
 	 realPlayer = false;
-	 realPlayerTurn = false;
+	 playerTurn = 1;
 	 $("h1").text("Game over");
  }
 
- function computeData() {
- 	if(!realPlayerTurn) {
-	$.ajax({
-				dataType: 'json',
-				url:'http://localhost:8000/playMove',
-				contentType: 'application/json; charset=utf-8',
-				success: function (result) {
-					console.log(result);
-				}
-	 });
-	if (realPlayer)
-		realPlayerTurn = true;
+ function play() {
+ 	requestData();
+ 	if(!(realPlayer && playerTurn%numberOfPlayer==1))
+ 	{
+		computeData();
+		playerTurn++;
 	}
+}
+
+function computeDataRealPlayer(action){
+	$.ajax({
+						dataType: 'json',
+						url:'/playMoveJoueur',
+						data: {
+							'action': action
+						},
+						contentType: 'application/json; charset=utf-8',
+						success: function (result) {
+							console.log(result);
+						}
+			 });
+}
+
+function computeData(){
+	$.ajax({
+					dataType: 'json',
+					url:'/playMove',
+					contentType: 'application/json; charset=utf-8',
+					success: function (result) {
+						console.log(result);
+					}
+		 });
 }
 
  function requestData(){
 	$.ajax({
 				dataType: 'json',
-				url:'http://localhost:8000/game',
+				url:'/game',
 				contentType: 'application/json; charset=utf-8',
 				success: function (game) {
 					console.log(game);
@@ -186,6 +203,9 @@ function handlePress(e){
 	 // Joueurs morts
 	 for(pos in jsonVar.joueursMorts){
 		var id = jsonVar.joueursMorts[pos][0];
+		//Si le joueur reel est mort alors on dit qu'il n'y a plus de joueur reel
+		if(realPlayer && id == 0)
+			realPlayer = false;
 		var index = jsonVar.joueursMorts[pos][1];
 		var x = getX(index, taille);
 		var y = getY(index, taille);
