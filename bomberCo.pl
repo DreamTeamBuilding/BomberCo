@@ -64,8 +64,8 @@ jouer :-
 	TourSuivant is TA + 1,
 	assert(tourActuel(TourSuivant)),
 
-/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	%jouer,
+/** POUR L'IHM OU EVAL IA: DECOMMENTER/COMMENTER ICI **/
+	jouer,
 	!
 	.
 
@@ -160,16 +160,16 @@ tests:- run_tests.
 showCoverage:-show_coverage(run_tests).
 
 eval:-
-	%ia1vsia2,
+	ia1vsia2,
 	%ia1vsia3,
 	%ia1vsia4,
 	%ia2vsia3,
 	%ia2vsia4,
 	%ia3vsia4,
-	ia1vsia5,
-	ia2vsia5,
-	ia3vsia5,
-	ia4vsia5,
+	%ia1vsia5,
+	%ia2vsia5,
+	%ia3vsia5,
+	%ia4vsia5,
 	!.
 
 %%%%% Fin de jeu :
