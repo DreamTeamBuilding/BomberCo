@@ -20,7 +20,6 @@ http:location(files, "/files", []).
 :- http_handler(root(playMove), playMove, []).
 :- http_handler(root(playMoveJoueur), playMoveJoueur, []).
 
-
 server(Port) :- http_server(http_dispatch, [port(Port)]).
 stopServer(Port) :- http_stop_server(Port,[]).
 
@@ -61,7 +60,7 @@ playMove(_) :-
 
 playMoveJoueur(Request) :-
 	http_parameters(Request, [
-		action(ActionData,[optional(true)])
+		action(ActionData,[])
 		]),
 	atom_number(ActionData, Action),
 	(

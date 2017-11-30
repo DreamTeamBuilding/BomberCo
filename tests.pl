@@ -227,23 +227,22 @@ comp(L1, L1).
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
 		initIndex,
-		plateauSav(B),
+		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
 		initJoueurs(2),
 		joueursSav(0, 12, _),
-		isPossible(12, 13, B),
-		isPossible(12, 12, B),
-		isPossible(12, 23, B),
-		not(isPossible(12, 11, B)),
-		not(isPossible(12, 1, B)),
+		isPossible(12, 13),
+		isPossible(12, 12),
+		isPossible(12, 23),
+		not(isPossible(12, 11)),
+		not(isPossible(12, 1)),
 		!.
 	test(isSafeTest):-
 		initGame(2,11),
-		plateauSav(B),
 		ajouterBombe(14),
 		decrementerBombes,
-		isSafe(28, B),
-		not(isSafe(14, B)),
+		isSafe(28),
+		not(isSafe(14)),
 		initBombes,
 		!.
 	test(posAdjacentesTest):-
@@ -260,26 +259,24 @@ comp(L1, L1).
 		!.
 	test(posSuivantesPossiblesTest):-
 		initPlateau(11),
-		plateauSav(B),
-		posSuivantesPossibles(B, 12, [12,1,11,13,23], [12,13,23]),
-		posSuivantesPossibles(B, 25, [25,14,24,25,36], [25,14,36]),
+		posSuivantesPossibles(12, [12,1,11,13,23], [12,13,23]),
+		posSuivantesPossibles(25, [25,14,24,25,36], [25,14,36]),
 		!.
 	test(posSuivantesSafeTest):-
 		initGame(2,11),
 		initBombes,
-		plateauSav(Board),
-		posSuivantesSafe([12,13,23], Board, [12,13,23]),
+		posSuivantesSafe([12,13,23], [12,13,23]),
 		ajouterBombe(13),
 		decrementerBombes,
-		posSuivantesSafe([12,13,23], Board,[]),
+		posSuivantesSafe([12,13,23],[]),
 		!.
-	test(adversairePlusProcheTest):-
+	/*test(adversairePlusProcheTest):-
 		initGame(2,11),
 		initBombes,
 		plateauSav(_Board),
-		/*adversairePlusProche(12,[20,108], 8, 20),
+		adversairePlusProche(12,[20,108], 8, 20),
 		adversairePlusProche(108,[12,20], 8, 20),
-		*/!.
+		!.*/
 	test(posSuivantesPlusProchesTest):-
 		initGame(2,11),
 		initBombes,

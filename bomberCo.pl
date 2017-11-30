@@ -17,7 +17,7 @@
 :-[bombes].
 :-[ihm].
 :-[tests].
-:-[monteCarlo].
+:-[monteCarlo2].
 
 % Condition d'arret : 10 iterations
 
@@ -35,11 +35,11 @@ jouer :-
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
-			plateauSav(Plateau),
 			(IdJoueur==0 ->
 				iaJ1(Ia) ; iaGenerale(Ia)
 			),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, Ia),
+			ia(PosJoueur, NewPosJoueur, BombePosee, Ia),
+			%iaMC(PosJoueur, NewPosJoueur, BombePosee, iaMC),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
@@ -76,8 +76,7 @@ jouerVraiJoueur(Action) :-
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
-			plateauSav(Plateau),
-			jouerLeJoueur(Action, Plateau, PosJoueur, NewPosJoueur, BombePosee),
+			jouerLeJoueur(Action, PosJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
 			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
 
