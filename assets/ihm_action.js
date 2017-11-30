@@ -13,11 +13,11 @@ var numberOfPlayer = 2;
 	 clearInterval(interval);
 	 //Plus court pour real player pour eviter impression de non reactivite aux commandes
 	 if(realPlayer)
-	 	interval = setInterval(function(){ play();}, 30);
+	 	interval = setInterval(function(){ play();}, 50);
 	 else
 	 	interval = setInterval(function(){ play();}, 300);
  }
- 
+
  function start(){
 	$("h1").text("Boom boom boom boom");
 	numberOfPlayer = prompt("Nombre de joueur :", "2,3,4")[0];
@@ -30,17 +30,17 @@ var numberOfPlayer = 2;
 	console.log(iaPlayer2);
 
 	$.ajax({
-				dataType: 'json', 
+				dataType: 'json',
 				url:'/starting',
 				data: {
-					'players': numberOfPlayer, 
+					'players': numberOfPlayer,
 					'size': boardSize,
 					'iaPlayer1': iaPlayer1,
 					'iaPlayer2': iaPlayer2
 					 },
 				contentType: 'application/json; charset=utf-8',
 				success: function (result) {
-					console.log(result);    
+					console.log(result);
 				}
 	 });
 	if (iaPlayer1 == 0){
@@ -49,7 +49,7 @@ var numberOfPlayer = 2;
 	}
 	boucle();
  }
- 
+
 function handlePress(e){
 	var action = 5;
 	switch(e.which)
@@ -101,7 +101,7 @@ function handlePress(e){
 	 playerTurn = 1;
 	 $("h1").text("Game over");
  }
- 
+
  function play() {
  	requestData();
  	if(!(realPlayer && playerTurn%numberOfPlayer==1))
@@ -113,46 +113,46 @@ function handlePress(e){
 
 function computeDataRealPlayer(action){
 	$.ajax({
-						dataType: 'json', 
+						dataType: 'json',
 						url:'/playMoveJoueur',
 						data: {
-							'action': action 
+							'action': action
 						},
 						contentType: 'application/json; charset=utf-8',
 						success: function (result) {
-							console.log(result);    
+							console.log(result);
 						}
 			 });
 }
 
 function computeData(){
 	$.ajax({
-					dataType: 'json', 
+					dataType: 'json',
 					url:'/playMove',
 					contentType: 'application/json; charset=utf-8',
 					success: function (result) {
-						console.log(result);    
+						console.log(result);
 					}
 		 });
 }
- 
+
  function requestData(){
 	$.ajax({
-				dataType: 'json', 
+				dataType: 'json',
 				url:'/game',
 				contentType: 'application/json; charset=utf-8',
 				success: function (game) {
-					console.log(game);    
+					console.log(game);
 					writeHtml(buildString(game));
 				}
 	 });
  }
- 
+
  function writeHtml(code){
 	 $('#conteneur').html(code);
  }
- 
- 
+
+
  function buildString(infoGame){
 	 var jsonVar = JSON.parse(infoGame);
 	 if(jsonVar.fin==1){
@@ -160,10 +160,15 @@ function computeData(){
 		 return;
 	 }
 	 var taille = jsonVar.taillePlateau;
-	 
+
 	 var individualSize = 500/taille;
-	 
+
 	 var string = "";
+
+   // Sol
+   $('#conteneur').css( 'background', 'url(files/ground.png)' );
+   $('#conteneur').css( 'background-size', individualSize);
+
 	 // Bombe
 	 for(pos in jsonVar.bombes){
 		var index = jsonVar.bombes[pos][0];
@@ -198,7 +203,7 @@ function computeData(){
 	 // Joueurs morts
 	 for(pos in jsonVar.joueursMorts){
 		var id = jsonVar.joueursMorts[pos][0];
-		//Si le joueur reel est mort alors on dit qu'il n'y a plus de joueur reel 
+		//Si le joueur reel est mort alors on dit qu'il n'y a plus de joueur reel
 		if(realPlayer && id == 0)
 			realPlayer = false;
 		var index = jsonVar.joueursMorts[pos][1];
@@ -209,26 +214,24 @@ function computeData(){
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
 			"'/>";
 	 }
-	 
-	 // Murs 
+
+	 // Murs
 	 for(index in jsonVar.plateau){
 		if(jsonVar.plateau[index]){
 		var x = getX(index, taille);
 		var y = getY(index, taille);
-		string += "<div class='mur'"+
+		string += "<img src='files/wall.png' class='mur'"+
 			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
-			"'></div>";
+			"'/>";
 		}
 	 }
 	 return string;
  }
- 
+
  function getX(index, taillePlateau){
 	 return index%taillePlateau;
  }
  function getY(index, taillePlateau){
 	 return (index-(index%taillePlateau))/taillePlateau;
  }
- 
- 

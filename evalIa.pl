@@ -4,7 +4,7 @@ evalIa(NbIter, Defaites, NombresTours, TempsMs, TaillePlateau, Ia1, Ia2):-
 	NewIter is NbIter-1,
 	lancerPartie(2,TaillePlateau,Ia1,Ia2),
 	statistics(walltime, [_ | [_]]),
-	jouer,
+	jouer, !,
 	statistics(walltime, [_ | [ExecutionTime]]),
 	(joueursSav(Looser, _, 0) -> 
 		%Ajout looser a la liste

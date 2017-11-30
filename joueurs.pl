@@ -26,12 +26,12 @@ tuer(IdJoueur):-
 	retract(joueursSav(IdJoueur, Position, _)),
 	assert(joueursSav(IdJoueur, Position, 0)).
 
-jouerLeJoueur(Action, Plateau, PosIndex, NewPosIndex, BombePosee):-
+jouerLeJoueur(Action, PosIndex, NewPosIndex, BombePosee):-
 	posSuivantes(PosIndex, PositionsSuivantes),
-	posSuivantesPossibles(Plateau, PosIndex, PositionsSuivantes, PosSuivantesPossibles),
+	posSuivantesPossibles(PosIndex, PositionsSuivantes, PosSuivantesPossibles),
 	% TODO : supprimer?
 	(length(PosSuivantesPossibles,0) ->
 	 (NewPosIndex is PosIndex, BombePosee is 0)
 	;
-	 (indexAction(Action,I,BombePosee), NewPosIndex is PosIndex+I,(not(isPossible(PosIndex, NewPosIndex, Plateau)) -> NewPosIndex is PosIndex ; true))
+	 (indexAction(Action,I,BombePosee), NewPosIndex is PosIndex+I,(not(isPossible(PosIndex, NewPosIndex)) -> NewPosIndex is PosIndex ; true))
 	).

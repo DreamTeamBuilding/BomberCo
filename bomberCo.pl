@@ -17,30 +17,32 @@
 :-[bombes].
 :-[ihm].
 :-[tests].
-:-[monteCarlo].
 :-[evalIa].
+:-[monteCarlo2]. 
 
 % Condition d'arret : 10 iterations
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
+%	jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
+/** POUR EVAL IA : DECOMMENTER/COMMENTER ICI **/
+%	jouer:- (gameover;tourActuel(50)), retract(fin(0)),assert(fin(1)), !.
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%jouer:- (gameover ; tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
+jouer:- (gameover ; tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
 	joueurActuel(IdJoueur),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	taillePlateau(TaillePlateau),
+	taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	displayBoard(TaillePlateau),
+	displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
-			plateauSav(Plateau),
 			(IdJoueur==0 ->
 				iaJ1(Ia) ; iaGenerale(Ia)
 			),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, Ia),
+			ia(PosJoueur, NewPosJoueur, BombePosee, Ia),
+			%iaMC(PosJoueur, NewPosJoueur, BombePosee, iaMC),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
@@ -71,14 +73,13 @@ jouerVraiJoueur(Action) :-
 	joueurActuel(IdJoueur),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	taillePlateau(TaillePlateau),
+	taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	displayBoard(TaillePlateau),
+	displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
-			plateauSav(Plateau),
-			jouerLeJoueur(Action, Plateau, PosJoueur, NewPosJoueur, BombePosee),
+			jouerLeJoueur(Action, PosJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
 			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
 
