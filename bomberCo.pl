@@ -3,27 +3,28 @@
 	joueursSav/3,%joueursSav(Id, Positions, Etats)
 	bombes/2,%bombes(Positions, TempsRestant)
 	indexAction/3,%indexAction(CodeMouvement, Deplacement, PoserBombe)
+	porteeBombes/1, %portee des bombes
 	taillePlateau/1,
 	nbJoueurs/1,
 	joueurActuel/1,
 	tourActuel/1, %A supprimer
-	fin/1.
+	fin/1,
+	iaJ1/1, % Ia du joueur 1
+	iaGenerale/1. % Ia du reste des joueurs
 :-[ia].
 :-[plateau].
 :-[joueurs].
 :-[bombes].
 :-[ihm].
 :-[tests].
-:-[monteCarlo].
+:-[monteCarlo2].
 
-% Condition d'arret : 10 itérations
+% Condition d'arret : 10 iterations
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-jouer:- (gameover;tourActuel(500)), !, retract(fin(0)),assert(fin(1)).
+jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-% jouer:- (gameover;tourActuel(50)), !, taillePlateau(TaillePlateau),
-% displayBoard(TaillePlateau), writeln('Game is
-% Over.'),retract(fin(0)),assert(fin(1)).
+jouer:- (gameover ; tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
 	joueurActuel(IdJoueur),
 
@@ -34,8 +35,11 @@ jouer :-
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
-			plateauSav(Plateau),
-			ia(Plateau, PosJoueur, NewPosJoueur, BombePosee, iaMC),
+			(IdJoueur==0 ->
+				iaJ1(Ia) ; iaGenerale(Ia)
+			),
+			ia(PosJoueur, NewPosJoueur, BombePosee, Ia),
+			%iaMC(PosJoueur, NewPosJoueur, BombePosee, iaMC),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
@@ -58,12 +62,12 @@ jouer :-
 	assert(tourActuel(TourSuivant)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	jouer,
-	true %a delete (me permet de commenter plus simplement la ligne au dessus)
+	jouer,
+	!
 	.
 
 %%%%% Start !
-init(NbJoueurs, TaillePlateau) :-
+init(NbJoueurs, TaillePlateau, Ia1, Ia2) :-
 
 	(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 	assert(nbJoueurs(NbJoueurs)),
@@ -71,9 +75,11 @@ init(NbJoueurs, TaillePlateau) :-
 	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 	assert(taillePlateau(TaillePlateau)),
 
+	preparerIa(Ia1, Ia2),
+
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	server(8000),
-    lancerPartie
+	lancerPartie
 	.
 
 initGame :-
@@ -98,6 +104,19 @@ lancerPartie:-
 	initGame,
 	jouer.
 
+preparerIa(Ia1, Ia2) :-
+	(iaJ1(_) -> retractall(iaJ1(_)); true),
+	(iaGenerale(_) -> retractall(iaGenerale(_)); true),
+	(Ia1==1 -> assert(iaJ1(iav1)) ; true),
+	(Ia1==2 -> assert(iaJ1(iav2)) ; true),
+	(Ia1==3 -> assert(iaJ1(iav3)) ; true),
+	(Ia1==4 -> assert(iaJ1(iav3b)) ; true),
+	(Ia1==5 -> assert(iaJ1(iav4)) ; true),
+	(Ia2==1 -> assert(iaGenerale(iav1)) ; true),
+	(Ia2==2 -> assert(iaGenerale(iav2)) ; true),
+	(Ia2==3 -> assert(iaGenerale(iav3)) ; true),
+	(Ia2==4 -> assert(iaGenerale(iav3b)) ; true),
+	(Ia2==5 -> assert(iaGenerale(iav4)) ; true).
 
 stop:-
 	stopServer(8000).
@@ -109,22 +128,3 @@ showCoverage:-show_coverage(run_tests).
 
 %%%%% Fin de jeu :
 gameover:-not(plusieursEnVie).
-/*
-afficherLesDetails(Id, NP ,BombePosee):-
-	% On récupère toutes les positions des joueurs
-	findall(Positions,joueursSav(_,Positions,_),ListePositions),
-	% On récupère toutes les positions des bombes
-	findall(PositionsB,bombes(PositionsB, _),ListePositionsB),
-	% On récupère les temps avant explosion
-	findall(Tps,bombes(_,Tps),ListeTempsB),
-	% On récupère les infos sur le joueurs actif
-	joueursSav(Id, Pos, Stat),
-	write('Liste des joueurs : '),writeln(ListePositions),
-	write('Liste des bombes : '),writeln(ListePositionsB),
-	write('Liste des temps : '),writeln(ListeTempsB),
-	write('Tour du joueur : '), writeln(Id),
-	write('Position : '), writeln(Pos),
-	write('Status : '), writeln(Stat),
-	write('Position suivante : '), writeln(NP),
-	write('A pose une bombe? : '), writeln(BombePosee).
-*/
