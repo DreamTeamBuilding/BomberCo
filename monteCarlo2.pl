@@ -38,6 +38,7 @@ simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC,TourDebutS
 	*/
 %jouer jusqu'a finie
 	assert(tourActuel(TourDebutSimulation)),
+	(   Ia==0 -> Ia is iav1; true),
 	jouerMC(IdGagnant),
 %calcul du score
 	% si Score n'est pas instancie, on l'initialise a 0
