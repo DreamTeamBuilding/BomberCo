@@ -2,6 +2,7 @@ var interval ;
 var playerTurn = 1;
 var realPlayer = false;
 var numberOfPlayer = 2;
+var offset;
 
  $(document).ready(function(){
 	 $('#conteneur2').html("<br/><input type='button' onclick='start()' value='Start the game'/>");
@@ -19,6 +20,7 @@ var numberOfPlayer = 2;
  }
 
  function start(){
+  offset = Math.floor(Math.random() * 6);
 	$("h1").text("Boom boom boom boom");
 	numberOfPlayer = prompt("Nombre de joueur :", "2,3,4")[0];
 	console.log(numberOfPlayer);
@@ -195,7 +197,7 @@ function computeData(){
 		var index = jsonVar.joueursVivants[pos][1];
 		var x = getX(index, taille);
 		var y = getY(index, taille);
-		string += "<img src='files/perso"+id+".png' class='joueurEnVie'"+
+		string += "<img src='files/perso"+(id+offset)%6+".png' class='joueurEnVie'"+
 			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
 			"'/>";
