@@ -6,13 +6,13 @@ iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
 	.
 % Je vois pas pourquoi on a besoin de PosActuelle :/
 % Lance l'initialisation de la recherche de max
-testerMeilleurCoup([PremierePos|AutresPos], MeilleurePos, MeilleurScore,IdJoueur) :-
-	testerMeilleurCoup(AutresPos, PremierePos, MeilleurePos,, -10000000, MeilleurScore,IdJoueur). %% l'init du meilleur score est degueu ^^
+testerMeilleurCoup([PremiereAction|AutresActions], MeilleureAction, MeilleurScore,IdJoueur) :-
+	testerMeilleurCoup(AutresActions, PremiereAction, MeilleureAction,, -10000000, MeilleurScore,IdJoueur). %% l'init du meilleur score est degueu ^^
 
 % Validation du max
-testerMeilleurCoup([], MeilleurePos, MeilleurePos, MeilleurScore, MeilleurScore,_).
+testerMeilleurCoup([], MeilleureAction, MeilleureAction, MeilleurScore, MeilleurScore,_).
 % Recherche du max parmis les autres coups
-testerMeilleurCoup([X|L], MeilleurePos0, MeilleurePos, MeilleurScore0, MeilleurScore,IdJoueur) :-
+testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, MeilleurScore,IdJoueur) :-
 
 	%sav des dynamics (plateauSav, joueursSav, bombes, joueurActuel, tourActuel)
 
@@ -23,9 +23,9 @@ testerMeilleurCoup([X|L], MeilleurePos0, MeilleurePos, MeilleurScore0, MeilleurS
 
 	% tests pour le maximum
 	(   ScoreTrouve > MeilleurScore0 ->
-	MeilleurScore1 is ScoreTrouve, MeilleurePos1 is X;
-	MeilleurScore1 is MeilleurScore0, MeilleurePos1 is MeilleurePos0),
-	testerMeilleurCoup([X|L],, MeilleurePos1, MeilleurePos, MeilleurScore1, MeilleurScore,IdJoueur).
+	MeilleurScore1 is ScoreTrouve, MeilleureAction1 is X;
+	MeilleurScore1 is MeilleurScore0, MeilleureAction1 is MeilleureAction0),
+	testerMeilleurCoup([X|L], MeilleureAction1, MeilleureAction, MeilleurScore1, MeilleurScore,IdJoueur).
 
 jouerMC(IdGagnant):- ((gameover, joueursSav(IdGagnant,_,-1)) ; tourActuel(50)), !. % Mettre
 jouerMC(IdGagnant) :-
