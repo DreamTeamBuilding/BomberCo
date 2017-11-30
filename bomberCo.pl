@@ -17,12 +17,12 @@
 :-[bombes].
 :-[ihm].
 :-[tests].
-:-[monteCarlo2].
+:-[monteCarlo2]. 
 
 % Condition d'arret : 10 iterations
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
+%	jouer:- (gameover;tourActuel(50)), !, retract(fin(0)),assert(fin(1)).
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 jouer:- (gameover ; tourActuel(50)), !, taillePlateau(TaillePlateau), displayBoard(TaillePlateau), writeln('Game is Over.'),retract(fin(0)),assert(fin(1)).
 jouer :-
@@ -42,6 +42,41 @@ jouer :-
 			%iaMC(PosJoueur, NewPosJoueur, BombePosee, iaMC),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
+			actualiserJoueur(IdJoueur,NewPosJoueur),
+			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
+		)
+	),
+	decrementerBombes,
+	exploserBombes,
+	% Tuer des gens,
+
+	joueurSuivant(IdJoueur,IdJoueurSuivant),
+
+	retract(joueurActuel(_)),
+	assert(joueurActuel(IdJoueurSuivant)),
+
+	tourActuel(TA),
+	retract(tourActuel(_)),
+	TourSuivant is TA + 1,
+	assert(tourActuel(TourSuivant)),
+
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	jouer,
+	!
+	.
+
+
+jouerVraiJoueur(Action) :-
+	joueurActuel(IdJoueur),
+
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	taillePlateau(TaillePlateau),
+/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
+	displayBoard(TaillePlateau),
+	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
+	(StatusJoueur==0 -> true ;
+		(
+			jouerLeJoueur(Action, PosJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
 			(BombePosee==1 -> ajouterBombe(NewPosJoueur); true)
 
@@ -67,22 +102,13 @@ jouer :-
 	.
 
 %%%%% Start !
-init(NbJoueurs, TaillePlateau, Ia1, Ia2) :-
-
-	(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
-	assert(nbJoueurs(NbJoueurs)),
-
-	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-	assert(taillePlateau(TaillePlateau)),
-
-	preparerIa(Ia1, Ia2),
-
+init :-
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	% server(8000)
-	true
+%	server(8000),
+	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
-initGame :-
+initGame(NbJoueurs, TaillePlateau) :-
 	(fin(_) -> retractall(fin(_)); true),
 	assert(fin(0)),
 
@@ -91,18 +117,20 @@ initGame :-
 
 	(tourActuel(_) -> retractall(tourActuel(_)); true),
 	assert(tourActuel(0)),
+
     % Initialisation du plateau
-	initPlateau,
+	initPlateau(TaillePlateau),
 	% Initialisation Player
-	initJoueurs,
+	initJoueurs(NbJoueurs),
 	% Initialisation des bombes
 	initBombes,
 	% Initialisation des regles de deplacement
 	initIndex.
 
-lancerPartie:-
-	initGame,
-	jouer.
+lancerPartie(NbJoueurs, TaillePlateau, Ia1, Ia2):-
+	preparerIa(Ia1, Ia2),
+	initGame(NbJoueurs, TaillePlateau).
+	%jouer.
 
 preparerIa(Ia1, Ia2) :-
 	(iaJ1(_) -> retractall(iaJ1(_)); true),
@@ -116,7 +144,8 @@ preparerIa(Ia1, Ia2) :-
 	(Ia2==2 -> assert(iaGenerale(iav2)) ; true),
 	(Ia2==3 -> assert(iaGenerale(iav3)) ; true),
 	(Ia2==4 -> assert(iaGenerale(iav3b)) ; true),
-	(Ia2==5 -> assert(iaGenerale(iav4)) ; true).
+	(Ia2==5 -> assert(iaGenerale(iav4)) ; true),
+	(Ia1==0 -> assert(iaJ1(0)) ; true).
 
 stop:-
 	stopServer(8000).

@@ -17,14 +17,21 @@ testerMeilleurCoup([], MeilleureAction, MeilleureAction, MeilleurScore, Meilleur
 testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, MeilleurScore,IdJoueur,TA) :-
 
 	% test du is possible
-
-	simulationMC(X, 0,ScoreTrouve,0,IdJoueur,TA),
-	%restaurer les dynamics.
-
-	% tests pour le maximum
-	(   ScoreTrouve > MeilleurScore0 ->
-	MeilleurScore1 is ScoreTrouve, MeilleureAction1 is X;
-	MeilleurScore1 is MeilleurScore0, MeilleureAction1 is MeilleureAction0),
+	joueursSav(IdJoueur,PosIndex,_),
+	indexAction(X,Deplacement,_),
+	NewPosIndex is PosIndex + Deplacement,
+	(isPossible(PosIndex,NewPosIndex) ->
+		% appel des iterations pour calculer un score
+		simulationMC(X, 0,ScoreTrouve,0,IdJoueur,TA),
+		% tests pour le maximum
+		(   ScoreTrouve > MeilleurScore0 ->
+			MeilleurScore1 is ScoreTrouve, MeilleureAction1 is X
+		;
+			MeilleurScore1 is MeilleurScore0, MeilleureAction1 is MeilleureAction0
+		)
+	;
+		true
+	),
 	testerMeilleurCoup([X|L], MeilleureAction1, MeilleureAction, MeilleurScore1, MeilleurScore,IdJoueur,TA).
 	
 simulationMC(_, ScoreFinal,ScoreFinal, 250,_,_) :- !.
@@ -32,12 +39,13 @@ simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC,TourDebutS
 %sauver etat
 	sauverEtat(PlateauTemp,JoueursTemp,BombesTemp,JoueurActuelTemp,TourActuelTemp),
 %jouer mov 1
-	/*
 	% deplacer le joueur sur la nouvelle Pos avant le debut de la partie simulee et creer une bombe si necessaire
-	joueursSav(IdJoueurMC,PosIndex,_),
-	(   BombePosee == 1 -> ajouterBombe(PosIndex);true),
-	%Pour moi le reset des dynamiques est ici : a chaque fois qu'on a une partie finie, on reset le jeu et on recommence tout en modifiant le score et tout
-	*/
+	retract(joueursSav(IdJoueurMC,PosIndex,EtatJ)),
+	indexAction(Action,Deplacement,BombePosee),
+	NewPosIndex is PosIndex + Deplacement,
+	assert(joueursSav(IdJoueurMC,NewPosIndex,EtatJ)),
+	(BombePosee == 1 -> ajouterBombe(PosIndex);true),
+	
 %jouer jusqu'a finie
 	assert(tourActuel(TourDebutSimulation)),
 	(   Ia==0 -> Ia is iav1; true),
