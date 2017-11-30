@@ -1,27 +1,112 @@
 iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
-	posSuivantes(PosIndex, PositionsSuivantes),
-	posSuivantesPossibles(PosIndex, PositionsSuivantes, PosSuivantesPossibles),
-	writeln(PosSuivantesPossibles)/* ,
-	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, 0, BombePosee)*/.
+	joueursSav(IdJoueur,PosIndex,_),
+	tourActuel(TA),
+	Actions = [6,1,2,3,4,5],
+	testerMeilleurCoup(Actions, ActionJouee, _ScoreDeLAction, IdJoueur, TA),
+	indexAction(ActionJouee,Deplacement,BombePosee),
+	NewPosIndex is PosIndex + Deplacement
+	.
+
+% Lance l'initialisation de la recherche de max
+testerMeilleurCoup([PremiereAction|AutresActions], MeilleureAction, MeilleurScore,IdJoueur,TA) :-
+	testerMeilleurCoup([PremiereAction|AutresActions], PremiereAction, MeilleureAction, -10000000, MeilleurScore,IdJoueur,TA). %% l'init du meilleur score est degueu ^^
+
+% Validation du max
+testerMeilleurCoup([], MeilleureAction, MeilleureAction, MeilleurScore, MeilleurScore,_,_).
+% Recherche du max parmis les autres coups
+testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, MeilleurScore,IdJoueur,TA) :-
+
+	% test du is possible
+	joueursSav(IdJoueur,PosIndex,_),
+	indexAction(X,Deplacement,_),
+	NewPosIndex is PosIndex + Deplacement,
+	(isPossible(PosIndex,NewPosIndex) ->
+		% appel des iterations pour calculer un score
+		simulationMC(X, 0,ScoreTrouve,0,IdJoueur,TA),
+		% tests pour le maximum
+		(   ScoreTrouve > MeilleurScore0 ->
+			MeilleurScore1 is ScoreTrouve, MeilleureAction1 is X
+		;
+			MeilleurScore1 is MeilleurScore0, MeilleureAction1 is MeilleureAction0
+		)
+	;
+		true
+	),
+	testerMeilleurCoup([X|L], MeilleureAction1, MeilleureAction, MeilleurScore1, MeilleurScore,IdJoueur,TA).
+	
+simulationMC(_, ScoreFinal,ScoreFinal, 250,_,_) :- !.
+simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC,TourDebutSimulation) :-
+%sauver etat
+	sauverEtat(PlateauTemp,JoueursTemp,BombesTemp,JoueurActuelTemp,TourActuelTemp),
+%jouer mov 1
+	% deplacer le joueur sur la nouvelle Pos avant le debut de la partie simulee et creer une bombe si necessaire
+	retract(joueursSav(IdJoueurMC,PosIndex,EtatJ)),
+	indexAction(Action,Deplacement,BombePosee),
+	NewPosIndex is PosIndex + Deplacement,
+	assert(joueursSav(IdJoueurMC,NewPosIndex,EtatJ)),
+	(BombePosee == 1 -> ajouterBombe(PosIndex);true),
+	
+%jouer jusqu'a finie
+	assert(tourActuel(TourDebutSimulation)),
+	jouerMC(IdGagnant),
+%calcul du score
+	% si Score n'est pas instancie, on l'initialise a 0
+	(   var(Score) -> ScoreSuiv is 0;true),
+	tourActuel(TA),
+	% En cas d'egalite
+	(   TA < 50 -> true ;
+	(   IdGagnant == IdJoueurMC ->
+	ScoreSuiv is Score+(10000/(TA*TA));% EQUILIBRAGE : tests a la main pour cette expression qui me parait pas horrible
+	ScoreSuiv is Score-(7000/(TA*TA))), % EQUILIBRAGE : une défaite est moins importante qu'une victoire car une défaite peut etre évitée le moment venu et une victoire provoquée
+	NbIterationSuiv is NbIterationActuelle+1, % instanciee ?
+%restaurer etat
+	restaurerEtat(PlateauTemp,JoueursTemp,BombesTemp,JoueurActuelTemp,TourActuelTemp),
+%lancer simu suivante
+	simulationMC(Action, ScoreSuiv,ScoreFinal, NbIterationSuiv,IdJoueurMC,TourDebutSimulation))
+	.
+
+sauverEtat(Plateau,Joueurs,Bombes,JoueurActuel,TourActuel):-
+	plateauSav(Plateau),
+	findall([X,Y,Z],joueursSav(X,Y,Z), Joueurs),
+	findall([V,W],bombes(V,W),Bombes), 
+	joueurActuel(JoueurActuel),
+	tourActuel(TourActuel)
+.
+
+restaurerEtat(Plateau,Joueurs,Bombes,JoueurActuel,TourActuel):-
+	retract(plateauSav(_)),
+	retractall(joueursSav(_)),
+	retractall(bombes(_)),
+	retract(joueurActuel(_)),
+	retract(tourActuel(_)),
+	
+	assert(plateauSav(Plateau)),
+	restaurerJoueurs(Joueurs),
+	restaurerBombes(Bombes),
+	assert(joueurActuel(JoueurActuel)),
+	assert(tourActuel(TourActuel))
+.
 
 
-
-jouerMC(IdGagnant):- (gameover, joueursSav(IdGagnant,_,-1) ; tourActuel(50)), !.
+restaurerJoueurs([]):-!.
+restaurerJoueurs([[A,B,C]|L]):-
+	assert(joueursSav(A,B,C)),
+	restaurerJoueurs(L).
+restaurerBombes([]):-!.
+restaurerBombes([[A,B]|L]):-
+	assert(bombes(A,B)),
+	restaurerBombes(L).
+	
+jouerMC(IdGagnant):- ((gameover, joueursSav(IdGagnant,_,-1)) ; tourActuel(50)), !. % Mettre
 jouerMC(IdGagnant) :-
 	joueurActuel(IdJoueur),
-
-/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	taillePlateau(TaillePlateau),
-/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
-		( 
+		(
 			(IdJoueur==0 ->
 				iaJ1(Ia) ; iaGenerale(Ia)
 			),
 			ia(PosJoueur, NewPosJoueur, BombePosee, Ia),
-			%iaMC(PosJoueur, NewPosJoueur, BombePosee, iaMC),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
@@ -47,80 +132,3 @@ jouerMC(IdGagnant) :-
 	jouerMC(IdGagnant),
 	!
 	.
-/*
-jouerSimulationsPosition(_,_,CompteurVictoires, VictoiresTotales, 0) :-
-	VictoiresTotales is CompteurVictoires.
-jouerSimulationsPosition(IdJoueur, CompteurVictoires, VictoiresTotales, NewPosJoueur, NbSimulations) :-
-		write("hello simu"),
-	plateauSav(PlateauTEMP),
-	assert(plateauSavMC(PlateauTEMP)),
-	joueursSav(IdTEMP,_,_),
-	joueursSav(IdTEMP,PositionsTEMP,EtatsTEMP),!,
-	assert(joueursSavMC(IdTEMP,PositionsTEMP,EtatsTEMP)),
-		write("2"),
-	%bombes(PosTEMP,_),
-	%bombes(PosTEMP,TempsTEMP),!,
-	%assert(bombesMC(PosTEMP,TempsTEMP)),
-		write("3"),
-	indexAction(CodeTEMP,_,_),
-	indexAction(CodeTEMP,DeplacementTEMP,PoserTEMP),!,
-	assert(indexAction(CodeTEMP,DeplacementTEMP,PoserTEMP)),
-	taillePlateau(TailleTEMP),
-	assert(taillePlateau(TailleTEMP)),
-	nbJoueurs(NbTEMP),
-	assert(nbJoueurs(NbTEMP)),
-	joueurActuel(JoueurTEMP),
-	assert(joueurActuel(JoueurTEMP)),
-	tourActuel(TourTEMP),
-	assert(tourActuel(TourTEMP)),
-	fin(FinTEMP),
-	assert(fin(FinTEMP)),
-
-	actualiserJoueur(IdJoueur,NewPosJoueur),!,
-	write("hello simu 3"),
-
-	jouer(IdGagnant),
-	write("hello simu 4"),
-
-	%(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1; true),
-	NbSimulations is NbSimulations-1,
-
-	write("hello simu 5"),
-
-	jouerSimulationsPosition(IdJoueur, CompteurVictoires, VictoiresTotales, NewPosJoueur, NbSimulations),
-	write("hello simu 6")
-
-	.
-
-jouerSimulationsBombe(_, CompteurVictoires, VictoiresTotales, _, 0) :- VictoiresTotales is CompteurVictoires.
-jouerSimulationsBombe(IdJoueur, CompteurVictoires, VictoiresTotales, PosJoueur, NbSimulations) :-
-	plateauSavMC = plateauSav,
-	joueursSavMC = joueursSav,
-	bombesMC = bombes,
-	indexActionMC = indexAction,
-	taillePlateauMC = taillePlateau,
-	nbJoueursMC = nbJoueurs,
-	joueurActuelMC = joueurActuel,
-	tourActuelMC = tourActuel,
-	finMC = fin,
-	ajouterBombeMC(PosJoueur),
-	jouerMC(IdGagnant),
-	(IdGagnant is IdJoueur -> CompteurVictoires is CompteurVictoires + 1; true),
-	NbSimulations is NbSimulations -1,
-	jouerSimulationsBombe(IdJoueur, CompteurVictoires, VictoiresTotales, PosJoueur, NbSimulations).
-
-
-testerMeilleurCoup([], PosActuelle, MeilleurPos, CompteurVictoire, BombePosee) :-
-	joueurActuel(IdJoueur),
-	jouerSimulationsBombe(IdJoueur, 0, NewCompteurVictoire, PosActuelle, 250),
-	(NewCompteurVictoire > CompteurVictoire -> MeilleurPos is PosActuelle, BombePosee is 1; true).
-testerMeilleurCoup([X|L], PosActuelle, MeilleurPos, CompteurVictoire, BombePosee) :-
-	joueurActuel(IdJoueur),
-	write("hello test"),
-	jouerSimulationsPosition(IdJoueur, 0, NewCompteurVictoire, X, 250),
-	write(IdJoueur), write(" "), write(NewCompteurVictoire),
-	(NewCompteurVictoire > CompteurVictoire -> MeilleurPos is X, CompteurVictoire is NewCompteurVictoire; true),
-	testerMeilleurCoup(L, PosActuelle, MeilleurPos, CompteurVictoire, BombePosee).
-
-
-*/
