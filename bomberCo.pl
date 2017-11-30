@@ -17,7 +17,7 @@
 :-[bombes].
 :-[ihm].
 :-[tests].
-:-[monteCarlo2]. 
+:-[monteCarlo2].
 
 % Condition d'arret : 10 iterations
 
@@ -38,7 +38,11 @@ jouer :-
 			(IdJoueur==0 ->
 				iaJ1(Ia) ; iaGenerale(Ia)
 			),
-			ia(PosJoueur, NewPosJoueur, BombePosee, Ia),
+			(   Ia==iaMC -> 
+				iaMC(PosJoueur,NewPosJoueur,BombePosee,Ia)
+			;
+				ia(PosJoueur, NewPosJoueur, BombePosee, Ia)
+			),
 			%iaMC(PosJoueur, NewPosJoueur, BombePosee, iaMC),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
@@ -140,6 +144,7 @@ preparerIa(Ia1, Ia2) :-
 	(Ia1==3 -> assert(iaJ1(iav3)) ; true),
 	(Ia1==4 -> assert(iaJ1(iav3b)) ; true),
 	(Ia1==5 -> assert(iaJ1(iav4)) ; true),
+	(Ia1==6 -> assert(iaJ1(iaMC)) ; true),
 	(Ia2==1 -> assert(iaGenerale(iav1)) ; true),
 	(Ia2==2 -> assert(iaGenerale(iav2)) ; true),
 	(Ia2==3 -> assert(iaGenerale(iav3)) ; true),

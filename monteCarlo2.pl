@@ -1,10 +1,14 @@
 iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
+	writeln("Entree dans ia"),
 	joueursSav(IdJoueur,PosIndex,_),
+	writeln(IdJoueur),
+	writeln(PosIndex),
 	tourActuel(TA),
 	Actions = [6,1,2,3,4,5],
 	testerMeilleurCoup(Actions, ActionJouee, _ScoreDeLAction, IdJoueur, TA),
+	writeln("Fin tour ia"),
 	indexAction(ActionJouee,Deplacement,BombePosee),
-	NewPosIndex is PosIndex + Deplacement
+	NewPosIndex is PosIndex + Deplacement,!
 	.
 
 % Lance l'initialisation de la recherche de max
@@ -15,7 +19,7 @@ testerMeilleurCoup([PremiereAction|AutresActions], MeilleureAction, MeilleurScor
 testerMeilleurCoup([], MeilleureAction, MeilleureAction, MeilleurScore, MeilleurScore,_,_).
 % Recherche du max parmis les autres coups
 testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, MeilleurScore,IdJoueur,TA) :-
-
+writeln(MeilleureAction0),
 	% test du is possible
 	joueursSav(IdJoueur,PosIndex,_),
 	indexAction(X,Deplacement,_),
@@ -23,6 +27,7 @@ testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, Mei
 	(isPossible(PosIndex,NewPosIndex) ->
 		% appel des iterations pour calculer un score
 		simulationMC(X, 0,ScoreTrouve,0,IdJoueur,TA),
+		write("Fin simu : "), writeln(ScoreTrouve),
 		% tests pour le maximum
 		(   ScoreTrouve > MeilleurScore0 ->
 			MeilleurScore1 is ScoreTrouve, MeilleureAction1 is X
@@ -32,10 +37,11 @@ testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, Mei
 	;
 		true
 	),
-	testerMeilleurCoup([X|L], MeilleureAction1, MeilleureAction, MeilleurScore1, MeilleurScore,IdJoueur,TA).
-	
+	testerMeilleurCoup(L, MeilleureAction1, MeilleureAction, MeilleurScore1, MeilleurScore,IdJoueur,TA).
+
 simulationMC(_, ScoreFinal,ScoreFinal, 250,_,_) :- !.
 simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC,TourDebutSimulation) :-
+write("simu"),
 %sauver etat
 	sauverEtat(PlateauTemp,JoueursTemp,BombesTemp,JoueurActuelTemp,TourActuelTemp),
 %jouer mov 1
@@ -45,10 +51,8 @@ simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC,TourDebutS
 	NewPosIndex is PosIndex + Deplacement,
 	assert(joueursSav(IdJoueurMC,NewPosIndex,EtatJ)),
 	(BombePosee == 1 -> ajouterBombe(PosIndex);true),
-	
 %jouer jusqu'a finie
 	assert(tourActuel(TourDebutSimulation)),
-	(   Ia==0 -> Ia is iav1; true),
 	jouerMC(IdGagnant),
 %calcul du score
 	% si Score n'est pas instancie, on l'initialise a 0
@@ -69,7 +73,7 @@ simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC,TourDebutS
 sauverEtat(Plateau,Joueurs,Bombes,JoueurActuel,TourActuel):-
 	plateauSav(Plateau),
 	findall([X,Y,Z],joueursSav(X,Y,Z), Joueurs),
-	findall([V,W],bombes(V,W),Bombes), 
+	findall([V,W],bombes(V,W),Bombes),
 	joueurActuel(JoueurActuel),
 	tourActuel(TourActuel)
 .
@@ -80,7 +84,7 @@ restaurerEtat(Plateau,Joueurs,Bombes,JoueurActuel,TourActuel):-
 	retractall(bombes(_)),
 	retract(joueurActuel(_)),
 	retract(tourActuel(_)),
-	
+
 	assert(plateauSav(Plateau)),
 	restaurerJoueurs(Joueurs),
 	restaurerBombes(Bombes),
@@ -97,7 +101,7 @@ restaurerBombes([]):-!.
 restaurerBombes([[A,B]|L]):-
 	assert(bombes(A,B)),
 	restaurerBombes(L).
-	
+
 jouerMC(IdGagnant):- ((gameover, joueursSav(IdGagnant,_,-1)) ; tourActuel(50)), !. % Mettre
 jouerMC(IdGagnant) :-
 	joueurActuel(IdJoueur),
@@ -105,8 +109,10 @@ jouerMC(IdGagnant) :-
 	(StatusJoueur==0 -> true ;
 		(
 			(IdJoueur==0 ->
-				iaJ1(Ia) ; iaGenerale(Ia)
+				Ia = iav1 ; iaGenerale(Ia)
 			),
+			tourActuel(TA),
+			write("Ia :"), writeln(TA),
 			ia(PosJoueur, NewPosJoueur, BombePosee, Ia),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
