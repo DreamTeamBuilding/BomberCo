@@ -1,0 +1,92 @@
+Limite 50 tours, égalité si au bout des 50 tours les 2 sont en vies.
+
+-------IA1 vs IA2-------
+J1 est ia1
+J2 est ia2
+Moy nombre tour : 22.02
+Moy temps ms : 1.05
+J1 a perdu : 66 fois.
+J2 a perdu : 28 fois.
+Il y a eu 6 egalites.
+J2 est meilleur
+-------IA1 vs IA3-------
+J1 est ia1
+J2 est ia3
+Moy nombre tour : 25.36
+Moy temps ms : 1.8
+J1 a perdu : 83 fois.
+J2 a perdu : 0 fois.
+Il y a eu 17 egalites.
+J2 est meilleur
+-------IA1 vs IA4-------
+J1 est ia1
+J2 est ia4
+Moy nombre tour : 21.03
+Moy temps ms : 1.8
+J1 a perdu : 95 fois.
+J2 a perdu : 1 fois.
+Il y a eu 4 egalites.
+J2 est meilleur
+-------IA2 vs IA3-------
+J1 est ia2
+J2 est ia3
+Moy nombre tour : 34.47
+Moy temps ms : 2.4
+J1 a perdu : 63 ffois.
+J2 a perdu : 0 fois.
+Il y a eu 37 egalites.
+J2 est meilleur
+-------IA2 vs IA4-------
+J1 est ia2
+J2 est ia4
+Moy nombre tour : 36.64
+Moy temps ms : 2.55
+J1 a perdu : 54 fois.
+J2 a perdu : 1 fois.
+Il y a eu 45 egalites.
+J2 est meilleur
+-------IA3 vs IA4-------
+J1 est ia3
+J2 est ia4
+Moy nombre tour : 49.5
+Moy temps ms : 4.32
+J1 a perdu : 5 fois.
+J2 a perdu : 2 fois.
+Il y a eu 93 egalites.
+J2 est meilleur
+-------IA1 vs IA5-------
+J1 est ia1
+J2 est ia5
+Moy nombre tour : 25.17
+Moy temps ms : 4.02
+J1 a perdu : 89 fois.
+J2 a perdu : 0 fois.
+Il y a eu 11 egalites.
+J2 est meilleur
+-------IA2 vs IA5-------
+J1 est ia2
+J2 est ia5
+Moy nombre tour : 49.25
+Moy temps ms : 15.16
+J1 a perdu : 10 fois.
+J2 a perdu : 0 fois.
+Il y a eu 90 egalites.
+J2 est meilleur
+-------IA3 vs IA5-------
+J1 est ia3
+J2 est ia5
+Moy nombre tour : 47.76
+Moy temps ms : 10.27
+J1 a perdu : 11 fois.
+J2 a perdu : 7 fois.
+Il y a eu 82 egalites.
+J2 est meilleur
+-------IA4 vs IA5-------
+J1 est ia4
+J2 est ia5
+Moy nombre tour : 47.71
+Moy temps ms : 9.12
+J1 a perdu : 10 fois.
+J2 a perdu : 8 fois.
+Il y a eu 82 egalites.
+J2 est meilleur
