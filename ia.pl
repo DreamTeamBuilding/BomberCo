@@ -14,23 +14,23 @@ initIndex :-
 
 distance(Pos1, Pos2, Distance) :-  taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), Distance is (DiffX+DiffY).
 
-/*
-% Retourne la distance avec l'adversaire le + proche
-adversairePlusProche(Pos,[X|ListeJoueurs],Min,PosPlusProche):- adversairePlusProche(Pos,ListeJoueurs,X,Min,PosPlusProche).
 
-adversairePlusProche(_,[],Min,Min,PosPlusProche) :- write("Distance Finale : "),writeln(Min),!.
-adversairePlusProche(Pos, [PosJoueur|L], DistancePP, MinFinal, PosPlusProche) :-
-	write("Distance a battre : "),writeln(DistancePP),
-	write(" Position anaysee : "),writeln(PosJoueur),
+adversairePlusProche(Pos, [PosJoueur|L], PosPlusProcheFinale):-
+	adversairePlusProche(Pos, [PosJoueur|L], MinFinal, PosJoueur, PosPlusProcheFinale).
+adversairePlusProche(_,[],Min,PosPlusProche, PosPlusProche) :- 
+	%write("Distance Finale : "),writeln(Min),
+	%write("Cible : "), writeln(Cible),
+	!.
+adversairePlusProche(Pos, [PosJoueur|L], MinFinal, PosPlusProche, PosPlusProcheFinale) :-
 	distance(Pos,PosJoueur,Distance),
-	write(" distance detectee : "),writeln(Distance),
-	(var(DistancePP) -> (DistancePP is Distance, PosPlusProche is PosJoueur) ; true),
-	Min is min(Distance,DistancePP),
-	write("Minimum courant : "),writeln(Min),
-	adversairePlusProche(Pos,L,Min,MinFinal, PosPlusProche).
- adversairePlusProche(Pos, [_|L],Min, MinFinal, PosPlusProche) :- adversairePlusProche(Pos,L,Min, MinFinal, PosPlusProche).
-*/
+	(var(MinFinal) ->
+		(MinFinal2 is Distance, PosPlusProche2 is PosJoueur)
+		;
+		((Distance =< MinFinal) -> (MinFinal2 is Distance,  PosPlusProche2 is PosJoueur) ; (MinFinal2 is MinFinal,  PosPlusProche2 is PosPlusProche))
+	),
+	adversairePlusProche(Pos,L,MinFinal2, PosPlusProche2, PosPlusProcheFinale).
 
+	
 isSafe(Pos) :-  % la case a l'index Pos est elle safe ?
 	plateauSav(Plateau),
 	taillePlateau(TaillePlateau),
@@ -87,15 +87,37 @@ posSuivantesPlusProches(PosCible, [X|PosSuivantesSafes], PosMin, DistanceMin) :-
 
 posSuivantesPlusProches(_,[],_,DistanceMin,DistanceMin):-!.
 posSuivantesPlusProches(PosCible, [X|PosSuivantesSafes],PosMin ,DistanceMinCourante, DistanceMin) :-
-	write("Position Cible : "), writeln(PosCible),
-	write("Je teste la position : "), writeln(X),
+	%write("Position Cible : "), writeln(PosCible),
+	%write("Je teste la position : "), writeln(X),
 	distance(PosCible,X,Distance),
-	write("Distance : "), writeln(Distance),
+	%write("Distance : "), writeln(Distance),
 	(   var(DistanceMinCourante) -> DistanceMinCourante is Distance;true),
 	Min is min(Distance,DistanceMinCourante),
 	posSuivantesPlusProches(PosCible,PosSuivantesSafes,PosMin,Min,DistanceMin).
 % posSuivantesPlusProches(Pos, [_|PPP], MM, DistanceMin) :-
 % posSuivantesPlusProches(Pos,PPP,MM,DistanceMin).
+
+positionSafePlusProche([Position|L],Cible,PositionPlusProche):-
+	positionSafePlusProche([Position|L],Cible,Position, PositionPlusProche).
+positionSafePlusProche([],_,PositionPlusProche,PositionPlusProche).
+positionSafePlusProche([Position|L],Cible,PositionPlusProche,PositionFinale):-
+	distance(Cible,Position,Distance),
+	%write("Distance de la cible : "),writeln(Distance),
+	%writeln(PositionPlusProche),
+	(var(PositionPlusProche) -> 
+		%write("var(X) est faux"),
+		PositionPlusProche is Position
+	;
+		(%write("var(X) est vrai"),
+		distance(Cible,PositionPlusProche,Distance2),
+		(Distance < Distance2 -> 
+			PositionPlusProche2 is Position
+		;
+			PositionPlusProche2 is PositionPlusProche
+		))
+	),
+	%write("Meilleure position : "),writeln(PositionPlusProche2),
+	positionSafePlusProche(L,Cible,PositionPlusProche2, PositionFinale).
 
 
 % iav1 : fait tout de maniere random
@@ -225,41 +247,64 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav4) :-
 */
 
 
-ia(Board, PosIndex, NewPosIndex,BombePosee, iav5):-
+ia(PosIndex, NewPosIndex,BombePosee, iav5):-
+	%write("Joueur courant : "),writeln(PosIndex),
+	plateauSav(Board),
 	posAdjacentes(PosIndex, PositionsAdjacentes),
 	posSuivantesPossibles(PosIndex, PositionsAdjacentes, PosAdjacentesPossibles),
 	(length(PosAdjacentesPossibles,0) -> 
 		%On ne peut pas bouger
+		%writeln("On peut pas bouger"),
 		(NewPosIndex is PosIndex, BombePosee is 0)
 	;
 		%On peut bouger
+		%writeln("On peut bouger"),
 		(posSuivantesSafe(PosAdjacentesPossibles, PosAdjacentesSafe),
 		(isSafe(PosIndex) ->
 			%On est sur une case safe
+			%writeln("On est en securite"),
 			(length(PosAdjacentesSafe,0) -> 
 				% Pas de case safe autour
+				%writeln("Pas safe autour"),
 				(NewPosIndex is PosIndex, BombePosee is 0)
 			;
-				(ennemiPlusProche(Distance, Cible), % METHODE BIDON
-				porteeBombes(PorteeBombe),
-				(Distance < PorteeBombe -> 
+				%Safe autour
+				%writeln("Safe autour"),
+				(findall(X,joueursSav(_,X,-1),PosJoueurs),
+				delete(PosJoueurs,PosIndex,PosAdversaires),
+				%write("Adversaires : "),writeln(PosAdversaires),
+				adversairePlusProche(PosIndex, PosAdversaires, Cible),
+				%write("Cible : "), writeln(Cible),
+				distance(Cible,PosIndex,Distance),
+				(Distance < 3 -> 
 					%Je suis pres de l'ennemi, je pose une bombe
-					(NewPosIndex is PosIndex, BombePosee is 1)
+					(%writeln("Je suis pres de l'ennemi, je pose une bombe"),
+					PoserBombe is random(9),
+					(PoserBombe > 6 -> 
+						(NewPosIndex is PosIndex, BombePosee is 0)
+					;
+						(NewPosIndex is PosIndex, BombePosee is 1)
+					))
 				;
 					%Je suis loin de l'ennemi, je vais vers l'ennemi
-					(positionSafePlusProche([PosIndex|PosAdjacentesSafe],Cible,PositionPlusProche),
-					NewPosIndex is PositionPlusProche, BombePosee is 0)
+					%writeln("Je suis loin de ma cible, je m'approche"),
+					(positionSafePlusProche([PosIndex|PosAdjacentesSafe],Cible,PositionSafePlusProche),
+					%write("PositionSafePlusProche : "),writeln(PositionSafePlusProche),
+					NewPosIndex is PositionSafePlusProche, BombePosee is 0)
 				)
 			))			
 		;	
 			%On est pas sur une case safe
+			%writeln("Je ne suis pas safe"),
 			(length(PosAdjacentesSafe,0) -> 
 				%Pas de cases safe autour
+				%writeln("C'est pas safe autour"),
 				(random_member(NewPosIndex, PosAdjacentesPossibles),
 				isPossible(PosIndex, NewPosIndex),
 				!)
 			;
 				%Il existe des cases safe autour
+				%writeln("C'est safe autour"),
 				(random_member(NewPosIndex, PosAdjacentesSafe),
 				isPossible(PosIndex, NewPosIndex),
 				!)
@@ -269,22 +314,6 @@ ia(Board, PosIndex, NewPosIndex,BombePosee, iav5):-
 	.
 	
 	
-ennemiPlusProche(8, 20).
-	
-positionSafePlusProche([],_,PositionPlusProche).
-positionSafePlusProche([Position|L],Cible,PositionPlusProche):-
-	distance(Cible,Position,Distance),
-	(var(PositionPlusProche) -> 
-		PositionPlusProche is Position
-	;
-		(distance(Cible,PositionPlusProche,Distance2),
-		(Distance < Distance2 -> 
-			PositionPlusProche is Position
-		;
-			true
-		))
-	),
-	positionSafePlusProche(L,Cible,PositionPlusProche).
 	
 	
 	
@@ -304,6 +333,4 @@ positionSafePlusProche([Position|L],Cible,PositionPlusProche):-
 	
 	
 	
-	
-	
-	
+

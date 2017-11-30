@@ -110,13 +110,13 @@ preparerIa(Ia1, Ia2) :-
 	(Ia1==1 -> assert(iaJ1(iav1)) ; true),
 	(Ia1==2 -> assert(iaJ1(iav2)) ; true),
 	(Ia1==3 -> assert(iaJ1(iav3)) ; true),
-	(Ia1==4 -> assert(iaJ1(iav3b)) ; true),
-	(Ia1==5 -> assert(iaJ1(iav4)) ; true),
+	(Ia1==4 -> assert(iaJ1(iav4)) ; true),
+	(Ia1==5 -> assert(iaJ1(iav5)) ; true),
 	(Ia2==1 -> assert(iaGenerale(iav1)) ; true),
 	(Ia2==2 -> assert(iaGenerale(iav2)) ; true),
 	(Ia2==3 -> assert(iaGenerale(iav3)) ; true),
-	(Ia2==4 -> assert(iaGenerale(iav3b)) ; true),
-	(Ia2==5 -> assert(iaGenerale(iav4)) ; true).
+	(Ia2==4 -> assert(iaGenerale(iav4)) ; true),
+	(Ia2==5 -> assert(iaGenerale(iav5)) ; true).
 
 stop:-
 	stopServer(8000).
