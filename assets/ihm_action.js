@@ -13,7 +13,7 @@ var numberOfPlayer = 2;
 	 clearInterval(interval);
 	 //Plus court pour real player pour eviter impression de non reactivite aux commandes
 	 if(realPlayer)
-	 	interval = setInterval(function(){ play();}, 30);
+	 	interval = setInterval(function(){ play();}, 50);
 	 else
 	 	interval = setInterval(function(){ play();}, 300);
  }
