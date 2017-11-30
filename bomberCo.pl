@@ -29,9 +29,9 @@ jouer :-
 	joueurActuel(IdJoueur),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	taillePlateau(TaillePlateau),
+	taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	displayBoard(TaillePlateau),
+	displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
@@ -61,7 +61,7 @@ jouer :-
 	assert(tourActuel(TourSuivant)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	jouer,
+	jouer,
 	!
 	.
 
@@ -70,9 +70,9 @@ jouerVraiJoueur(Action) :-
 	joueurActuel(IdJoueur),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	taillePlateau(TaillePlateau),
+	taillePlateau(TaillePlateau),
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	displayBoard(TaillePlateau),
+	displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
 		(
@@ -97,14 +97,14 @@ jouerVraiJoueur(Action) :-
 	assert(tourActuel(TourSuivant)),
 
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-%	jouer,
+	jouer,
 	!
 	.
 
 %%%%% Start !
 init :-
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	server(8000),
+%	server(8000),
 	true %a delete (me permet de commenter plus simplement la ligne au dessus)
 	.
 
