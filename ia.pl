@@ -13,22 +13,28 @@ initIndex :-
 
 
 distance(Pos1, Pos2, Distance) :-  taillePlateau(Taille), Pos1X = (Pos1 mod Taille), Pos2X = (Pos2 mod Taille), Pos1Y = (div(Pos1,Taille)), Pos2Y = (div(Pos2,Taille)), DiffX is abs(Pos1X-Pos2X), DiffY is abs(Pos1Y-Pos2Y), Distance is (DiffX+DiffY).
-/*
-% Retourne la distance avec l'adversaire le + proche
-adversairePlusProche(Pos,[X|ListeJoueurs],Min,PosPlusProche):- adversairePlusProche(Pos,ListeJoueurs,X,Min,PosPlusProche).
 
-adversairePlusProche(_,[],Min,Min,PosPlusProche) :- write("Distance Finale : "),writeln(Min),!.
-adversairePlusProche(Pos, [PosJoueur|L], DistancePP, MinFinal, PosPlusProche) :-
-	write("Distance a battre : "),writeln(DistancePP),
-	write(" Position anaysee : "),writeln(PosJoueur),
+% Retourne la distance avec l'adversaire le + proche
+%adversairePlusProche(Pos,[X|ListeJoueurs],Min,PosPlusProche):- adversairePlusProche(Pos,ListeJoueurs,X,Min,PosPlusProche).
+
+adversairePlusProche(_,[],Min,PosPlusProche) :- write("Distance Finale : "),writeln(Min),!.
+adversairePlusProche(Pos, [PosJoueur|L], MinFinal, PosPlusProche) :-
+	%write("Distance a battre : "),writeln(MinFinal),
+	%write(" Position anaysee : "),writeln(PosJoueur),
 	distance(Pos,PosJoueur,Distance),
-	write(" distance detectee : "),writeln(Distance),
-	(var(DistancePP) -> (DistancePP is Distance, PosPlusProche is PosJoueur) ; true),
-	Min is min(Distance,DistancePP),
-	write("Minimum courant : "),writeln(Min),
-	adversairePlusProche(Pos,L,Min,MinFinal, PosPlusProche).
- adversairePlusProche(Pos, [_|L],Min, MinFinal, PosPlusProche) :- adversairePlusProche(Pos,L,Min, MinFinal, PosPlusProche).
-*/
+	%write(" distance detectee : "),writeln(Distance),
+	(var(MinFinal) ->
+		(MinFinal2 is Distance, PosPlusProche2 is PosJoueur)
+		;
+		((Distance =< MinFinal) -> (MinFinal2 is Distance,  PosPlusProche2 is PosJoueur) ; (MinFinal2 is MinFinal,  PosPlusProche2 is PosPlusProche))
+	),
+	%write("Nouvelle Distance : "),writeln(MinFinal2),
+	%Min is min(Distance,DistancePP),
+
+	%write("Minimum courant : "),writeln(Min),
+	adversairePlusProche(Pos,L,MinFinal2, PosPlusProche2).
+ %adversairePlusProche(Pos, [_|L],Min, MinFinal, PosPlusProche) :- adversairePlusProche(Pos,L,Min, MinFinal, PosPlusProche).
+
 isSafe(Pos) :-  % la case a l'index Pos est elle safe ?
 	plateauSav(Plateau),
 	taillePlateau(TaillePlateau),
