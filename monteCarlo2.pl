@@ -4,22 +4,20 @@ iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
 	Actions = [1,2,3,4,5,6],
 	testerMeilleurCoup(Actions, ActionJouee, _ScoreDeLAction, IdJoueur, TA)
 	.
-% Je vois pas pourquoi on a besoin de PosActuelle :/
+
 % Lance l'initialisation de la recherche de max
 testerMeilleurCoup([PremiereAction|AutresActions], MeilleureAction, MeilleurScore,IdJoueur,TA) :-
-	testerMeilleurCoup(AutresActions, PremiereAction, MeilleureAction, -10000000, MeilleurScore,IdJoueur,TA). %% l'init du meilleur score est degueu ^^
+	testerMeilleurCoup([PremiereAction|AutresActions], PremiereAction, MeilleureAction, -10000000, MeilleurScore,IdJoueur,TA). %% l'init du meilleur score est degueu ^^
 
 % Validation du max
 testerMeilleurCoup([], MeilleureAction, MeilleureAction, MeilleurScore, MeilleurScore,_,_).
 % Recherche du max parmis les autres coups
 testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, MeilleurScore,IdJoueur,TA) :-
 
-	%sav des dynamics (plateauSav, joueursSav, bombes, joueurActuel, tourActuel)
+	% test du is possible
 
-	simulationMC(X, Bombe, ScoreTrouve,_NbIterationActuelle,IdJoueur,TA),
+	simulationMC(X, 0,ScoreFinal,0,IdJoueur,TA),
 	%restaurer les dynamics.
-
-
 
 	% tests pour le maximum
 	(   ScoreTrouve > MeilleurScore0 ->
@@ -27,7 +25,39 @@ testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, Mei
 	MeilleurScore1 is MeilleurScore0, MeilleureAction1 is MeilleureAction0),
 	testerMeilleurCoup([X|L], MeilleureAction1, MeilleureAction, MeilleurScore1, MeilleurScore,IdJoueur,TA).
 
-jouerMC(IdGagnant):- ((gameover, joueursSav(IdGagnant,_,-1)) ; tourActuel(50)), !.
+simulationMC(Action, ScoreFinal,ScoreFinal, 250,_,_) :- !.
+simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC,TourDebutSimulation) :-
+%sauver etat
+
+%jouer mov 1
+	/*
+	% deplacer le joueur sur la nouvelle Pos avant le debut de la partie simulee et creer une bombe si necessaire
+	joueursSav(IdJoueurMC,PosIndex,_),
+	(   BombePosee == 1 -> ajouterBombe(PosIndex);true),
+	%Pour moi le reset des dynamiques est ici : a chaque fois qu'on a une partie finie, on reset le jeu et on recommence tout en modifiant le score et tout
+	*/
+%jouer jusqu'a finie
+	assert(tourActuel(TourDebutSimulation)),
+	jouerMC(IdGagnant),
+%calcul du score
+	% si Score n'est pas instancie, on l'initialise a 0
+	(   var(Score) -> ScoreSuiv is 0;true),
+	tourActuel(TA),
+	% En cas d'egalite
+	(   TA < 50 -> true ;
+	(   IdGagnant == IdJoueurMC ->
+	ScoreSuiv is Score+(10000/(TA*TA));% EQUILIBRAGE : tests a la main pour cette expression qui me parait pas horrible
+	ScoreSuiv is Score-(7000/(TA*TA))), % EQUILIBRAGE : une défaite est moins importante qu'une victoire car une défaite peut etre évitée le moment venu et une victoire provoquée
+	NbIterationSuiv is NbIterationActuelle+1, % instanciee ?
+%restaurer etat
+
+%lancer simu suivante
+	simulationMC(Action, ScoreSuiv,ScoreFinal, NbIterationSuiv,IdJoueurMC,TourDebutSimulation))
+
+
+	.
+
+jouerMC(IdGagnant):- ((gameover, joueursSav(IdGagnant,_,-1)) ; tourActuel(50)), !. % Mettre
 jouerMC(IdGagnant) :-
 	joueurActuel(IdJoueur),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
@@ -61,26 +91,4 @@ jouerMC(IdGagnant) :-
 /** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
 	jouerMC(IdGagnant),
 	!
-	.
-
-simulationMC(NewPosIndex, BombePosee, Score, 250,_,_) :- !.
-simulationMC(PosIndex, BombePosee, Score, NbIterationActuelle,IdJoueurMC,TourDebutSimulation) :-
-	% deplacer le joueur sur la nouvelle Pos avant le debut de la partie simulee et creer une bombe si necessaire
-	joueursSav(IdJoueurMC,PosIndex,_),
-	(   BombePosee == 1 -> ajouterBombe(PosIndex);true),
-
-	assert(tourActuel(TourDebutSimulation)),
-	jouerMC(IdGagnant),
-
-	% si Score n'est pas instancie, on l'initialise a 0
-	(   var(Score) -> Score is 0;true),
-	tourActuel(TA),
-	% En cas d'egalite
-	(   TA < 50 -> true ;
-	(   IdGagnant == IdJoueurMC ->
-	Score is Score+(10000/(TA*TA));% EQUILIBRAGE : tests a la main pour cette expression qui me parait pas horrible
-	Score is Score-(7000/(TA*TA))), % EQUILIBRAGE : une défaite est moins importante qu'une victoire car une défaite peut etre évitée le moment venu et une victoire provoquée
-	NbIterationActuelle is NbIterationActuelle+1, % instanciee ?
-	%Pour moi le reset des dynamiques est ici : a chaque fois qu'on a une partie finie, on reset le jeu et on recommence tout en modifiant le score et tout
-	simulationMC(PosIndex, BombePosee, Score, NbIterationActuelle,IdJoueurMC))
 	.
