@@ -96,12 +96,12 @@ function handlePress(e){
 	}
 }
 
- function fin(){
+ function fin(nbTour){
 	 clearInterval(interval);
 	 interval = null;
 	 realPlayer = false;
 	 playerTurn = 1;
-	 $("h1").text("Game over");
+	 $("h1").text("Game over Tour :" + nbTour);
  }
 
  function play() {
@@ -158,7 +158,7 @@ function computeData(){
  function buildString(infoGame){
 	 var jsonVar = JSON.parse(infoGame);
 	 if(jsonVar.fin==1){
-		 fin();
+		 fin(jsonVar.tourActuel);
 		 return;
 	 }
 	 var taille = jsonVar.taillePlateau;
