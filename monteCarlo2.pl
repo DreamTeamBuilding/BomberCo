@@ -2,32 +2,33 @@ iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
 	joueursSav(IdJoueur,PosIndex,_),
 	tourActuel(TA),
 	Actions = [6,1,2,3,4,5],
-	testerMeilleurCoup(Actions, ActionJouee, _ScoreDeLAction, IdJoueur, TA)
+	testerMeilleurCoup(Actions, ActionJouee, _ScoreDeLAction, IdJoueur, TA),
+	indexAction(ActionJouee,Deplacement,BombePosee),
+	NewPosIndex is PosIndex + Deplacement
 	.
-	
+
 % Lance l'initialisation de la recherche de max
-testerMeilleurCoup([PremiereAction|AutresActions], MeilleureAction, MeilleurScore,IdJoueur) :-
-	testerMeilleurCoup([PremiereAction|AutresActions], PremiereAction, MeilleureAction, -10000000, MeilleurScore,IdJoueur). %% l'init du meilleur score est degueu ^^
+testerMeilleurCoup([PremiereAction|AutresActions], MeilleureAction, MeilleurScore,IdJoueur,TA) :-
+	testerMeilleurCoup([PremiereAction|AutresActions], PremiereAction, MeilleureAction, -10000000, MeilleurScore,IdJoueur,TA). %% l'init du meilleur score est degueu ^^
 
 % Validation du max
-testerMeilleurCoup([], MeilleureAction, MeilleureAction, MeilleurScore, MeilleurScore,_).
+testerMeilleurCoup([], MeilleureAction, MeilleureAction, MeilleurScore, MeilleurScore,_,_).
 % Recherche du max parmis les autres coups
-testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, MeilleurScore,IdJoueur) :-
-	
+testerMeilleurCoup([X|L], MeilleureAction0, MeilleureAction, MeilleurScore0, MeilleurScore,IdJoueur,TA) :-
+
 	% test du is possible
-	
-	simulationMC(X, 0,ScoreFinal,0,IdJoueur),
+
+	simulationMC(X, 0,ScoreTrouve,0,IdJoueur,TA),
 	%restaurer les dynamics.
 
 	% tests pour le maximum
 	(   ScoreTrouve > MeilleurScore0 ->
 	MeilleurScore1 is ScoreTrouve, MeilleureAction1 is X;
 	MeilleurScore1 is MeilleurScore0, MeilleureAction1 is MeilleureAction0),
-	testerMeilleurCoup([X|L], MeilleureAction1, MeilleureAction, MeilleurScore1, MeilleurScore,IdJoueur).
-
+	testerMeilleurCoup([X|L], MeilleureAction1, MeilleureAction, MeilleurScore1, MeilleurScore,IdJoueur,TA).
 	
-simulationMC(Action, ScoreFinal,ScoreFinal, 250,_) :- !.
-simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC) :-
+simulationMC(_, ScoreFinal,ScoreFinal, 250,_,_) :- !.
+simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC,TourDebutSimulation) :-
 %sauver etat
 	sauverEtat(PlateauTemp,JoueursTemp,BombesTemp,JoueurActuelTemp,TourActuelTemp),
 %jouer mov 1
@@ -38,6 +39,7 @@ simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC) :-
 	%Pour moi le reset des dynamiques est ici : a chaque fois qu'on a une partie finie, on reset le jeu et on recommence tout en modifiant le score et tout
 	*/
 %jouer jusqu'a finie
+	assert(tourActuel(TourDebutSimulation)),
 	jouerMC(IdGagnant),
 %calcul du score
 	% si Score n'est pas instancie, on l'initialise a 0
@@ -52,7 +54,7 @@ simulationMC(Action, Score,ScoreFinal, NbIterationActuelle,IdJoueurMC) :-
 %restaurer etat
 	restaurerEtat(PlateauTemp,JoueursTemp,BombesTemp,JoueurActuelTemp,TourActuelTemp),
 %lancer simu suivante
-	simulationMC(PosIndex, ScoreSuiv,ScoreFinal, NbIterationSuiv,IdJoueurMC))
+	simulationMC(Action, ScoreSuiv,ScoreFinal, NbIterationSuiv,IdJoueurMC,TourDebutSimulation))
 	.
 
 sauverEtat(Plateau,Joueurs,Bombes,JoueurActuel,TourActuel):-
@@ -83,9 +85,9 @@ restaurerJoueurs([[A,B,C]|L]):-
 	assert(joueursSav(A,B,C)),
 	restaurerJoueurs(L).
 restaurerBombes([]):-!.
-restaurerBomes([[A,B]|L]):-
+restaurerBombes([[A,B]|L]):-
 	assert(bombes(A,B)),
-	restaurerBombe(L).
+	restaurerBombes(L).
 	
 jouerMC(IdGagnant):- ((gameover, joueursSav(IdGagnant,_,-1)) ; tourActuel(50)), !. % Mettre
 jouerMC(IdGagnant) :-
