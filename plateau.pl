@@ -1,5 +1,6 @@
-initPlateau:-
-	taillePlateau(TailleCote),
+initPlateau(TailleCote):-
+	(taillePlateau(_) -> retractall(taillePlateau(_)); true),
+	assert(taillePlateau(TailleCote)),
 	(plateauSav(_) -> retractall(plateauSav(_)); true),
 	% Instancie le nouveau plateau
 	TaillePlateau is TailleCote * TailleCote,

@@ -1,58 +1,158 @@
 var interval ;
- 
+var playerTurn = 1;
+var realPlayer = false;
+var numberOfPlayer = 2;
+
  $(document).ready(function(){
 	 $('#conteneur2').html("<br/><input type='button' onclick='start()' value='Start the game'/>");
- });
- 
+});
+
  function boucle(){
 	 alert('Début de partie !');
-	 interval = setInterval(function(){ requestData(); computeData() ;}, 300);
+	 //Clear l'intervalle précédent
+	 clearInterval(interval);
+	 //Plus court pour real player pour eviter impression de non reactivite aux commandes
+	 if(realPlayer)
+	 	interval = setInterval(function(){ play();}, 50);
+	 else
+	 	interval = setInterval(function(){ play();}, 300);
  }
- 
+
  function start(){
+	$("h1").text("Boom boom boom boom");
+	numberOfPlayer = prompt("Nombre de joueur :", "2,3,4")[0];
+	console.log(numberOfPlayer);
+	var boardSize = prompt("Taille plateau :", "11");
+	console.log(boardSize);
+	var iaPlayer1 = prompt("Choisir ia joueur 1\nSeule l'ia joueur 1 peut être un vrai joueur :", "0,1,2,3,4,5")[0];
+	console.log(iaPlayer1);
+	var iaPlayer2 = prompt("Choisir ia autre(s) joueur(s) :", "1,2,3,4,5")[0];
+	console.log(iaPlayer2);
+
 	$.ajax({
-				dataType: 'json', 
-				url:'http://localhost:8000/starting',
+				dataType: 'json',
+				url:'/starting',
+				data: {
+					'players': numberOfPlayer,
+					'size': boardSize,
+					'iaPlayer1': iaPlayer1,
+					'iaPlayer2': iaPlayer2
+					 },
 				contentType: 'application/json; charset=utf-8',
 				success: function (result) {
-					console.log(result);    
+					console.log(result);
 				}
 	 });
-	 boucle();
+	if (iaPlayer1 == 0){
+		realPlayer = true;
+		$(document).keydown(handlePress);
+	}
+	boucle();
  }
- 
+
+function handlePress(e){
+	var action = 5;
+	switch(e.which)
+	{
+		case 90:
+		case 122:
+			console.log("haut");
+			action = 1;
+			break;
+		case 83:
+		case 115:
+			console.log("bas");
+			action = 2;
+			break;
+		case 81:
+		case 113:
+			console.log("gauche");
+			action = 4;
+			break;
+		case 68:
+		case 100:
+			console.log("droite");
+			action = 3;
+			break;
+		case 16:
+			console.log("bombe");
+			action = 6;
+			break;
+		case 32:
+			console.log("immobile");
+			action = 5;
+			break;
+		default:
+			console.log("autre");
+			action = 5;
+			break;
+	}
+	if (realPlayer && playerTurn%numberOfPlayer == 1) {
+		requestData();
+		computeDataRealPlayer(action);
+		playerTurn++;
+	}
+}
+
  function fin(){
 	 clearInterval(interval);
+	 interval = null;
+	 realPlayer = false;
+	 playerTurn = 1;
+	 $("h1").text("Game over");
  }
- 
- function computeData() {
-	$.ajax({
-				dataType: 'json', 
-				url:'http://localhost:8000/playMove',
-				contentType: 'application/json; charset=utf-8',
-				success: function (result) {
-					console.log(result);    
-				}
-	 });
+
+ function play() {
+ 	requestData();
+ 	if(!(realPlayer && playerTurn%numberOfPlayer==1))
+ 	{
+		computeData();
+		playerTurn++;
+	}
 }
- 
+
+function computeDataRealPlayer(action){
+	$.ajax({
+						dataType: 'json',
+						url:'/playMoveJoueur',
+						data: {
+							'action': action
+						},
+						contentType: 'application/json; charset=utf-8',
+						success: function (result) {
+							console.log(result);
+						}
+			 });
+}
+
+function computeData(){
+	$.ajax({
+					dataType: 'json',
+					url:'/playMove',
+					contentType: 'application/json; charset=utf-8',
+					success: function (result) {
+						console.log(result);
+					}
+		 });
+}
+
  function requestData(){
 	$.ajax({
-				dataType: 'json', 
-				url:'http://localhost:8000/game',
+				dataType: 'json',
+				url:'/game',
 				contentType: 'application/json; charset=utf-8',
 				success: function (game) {
-					console.log(game);    
+					console.log(game);
 					writeHtml(buildString(game));
 				}
 	 });
  }
- 
+
  function writeHtml(code){
 	 $('#conteneur').html(code);
  }
- 
- 
+
+
  function buildString(infoGame){
 	 var jsonVar = JSON.parse(infoGame);
 	 if(jsonVar.fin==1){
@@ -60,10 +160,15 @@ var interval ;
 		 return;
 	 }
 	 var taille = jsonVar.taillePlateau;
-	 
+
 	 var individualSize = 500/taille;
-	 
+
 	 var string = "";
+
+   // Sol
+   $('#conteneur').css( 'background', 'url(files/ground.png)' );
+   $('#conteneur').css( 'background-size', individualSize);
+
 	 // Bombe
 	 for(pos in jsonVar.bombes){
 		var index = jsonVar.bombes[pos][0];
@@ -76,61 +181,12 @@ var interval ;
 				"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
 				"'/>";
 		}else{
-			var xEplo = x-2;
+			var xEplo = x;
 			var yExplo = y;
 			string += "<img src='files/boom.png' class='bombe'"+
 				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
 				"'/>";
-			xEplo = x-1;
-			yExplo = y;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x;
-			yExplo = y;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x+1;
-			yExplo = y;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x+2;
-			yExplo = y;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x;
-			yExplo = y-2;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x;
-			yExplo = y-1;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x;
-			yExplo = y+1;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			xEplo = x;
-			yExplo = y+2;
-			string += "<img src='files/boom.png' class='bombe'"+
-				"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
-				"top:"+(yExplo*individualSize)+"px; left:"+(xEplo*individualSize)+"px"+
-				"'/>";
-			
 		}
 	 }
 	 // Joueurs vivants
@@ -147,6 +203,9 @@ var interval ;
 	 // Joueurs morts
 	 for(pos in jsonVar.joueursMorts){
 		var id = jsonVar.joueursMorts[pos][0];
+		//Si le joueur reel est mort alors on dit qu'il n'y a plus de joueur reel
+		if(realPlayer && id == 0)
+			realPlayer = false;
 		var index = jsonVar.joueursMorts[pos][1];
 		var x = getX(index, taille);
 		var y = getY(index, taille);
@@ -155,26 +214,24 @@ var interval ;
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
 			"'/>";
 	 }
-	 
-	 // Murs 
+
+	 // Murs
 	 for(index in jsonVar.plateau){
 		if(jsonVar.plateau[index]){
 		var x = getX(index, taille);
 		var y = getY(index, taille);
-		string += "<div class='mur'"+
+		string += "<img src='files/wall.png' class='mur'"+
 			"style='width:"+individualSize+"px;height:"+individualSize+"px;"+
 			"top:"+(y*individualSize)+"px; left:"+(x*individualSize)+"px"+
-			"'></div>";
+			"'/>";
 		}
 	 }
 	 return string;
  }
- 
+
  function getX(index, taillePlateau){
 	 return index%taillePlateau;
  }
  function getY(index, taillePlateau){
 	 return (index-(index%taillePlateau))/taillePlateau;
  }
- 
- 
