@@ -11,17 +11,17 @@ iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
 	.
 % Je vois pas pourquoi on a besoin de PosActuelle :/
 % Lance l'initialisation de la recherche de max
-testerMeilleurCoup([PremierePos|AutresPos], PosActuelle, MeilleurePos, BombePosee, MeilleurScore,IdJoueur) :-
-	testerMeilleurCoup(AutresPos, PosActuelle, PremierePos, MeilleurePos,BombePosee,BombePosee, -10000000, MeilleurScore,IdJoueur). %% l'init du meilleur score est degueu ^^
+testerMeilleurCoup([PremierePos|AutresPos], PosActuelle, MeilleurePos, BombePosee, MeilleurScore,IdJoueur, TA) :-
+	testerMeilleurCoup(AutresPos, PosActuelle, PremierePos, MeilleurePos,BombePosee,BombePosee, -10000000, MeilleurScore,IdJoueur, TA). %% l'init du meilleur score est degueu ^^
 
 % Validation du max
-testerMeilleurCoup([], _, MeilleurePos, MeilleurePos,BombePosee,BombePosee, MeilleurScore, MeilleurScore,_).
+testerMeilleurCoup([], _, MeilleurePos, MeilleurePos,BombePosee,BombePosee, MeilleurScore, MeilleurScore,_,_).
 % Recherche du max parmis les autres coups
-testerMeilleurCoup([X|L], PosActuelle, MeilleurePos0, MeilleurePos,BombePosee0, BombePosee, MeilleurScore0, MeilleurScore,IdJoueur) :-
+testerMeilleurCoup([X|L], PosActuelle, MeilleurePos0, MeilleurePos,BombePosee0, BombePosee, MeilleurScore0, MeilleurScore,IdJoueur,TA) :-
 
 	%sav des dynamics (plateauSav, joueursSav, bombes, joueurActuel, tourActuel)
 
-	simulationMC(X, Bombe, ScoreTrouve,_NbIterationActuelle,IdJoueur),
+	simulationMC(X, Bombe, ScoreTrouve,_NbIterationActuelle,IdJoueur,TA),
 	%restaurer les dynamics.
 
 
@@ -68,8 +68,8 @@ jouerMC(IdGagnant) :-
 	!
 	.
 
-simulationMC(NewPosIndex, BombePosee, Score, 250,_) :- !.
-simulationMC(PosIndex, BombePosee, Score, NbIterationActuelle,IdJoueurMC) :-
+simulationMC(NewPosIndex, BombePosee, Score, 250,_,_) :- !.
+simulationMC(PosIndex, BombePosee, Score, NbIterationActuelle,IdJoueurMC,TourDebutSimulation) :-
 	% deplacer le joueur sur la nouvelle Pos avant le debut de la partie simulee et creer une bombe si necessaire
 	joueursSav(IdJoueurMC,PosIndex,_),
 	(   BombePosee == 1 -> ajouterBombe(PosIndex);true),
