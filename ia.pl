@@ -67,7 +67,7 @@ posSuivantes(Pos, [Pos|PosAdjacentes]) :- posAdjacentes(Pos,PosAdjacentes).
 posSuivantesPossibles(_,[],[]):-!.
 posSuivantesPossibles(FormerPos,[X|PosSuivantes], [X|PosSuivantesPossibles]) :-
 	isPossible(FormerPos, X),
-	posSuivantesPossibles(FormerPos, PosSuivantes, PosSuivantesPossibles),!.
+	posSuivantesPossibles(FormerPos, PosSuivantes, PosSuivantesPossibles).
 posSuivantesPossibles(FormerPos, [_|L], PAP) :-
 	posSuivantesPossibles(FormerPos, L, PAP).
 
