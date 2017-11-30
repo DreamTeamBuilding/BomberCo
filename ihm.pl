@@ -5,6 +5,7 @@
 :- use_module(library(http/html_write)).
 :- use_module(library(http/html_head)).
 :- use_module(library(http/http_json)).
+:- use_module(library(http/http_parameters)).
 :- use_module(bomberCo).
 
 :- multifile http:location/3.
@@ -17,6 +18,7 @@ http:location(files, "/files", []).
 :- http_handler(root(game), getInfoGame, []).
 :- http_handler(root(starting), starting, []).
 :- http_handler(root(playMove), playMove, []).
+:- http_handler(root(playMoveJoueur), playMoveJoueur, []).
 
 server(Port) :- http_server(http_dispatch, [port(Port)]).
 stopServer(Port) :- http_stop_server(Port,[]).
@@ -32,8 +34,18 @@ accueil(_) :-
 	   script(src="files/jquery.js",""),
 	   script(src="files/ihm_action.js","")]).
 	
-starting(_) :-
-	lancerPartie,
+starting(Request) :-
+	http_parameters(Request, [
+		players(PlayersData,[]),
+		size(SizeData,[]),
+		iaPlayer1(IaPlayer1Data, []),
+		iaPlayer2(IaPlayer2Data, [])
+		]),
+	atom_number(PlayersData, Players),
+	atom_number(SizeData, Size),
+	atom_number(IaPlayer1Data, IaPlayer1),
+	atom_number(IaPlayer2Data, IaPlayer2),
+	lancerPartie(Players, Size, IaPlayer1, IaPlayer2),
 	reply_json_dict("{\"result\":1}").
 
 playMove(_) :-
@@ -41,6 +53,20 @@ playMove(_) :-
 		fin(0)
 	->
 		(jouer,reply_json_dict("{\"result\":1}"))
+	;
+		reply_json_dict("{\"result\":0}")
+	)
+	.
+
+playMoveJoueur(Request) :-
+	http_parameters(Request, [
+		action(ActionData,[])
+		]),
+	atom_number(ActionData, Action),
+	(
+		fin(0)
+	->
+		(jouerVraiJoueur(Action),reply_json_dict("{\"result\":1}"))
 	;
 		reply_json_dict("{\"result\":0}")
 	)

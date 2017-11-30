@@ -1,7 +1,9 @@
 %%%%% Positionne les joueurs dans les coins du plateau
-initJoueurs:-
+initJoueurs(NbJoueurs):-
+	(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
+	assert(nbJoueurs(NbJoueurs)),
+
 	taillePlateau(TaillePlateau),
-	nbJoueurs(NbJoueurs),
 	(joueursSav(_,_,_) -> retractall(joueursSav(_,_,_)); true),
 	(NbJoueurs < 5,NbJoueurs >1),
 
@@ -23,3 +25,13 @@ plusieursEnVie:-joueursSav(X,_,-1),joueursSav(Y,_,-1),Y\==X.
 tuer(IdJoueur):-
 	retract(joueursSav(IdJoueur, Position, _)),
 	assert(joueursSav(IdJoueur, Position, 0)).
+
+jouerLeJoueur(Action, PosIndex, NewPosIndex, BombePosee):-
+	posSuivantes(PosIndex, PositionsSuivantes),
+	posSuivantesPossibles(PosIndex, PositionsSuivantes, PosSuivantesPossibles),
+	% TODO : supprimer?
+	(length(PosSuivantesPossibles,0) ->
+	 (NewPosIndex is PosIndex, BombePosee is 0)
+	;
+	 (indexAction(Action,I,BombePosee), NewPosIndex is PosIndex+I,(not(isPossible(PosIndex, NewPosIndex)) -> NewPosIndex is PosIndex ; true))
+	).

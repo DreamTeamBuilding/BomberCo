@@ -1,8 +1,6 @@
 :-begin_tests(plateau).
 	test(initPlateau):-
-		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(taillePlateau(11)),
-		initPlateau,
+		initPlateau(11),
 		taillePlateau(11),
 		plateauSav(B),
 		length(B, 121),
@@ -20,21 +18,17 @@ comp(L1, L1).
 
 :-begin_tests(joueurs).
 	test(initJoueurs):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
-		initJoueurs,
+		initJoueurs(2),
 		nbJoueurs(2),
 		joueursSav(_, 12, -1), 
 		joueursSav(_, 108, -1),
 		!.
 	test(initJoueurs):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(nbJoueurs(4)),
 		assert(taillePlateau(11)),
-		initJoueurs,
+		initJoueurs(4),
 		nbJoueurs(4),
 		joueursSav(_,12,-1),
 		joueursSav(_,20,-1),
@@ -42,22 +36,18 @@ comp(L1, L1).
 		joueursSav(_,108,-1),
 		!.
 	test(initJoueurs):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(nbJoueurs(3)),
 		assert(taillePlateau(11)),
-		initJoueurs,
+		initJoueurs(3),
 		nbJoueurs(3),
 		joueursSav(_, 12, -1),  
 		joueursSav(_, 20, -1),  
 		joueursSav(_, 108, -1),
 		!.
 	test(plusieursEnVie):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
-		initJoueurs,
+		initJoueurs(2),
 		plusieursEnVie,
 		retract(joueursSav(_, 108, _)),
 		assert(joueursSav(_, 108, 0)),
@@ -65,50 +55,40 @@ comp(L1, L1).
 		not(plusieursEnVie),
 		!.
 	test(actualiserJoueur):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
-		initJoueurs,
+		initJoueurs(2),
 		actualiserJoueur(1, 13),
 		joueursSav(_, 13, -1),
 		!.
 	test(joueurSuivant):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
-		initJoueurs,
+		initJoueurs(2),
 		joueurSuivant(0,1),
 		joueurSuivant(1,0),
 		!.
 	test(joueurSuivant):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(nbJoueurs(3)),
 		assert(taillePlateau(11)),
-		initJoueurs,
+		initJoueurs(3),
 		joueurSuivant(0,1),
 		joueurSuivant(1,2),
 		joueurSuivant(2,0),
 		!.
 	test(tuer):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
-		initJoueurs,
+		initJoueurs(2),
 		tuer(0),
 		joueursSav(0, _, 0),
 		tuer(1),
 		joueursSav(1, _, 0),
 		!.
 	test(exploserBombe):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
 		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
 		assert(taillePlateau(11)),
-		assert(nbJoueurs(4)),
-		initJoueurs,
+		initJoueurs(4),
 		initBombes,
 		ajouterBombe(36),
 		%20 decrementations pour BOUM
@@ -249,7 +229,7 @@ comp(L1, L1).
 		initIndex,
 		assert(nbJoueurs(2)),
 		assert(taillePlateau(11)),
-		initJoueurs,
+		initJoueurs(2),
 		joueursSav(0, 12, _),
 		isPossible(12, 13),
 		isPossible(12, 12),
@@ -258,11 +238,7 @@ comp(L1, L1).
 		not(isPossible(12, 1)),
 		!.
 	test(isSafeTest):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
-		assert(nbJoueurs(2)),
-		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(taillePlateau(11)),
-		initGame,
+		initGame(2,11),
 		ajouterBombe(14),
 		decrementerBombes,
 		isSafe(28),
@@ -282,42 +258,27 @@ comp(L1, L1).
 		posSuivantes(37, [37,26,36,38,48]),
 		!.
 	test(posSuivantesPossiblesTest):-
-		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(taillePlateau(11)),
-		initPlateau,
+		initPlateau(11),
 		posSuivantesPossibles(12, [12,1,11,13,23], [12,13,23]),
 		posSuivantesPossibles(25, [25,14,24,25,36], [25,14,36]),
 		!.
 	test(posSuivantesSafeTest):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
-		assert(nbJoueurs(2)),
-		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(taillePlateau(11)),
-		initGame,
+		initGame(2,11),
 		initBombes,
 		posSuivantesSafe([12,13,23], [12,13,23]),
 		ajouterBombe(13),
 		decrementerBombes,
 		posSuivantesSafe([12,13,23],[]),
 		!.
-		/*
-	test(adversairePlusProcheTest):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
-		assert(nbJoueurs(2)),
-		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(taillePlateau(11)),
-		initGame,
+	/*test(adversairePlusProcheTest):-
+		initGame(2,11),
 		initBombes,
 		plateauSav(_Board),
 		adversairePlusProche(12,[20,108], 8, 20),
 		adversairePlusProche(108,[12,20], 8, 20),
 		!.*/
 	test(posSuivantesPlusProchesTest):-
-		(nbJoueurs(_) -> retractall(nbJoueurs(_)); true),
-		assert(nbJoueurs(2)),
-		(taillePlateau(_) -> retractall(taillePlateau(_)); true),
-		assert(taillePlateau(11)),
-		initGame,
+		initGame(2,11),
 		initBombes,
 		plateauSav(_Board),
 		%TODO Appeller la methode et check les retours.
