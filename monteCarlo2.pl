@@ -2,59 +2,45 @@ iaMC(PosIndex, NewPosIndex, BombePosee, iaMC) :-
 	posSuivantes(PosIndex, PositionsSuivantes),
 	posSuivantesPossibles(PosIndex, PositionsSuivantes, PosSuivantesPossibles),
 	writeln(PosSuivantesPossibles),
-	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, _ScoreDeLAction)
+	joueursSav(IdJoueur,PosIndex,_),
+	testerMeilleurCoup(PosSuivantesPossibles, PosIndex, NewPosIndex, BombePosee, _ScoreDeLAction, IdJoueur)
 	/*
 	Utiliser Coup (indexAction) au lieu de NewPosIndex, pour condenser la position et la bombe
 	*/
 	.
-
+% Je vois pas pourquoi on a besoin de PosActuelle :/
 % Lance l'initialisation de la recherche de max
-testerMeilleurCoup([PremierePos|AutresPos], PosActuelle, MeilleurePos, MeilleurScore) :-
-	testerMeilleurCoup(AutresPos, PosActuelle, PremierePos,MeilleurPos, -10000000, MeilleurScore).
+testerMeilleurCoup([PremierePos|AutresPos], PosActuelle, MeilleurePos, BombePosee, MeilleurScore,IdJoueur) :-
+	testerMeilleurCoup(AutresPos, PosActuelle, PremierePos, MeilleurePos,BombePosee,BombePosee, -10000000, MeilleurScore,IdJoueur). %% l'init du meilleur score est degueu ^^
 
 % Validation du max
-testerMeilleurCoup([], _, MeilleurePos, MeilleurePos, MeilleurScore, MeilleurScore)
+testerMeilleurCoup([], _, MeilleurePos, MeilleurePos,BombePosee,BombePosee, MeilleurScore, MeilleurScore,_).
 % Recherche du max parmis les autres coups
-testerMeilleurCoup([X|L], PosActuelle, MeulleurePos0, MeilleurePos, MeilleurScore0, MeilleurScore) :-
-	/*
-	sav des dynamics (plateauSav, joueursSav, bombes, joueurActuel, tourActuel)
-	
-	jouer le coup
-	faire plein (a definir) de parties a partir de la en se remplacer par un iav1 (dans la methode jouerMC !!)
-	regarder le tourActuel, et IdGagnant pour attribuer un score Ã  ce coup
-	enregistrer le coup comme meilleur si c'est le cas
-	
-	restaurer les dynamics.
-	
-	*/
-	% tests pour le maximum
-	/*
-		if(scoreTrouve > MeilleurScore0){
-			MeilleurScore1 = scoreTrouve,
-			MeilleurePos1 = posTrouvee
-		}else{
-			MeilleurScore1 = MeilleurScore0,
-			MeilleurePos1 = MeilleurePos0
-		}
-	*/
-	testerMeilleurCoup([X|L], PosActuelle, MeulleurePos1, MeilleurePos, MeilleurScore1, MeilleurScore).
+testerMeilleurCoup([X|L], PosActuelle, MeilleurePos0, MeilleurePos,BombePosee0, BombePosee, MeilleurScore0, MeilleurScore,IdJoueur) :-
 
-jouerMC(IdGagnant):- (gameover, joueursSav(IdGagnant,_,-1) ; tourActuel(50)), !.
+	%sav des dynamics (plateauSav, joueursSav, bombes, joueurActuel, tourActuel)
+
+	simulationMC(X, Bombe, ScoreTrouve,_NbIterationActuelle,IdJoueur),
+	%restaurer les dynamics.
+
+
+
+	% tests pour le maximum
+	(   ScoreTrouve > MeilleurScore0 ->
+	MeilleurScore1 is ScoreTrouve, MeilleurePos1 is X, BombePosee1 is Bombe;
+	MeilleurScore1 is MeilleurScore0, MeilleurePos1 is MeilleurePos0, BombePosee1 is BombePosee0),
+	testerMeilleurCoup([X|L], PosActuelle, MeilleurePos1, MeilleurePos, BombePosee1,BombePosee, MeilleurScore1, MeilleurScore,IdJoueur).
+
+jouerMC(IdGagnant):- ((gameover, joueursSav(IdGagnant,_,-1)) ; tourActuel(50)), !. % Nb de tours suffisant ? devrait etre scale en fonction du nombre de joueurs
 jouerMC(IdGagnant) :-
 	joueurActuel(IdJoueur),
-
-/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	taillePlateau(TaillePlateau),
-/** POUR L'IHM : DECOMMENTER/COMMENTER ICI **/
-	displayBoard(TaillePlateau),
 	joueursSav(IdJoueur,PosJoueur,StatusJoueur),
 	(StatusJoueur==0 -> true ;
-		( 
+		(
 			(IdJoueur==0 ->
 				iaJ1(Ia) ; iaGenerale(Ia)
 			),
-			ia(PosJoueur, NewPosJoueur, BombePosee, Ia),
-			%iaMC(PosJoueur, NewPosJoueur, BombePosee, iaMC),
+			ia(PosJoueur, NewPosJoueur, BombePosee, iav1),
 			% Debug
 			% afficherLesDetails(IdJoueur, NewPosJoueur, BombePosee),
 			actualiserJoueur(IdJoueur,NewPosJoueur),
@@ -80,6 +66,24 @@ jouerMC(IdGagnant) :-
 	jouerMC(IdGagnant),
 	!
 	.
+
+simulationMC(NewPosIndex, BombePosee, Score, 250,_) :- !.
+simulationMC(PosIndex, BombePosee, Score, NbIterationActuelle,IdJoueurMC) :-
+	% deplacer le joueur sur la nouvelle Pos avant le debut de la partie simulee et creer une bombe si necessaire
+	%Pour moi le reset des dynamiques est ici : a chaque fois qu'on a une partie finie, on reset le jeu et on recommence tout en modifiant le score et tout
+	jouerMC(IdGagnant),
+	% si Score n'est pas instancie, on l'initialise a 0
+	(   var(Score) -> Score is 0;true),
+	tourActuel(TA),
+	% En cas d'egalite
+	(   TA < 50 -> true ;  % Que faire en cas d'egalite ?
+	(   IdGagnant == IdJoueurMC ->
+	Score is Score+(10000/(TA*TA));% EQUILIBRAGE : tests a la main pour cette expression qui me parait pas horrible
+	Score is Score-(7000/(TA*TA))), % EQUILIBRAGE : une défaite est moins importante qu'une victoire car une défaite peut etre évitée le moment venu et une victoire provoquée
+	NbIterationActuelle is NbIterationActuelle+1, % instanciee ?
+	simulationMC(PosIndex, BombePosee, Score, NbIterationActuelle,IdJoueurMC))
+	.
+
 /*
 jouerSimulationsPosition(_,_,CompteurVictoires, VictoiresTotales, 0) :-
 	VictoiresTotales is CompteurVictoires.
